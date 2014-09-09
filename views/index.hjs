@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WikiBattle</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <!-- stealing wiki stylesheets :' -->
+    <link rel="stylesheet" href="//bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.DRN-wizard%2CReferenceTooltips%2Ccharinsert%2Cfeatured-articles-links%2CrefToolbar%2Cteahouse%7Cext.rtlcite%2Cwikihiero%7Cext.uls.nojs%7Cext.visualEditor.viewPageTarget.noscript%7Cmediawiki.legacy.commonPrint%2Cshared%7Cmediawiki.skinning.interface%7Cmediawiki.ui.button%7Cskins.vector.styles%7Cwikibase.client.init&amp;only=styles&amp;skin=vector&amp;*">
+    <link rel="stylesheet" href="//bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*">
+  </head>
+  <body>
+    <header id="main-head">
+      <h1 id="target-title">{{ title }}</h1>
+    </header>
+    <div id="target-hint"></div>
+    <main id="main">
+      <div id="left">
+        <h2 class="current-title">How It Works</h2>
+        <div class="content">
+          <ul>
+            <li>When you press "Go!", you will be paired with another player.</li>
+            <li>You will see a Target Article title at the very top of the screen. This is where you will have to navigate to.</li>
+            <li>You and your opponent will be dropped into a Starting Article, which will show up in this area.</li>
+            <li>Your Mission&trade;: to reach the Target Article <i>before</i> your opponent does. You can only use the links in the articles, and you cannot use the Back button if you misclick. Your opponent will see your progress, and you will see theirs.</li>
+            <li>Ready?!</li>
+          </ul>
+          <button id="go">Go!</button>
+        </div>
+      </div>
+      <div id="left-mask"></div>
+      <div id="right">
+        <h2 class="current-title">Opponent's Article Title</h2>
+        <div class="content">
+          Your opponent's progress will show here, so you can steal there ideas if you so please.
+        </div>
+      </div>
+      <div id="right-mask"></div>
+    </main>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="javascripts/app.js"></script>
+  </body>
+</html>

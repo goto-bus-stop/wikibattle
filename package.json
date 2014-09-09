@@ -1,0 +1,20 @@
+{ "name": "WikiBattle"
+, "description": "1v1 races through Wikipedia article links."
+, "version": "0.7.1"
+, "license": "MIT"
+, "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues"
+, "author": "goto-bus-stop <rene@kooi.me>"
+, "dependencies":
+  { "express": "~4.8.6"
+  , "debug": "~1.0.4"
+  , "hjs": "~0.0.6"
+  , "less-middleware": "1.0.x"
+  , "socket.io": "^1.1.0"
+  , "async-cache": "^0.1.5"
+  , "request": "^2.42.0"
+  }
+, "repository":
+  { "type": "git"
+  , "url" : "http://github.com/goto-bus-stop/WikiBattle.git"
+  }
+}

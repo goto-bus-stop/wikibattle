@@ -1,0 +1,57 @@
+// probably gets overwritten by Wiki sheets but :'
+body {
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+// mask colours
+.loading { background-color: #fff }
+.lost { background-color: #700 }
+.won { background-color: #070 }
+
+#main-head {
+  height: 50px;
+  background: #fff;
+  
+  h1 { // target title usually
+    padding-left: .5em;
+  }
+}
+
+#target-hint {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+}
+
+// left & right areas for player & opponent
+#left, #right, {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  width: 50%;
+  padding: 0 5px;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+#left {
+  left: 0;
+}
+#right {
+  right: 0;
+  // no clicking in opponent area plis :'
+  pointer-events: none;
+}
+
+// area masks
+#left-mask, #right-mask, #click-mask {
+  position: absolute;
+  top: 50px; bottom: 0;
+  width: 50%;
+  opacity: 0.3;
+  display: none;
+}
+#left-mask { left: 0 }
+#right-mask { right: 0 }
+// this one always exists so the player's pointer never actually :hovers the opponent area
+#click-mask { right: 0; display: block }
