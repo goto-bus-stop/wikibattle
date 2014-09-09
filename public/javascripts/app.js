@@ -101,16 +101,18 @@ function onOpponentScrolled(top, width) {
   opponent.area.scrollTop = top * width / opponent.area.offsetWidth
 }
 
-var reWiki = /^\/wiki\//
+var reIsWiki = /^\/wiki\//
+  , reInvalidPages = /^(File|Template):/
 function onClick(e) {
   var el = e.target
     , next, href
-  if (el.tagName === 'A' || el.tagName === 'AREA') {
+  while (el && el.tagName !== 'A' && el.tagName !== 'AREA') el = el.parentNode
+  if (el) {
     e.preventDefault()
     href = el.getAttribute('href')
-    if (!reWiki.test(href)) return
-    next = href.replace(reWiki, '').replace(/#.*?$/, '').replace(/_/g, ' ')
-    if (/^File:/.test(next)) return
+    if (!reIsWiki.test(href)) return
+    next = href.replace(reIsWiki, '').replace(/#.*?$/, '').replace(/_/g, ' ')
+    if (reInvalidPages.test(next)) return
     navigateTo(me, next)
   }
 }
