@@ -21,7 +21,7 @@ io.on('connection', function (sock) {
   var opponent // opponent socket
     , path = [] // path taken by this socket
     , origin, goal // Starting Article & Target Article
-  
+
   if (pair) {
     opponent = pair.sock
     origin = pair.origin
@@ -37,7 +37,7 @@ io.on('connection', function (sock) {
     pair = { sock: sock, opponent: function (o) { opponent = o, start() }, origin: origin, goal: goal }
     sock.emit('waiting')
   }
-  
+
   function start() {
     path.push(origin)
     sock.emit('start', origin, goal)
@@ -46,7 +46,7 @@ io.on('connection', function (sock) {
       wiki.getHint(goal, function (e, hint) { sock.emit('hint', hint) })
     }, 90 * 1000 /* 1:30 minutes */)
   }
-  
+
   sock.on('navigate', function (to) {
     path.push(to)
     // lol maybe this needs some anti-cheat at some point so people don't just go
@@ -58,11 +58,19 @@ io.on('connection', function (sock) {
     }
     opponent.emit('navigated', to)
   })
-  
+
   sock.on('scroll', function (top, areaWidth) {
     if (typeof top === 'number') {
       opponent.emit('scrolled', top, areaWidth)
     }
+  })
+
+  sock.on('disconnect', function () {
+    // if this socket disconnected before finding an opponent,
+    // clear the Waiting Socket again
+    if (pair && pair.sock === sock) pair = null
+    // else notify the opponent
+    if (opponent) opponent.emit('disconnected')
   })
 })
 
