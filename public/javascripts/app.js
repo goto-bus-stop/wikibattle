@@ -40,13 +40,13 @@ function go() {
 
 // Player goes somewhere
 function navigateTo(p, page, cb) {
-  show(p.mask), addClass(p.mask, 'loading')
+  addClass(p.mask, 'loading')
   if (p === me) sock.emit('navigate', page)
+  p.path.push(page)
   getWikiContent(page, function (e, body) {
     p.title.innerHTML = page + ' <small>(' + p.path.length + ' steps)</small>'
-    p.path.push(page)
     p.content.innerHTML = body
-    removeClass(p.mask, 'loading'), hide(p.mask)
+    removeClass(p.mask, 'loading')
     p.area.scrollTop = 0
     if (cb) cb(e)
   })
@@ -65,7 +65,7 @@ function getWikiContent(page, cb) {
   xhr.send()
 }
 function getPathHtml(path) {
-  return '<ol>' + path.map(function (x) {
+  return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x) {
     return '<li>' + x + '</li>'
   }).join('') + '</ol>'
 }
@@ -77,8 +77,8 @@ function waiting() {
   targetTitle.innerHTML = 'WikiBattle: Waiting for Opponent&hellip;'
   me.content.innerHTML = ''
   opponent.content.innerHTML = ''
-  show(me.mask), addClass(me.mask, 'loading')
-  show(opponent.mask), addClass(opponent.mask, 'loading')
+  addClass(me.mask, 'loading')
+  addClass(opponent.mask, 'loading')
 }
 
 function onStart(from, goal) {
@@ -89,7 +89,8 @@ function onStart(from, goal) {
 }
 
 function onHint(hint) {
-  show(targetHint), targetHint.innerHTML = '<strong>Hint: </strong>' + hint
+  targetHint.style.display = 'block'
+  targetHint.innerHTML = '<strong>Hint: </strong>' + hint
 }
 
 function onOpponentNavigated(page, cb) {
@@ -124,7 +125,6 @@ function onScroll(e) {
 }
 
 function _onEnd() {
-  show(me.mask), show(opponent.mask)
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
   
@@ -161,17 +161,9 @@ function throttle(func, wait) {
   }
 }
 
-function show(el) { el.style.display = 'block' }
-function hide(el) { el.style.display = 'none' }
 function addClass(el, cls) {
-  var l = el.className.split(' ')
-  if (l.indexOf(cls) === -1) el.className += ' ' + cls
+  el.classList.add(cls)
 }
 function removeClass(el, cls) {
-  var l = el.className.split(' ')
-    , i = l.indexOf(cls)
-  if (i === -1) {
-    l.splice(i, 0)
-    el.className = l.join(' ')
-  }
+  el.classList.remove(cls)
 }
