@@ -18,45 +18,47 @@ var app = express()
 // be `null` again because there are no sockets waiting for opponents.
 var pair = null
 io.on('connection', function (sock) {
-  var opponent // opponent socket
-    , path = [] // path taken by this socket
+  var path = [] // path taken by this socket
+    , opponent // opponent socket
+    , opponentPath // path taken by opponent socket
     , origin, goal // Starting Article & Target Article
 
   if (pair) {
     opponent = pair.sock
+    opponentPath = pair.path
     origin = pair.origin
     goal = pair.goal
-    pair.opponent(sock)
+    pair.opponent(sock, path)
     pair = null
-    
+
     start()
   }
   else {
     origin = getRandom(wikiPages)
     do { goal = getRandom(wikiPages) } while (goal === origin)
-    pair = { sock: sock, opponent: function (o) { opponent = o, start() }, origin: origin, goal: goal }
+    pair = { sock: sock, opponent: function (o, p) { opponent = o, opponentPath = p, start() }, origin: origin, goal: goal, path: path }
     sock.emit('waiting')
   }
 
   function start() {
-    path.push(origin)
     sock.emit('start', origin, goal)
-    
+
     setTimeout(function () {
       wiki.getHint(goal, function (e, hint) { sock.emit('hint', hint) })
     }, 90 * 1000 /* 1:30 minutes */)
   }
 
   sock.on('navigate', function (to) {
-    path.push(to)
+    path.push({ page: to, time: Date.now() })
+    opponent.emit('navigated', to)
+
     // lol maybe this needs some anti-cheat at some point so people don't just go
     // `sock.emit('navigate', currentGoal)` in their browser consoles
     // so insert imaginary `articleContainsLink(last(path), to)` here
     if (to === goal) {
-      sock.emit('won')
-      opponent.emit('lost')
+      sock.emit('won', path, opponentPath)
+      opponent.emit('lost', opponentPath, path)
     }
-    opponent.emit('navigated', to)
   })
 
   sock.on('scroll', function (top, areaWidth) {

@@ -65,8 +65,9 @@ function getWikiContent(page, cb) {
   xhr.send()
 }
 function getPathHtml(path) {
-  return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x) {
-    return '<li>' + x + '</li>'
+  return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x, i) {
+    var next = path[i + 1]
+    return '<li>' + x.page + (next ? ' (' + (Math.round((next.time - x.time) / 100) / 10) + ' seconds)' : '') + '</li>'
   }).join('') + '</ol>'
 }
 
@@ -124,21 +125,21 @@ function onScroll(e) {
   }, 10)
 }
 
-function _onEnd() {
+function _onEnd(path, opponentPath) {
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
   
-  me.mask.innerHTML = getPathHtml(me.path)
-  opponent.mask.innerHTML = getPathHtml(opponent.path)
+  me.mask.innerHTML = getPathHtml(path)
+  opponent.mask.innerHTML = getPathHtml(opponentPath)
 }
-function onWon() {
-  _onEnd()
+function onWon(path, opponentPath) {
+  _onEnd(path, opponentPath)
   addClass(me.mask, 'won')
   addClass(opponent.mask, 'lost')
   targetTitle.innerHTML = 'WikiBattle: You won!'
 }
-function onLost() {
-  _onEnd()
+function onLost(path, opponentPath) {
+  _onEnd(path, opponentPath)
   addClass(me.mask, 'lost')
   addClass(opponent.mask, 'won')
   targetTitle.innerHTML = 'WikiBattle: You lost!'
