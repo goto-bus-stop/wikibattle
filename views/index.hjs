@@ -18,7 +18,6 @@
         <div class="content">
           <ul>
             <li>When you press "Go!", you will be paired with another player.</li>
-            <li>You will see a Target Article title at the very top of the screen. This is where you will have to navigate to.</li>
             <li>You and your opponent will be dropped into a Starting Article, which will show up in this area.</li>
             <li>Your Mission&trade;: to reach the Target Article <i>before</i> your opponent does. You can only use the links in the articles, and you cannot use the Back button if you misclick. Your opponent will see your progress, and you will see theirs.</li>
             <li>Ready?!</li>
@@ -30,7 +29,7 @@
       <div id="right">
         <h2 class="current-title">Opponent's Article Title</h2>
         <div class="content">
-          Your opponent's progress will show here, so you can steal there ideas if you so please.
+          Your opponent's progress will show here, so you can steal their ideas if you so please.
         </div>
       </div>
       <div id="right-mask"></div>
