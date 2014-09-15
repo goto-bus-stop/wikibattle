@@ -49,6 +49,7 @@ io.on('connection', function (sock) {
   }
 
   sock.on('navigate', function (to) {
+    to = decodeURIComponent(to);
     path.push({ page: to, time: Date.now() })
     opponent.emit('navigated', to)
 

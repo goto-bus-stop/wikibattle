@@ -44,7 +44,7 @@ function navigateTo(p, page, cb) {
   if (p === me) sock.emit('navigate', page)
   p.path.push(page)
   getWikiContent(page, function (e, body) {
-    p.title.innerHTML = page + ' <small>(' + p.path.length + ' steps)</small>'
+    p.title.innerHTML = decodeURIComponent(page) + ' <small>(' + p.path.length + ' steps)</small>'
     p.content.innerHTML = body
     removeClass(p.mask, 'loading')
     p.area.scrollTop = 0
