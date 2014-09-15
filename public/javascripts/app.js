@@ -38,6 +38,11 @@ function go() {
   goButton.parentNode.removeChild(goButton)
 }
 
+function restart() {
+  // lol
+  location.href = location.pathname
+}
+
 // Player goes somewhere
 function navigateTo(p, page, cb) {
   addClass(p.mask, 'loading')
@@ -128,21 +133,28 @@ function onScroll(e) {
 function _onEnd(path, opponentPath) {
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
-  
+
   me.mask.innerHTML = getPathHtml(path)
   opponent.mask.innerHTML = getPathHtml(opponentPath)
+
+  sock.disconnect()
+
+  var restartBt = document.createElement('button')
+  restartBt.addEventListener('click', restart, false)
+  restartBt.innerHTML = 'Another Run?'
+  targetTitle.appendChild(restartBt)
 }
 function onWon(path, opponentPath) {
-  _onEnd(path, opponentPath)
   addClass(me.mask, 'won')
   addClass(opponent.mask, 'lost')
   targetTitle.innerHTML = 'WikiBattle: You won!'
+  _onEnd(path, opponentPath)
 }
 function onLost(path, opponentPath) {
-  _onEnd(path, opponentPath)
   addClass(me.mask, 'lost')
   addClass(opponent.mask, 'won')
   targetTitle.innerHTML = 'WikiBattle: You lost!'
+  _onEnd(path, opponentPath)
  }
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
