@@ -3,6 +3,7 @@
 var express = require('express')
   , path = require('path')
   , http = require('http')
+  , fs = require('fs')
   , wiki = require('./wiki')
   , wikiPages = require('./pages.json') // array of page names that we can pick from
   , debug = require('debug')('WikiBattle')
@@ -83,18 +84,14 @@ io.on('connection', function (sock) {
   })
 })
 
-// view engine setup
-// seems overkill :'
-app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'hjs')
-
-// seems overkill, too, for 2 files :'
+// seems overkill for 2 files :'
 app.use(require('less-middleware')(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public')))
 
 // index page
 app.get('/', function (req, res) {
-  res.render('index', { title: 'WikiBattle' })
+  res.writeHead(200, { 'content-type': 'text/html' })
+  fs.createReadStream('views/index.html').pipe(res)
 })
 // Wiki Article content
 app.get('/wiki/:page', function (req, res) {
@@ -114,25 +111,22 @@ app.use(function (req, res, next) {
 // error handlers
 if (app.get('env') === 'development') {
   app.use(function (err, req, res, next) {
-    res.status(err.status || 500)
-    res.render('error', {
-      message: err.message,
-      error: err
-    })
+    res.writeHead(err.status || 500, { 'content-type': 'text/html' })
+    res.write('<h1>' + err.message + '</h1>')
+    res.write('<h2>' + err.status + '</h2>')
+    res.write('<pre>' + err.stack + '</pre>')
   })
 }
 
 // production error handler
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500)
-  res.render('error', {
-    message: err.message,
-    error: {}
-  })
+  res.writeHead(err.status || 500, { 'content-type': 'text/html' })
+  res.write('<h1>' + err.message + '</h1>')
+  res.write('<h2>' + err.status + '</h2>')
 })
 
 app.set('port', process.env.PORT || 3000)
 
-server.listen(app.get('port'), function() {
+server.listen(app.get('port'), function () {
   debug('Express server listening on port ' + server.address().port)
 })

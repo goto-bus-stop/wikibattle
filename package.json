@@ -7,7 +7,6 @@
 , "dependencies":
   { "express": "~4.8.6"
   , "debug": "~1.0.4"
-  , "hjs": "~0.0.6"
   , "less-middleware": "1.0.x"
   , "socket.io": "^1.1.0"
   , "async-cache": "^0.1.5"
