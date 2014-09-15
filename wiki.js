@@ -21,6 +21,9 @@ var wiki = new AsyncCache({
       cb(null, body.parse.text['*'])
     })
   }
+, length: function (articleBody) {
+    return articleBody.length
+  }
 })
 
 /**
