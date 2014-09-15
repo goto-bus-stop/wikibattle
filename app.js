@@ -7,6 +7,8 @@ var express = require('express')
   , wikiPages = require('./pages.json') // array of page names that we can pick from
   , debug = require('debug')('WikiBattle')
 
+var HINT_TIMEOUT = 90 // seconds
+
 function getRandom(arr) { return arr[Math.floor(arr.length * Math.random())] }
 
 var app = express()
@@ -22,6 +24,7 @@ io.on('connection', function (sock) {
     , opponent // opponent socket
     , opponentPath // path taken by opponent socket
     , origin, goal // Starting Article & Target Article
+    , hintTimeout
 
   if (pair) {
     opponent = pair.sock
@@ -43,9 +46,10 @@ io.on('connection', function (sock) {
   function start() {
     sock.emit('start', origin, goal)
 
-    setTimeout(function () {
-      wiki.getHint(goal, function (e, hint) { sock.emit('hint', hint) })
-    }, 90 * 1000 /* 1:30 minutes */)
+    hintTimeout = setTimeout(sendHint, HINT_TIMEOUT * 1000)
+  }
+  function sendHint() {
+    wiki.getHint(goal, function (e, hint) { sock.emit('hint', hint) })
   }
 
   sock.on('navigate', function (to) {
@@ -74,6 +78,8 @@ io.on('connection', function (sock) {
     if (pair && pair.sock === sock) pair = null
     // else notify the opponent
     if (opponent) opponent.emit('disconnected')
+    // don't fetch the hint anymore if it's not needed
+    clearTimeout(hintTimeout)
   })
 })
 

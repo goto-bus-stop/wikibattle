@@ -2,6 +2,8 @@ var request = require('request')
   , AsyncCache = require('async-cache')
   , debug = require('debug')('WikiBattle:wiki-api')
 
+var HINT_LENGTH = 200
+
 var wiki = new AsyncCache({
   // hardcoded because ez
   max: 1024 * 1024 * 200 // 200MB, probably enough for all 5k articles (~40k per article should be enough for anybody!)
@@ -32,7 +34,7 @@ wiki.getHint = function (page, cb) {
       , sanePara
     if (!firstPara) return cb('could not detect first paragraph')
     sanePara = firstPara[0].replace(/<(?:.|\n)*?>/gm, '')
-    cb(null, sanePara.length > 200 ? sanePara.substr(0, 200) + '&hellip;' : sanePara)
+    cb(null, sanePara.length > HINT_LENGTH ? sanePara.substr(0, HINT_LENGTH) + '&hellip;' : sanePara)
   })
 }
 
