@@ -4,8 +4,8 @@
     <title>WikiBattle</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <!-- stealing wiki stylesheets :' -->
-    <link rel="stylesheet" href="//bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&amp;lang=en&amp;modules=ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,teahouse|ext.rtlcite,wikihiero|ext.uls.nojs|mediawiki.skinning.interface|mediawiki.ui.button|skins.vector.styles&amp;only=styles&amp;skin=vector&amp;*">
-    <link rel="stylesheet" href="//bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&amp;lang=en&amp;modules=site&amp;only=styles&amp;skin=vector&amp;*">
+    <link rel="stylesheet" href="/stylesheets/wiki1.css">
+    <link rel="stylesheet" href="/stylesheets/wiki2.css">
   </head>
   <body>
     <header id="main-head">
@@ -13,21 +13,36 @@
     </header>
     <div id="target-hint"></div>
     <main id="main">
+      <div id="game-link">
+        Link to this game:
+        <input type="text">
+      </div>
       <div id="left">
         <h2 class="current-title">How It Works</h2>
         <div class="content">
           <ul>
             <li>When you press "Go!", you will be paired with another player.</li>
-            <li>You and your opponent will be dropped into a Starting Article which will show up in this area. Articles are randomly selected from the top 5000 most popular articles of the previous week. (As compiled by Andrew.g)</li>
-            <li>Your Mission&trade;: to reach the Target Article <i>before</i> your opponent does. You can only use the links in the articles, and you cannot use the Back button if you misclick. Your opponent will see your progress, and you will see theirs.</li>
+            <li>You and your opponent will be dropped into a Starting Article which will show up in this area.
+                Articles are randomly selected from the top 5000 most popular articles of the previous week,
+                compiled by <a href="https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages">Andrew G. West</a>.</li>
+            <li>Your Mission&trade;: to reach the Target Article <i>before</i> your opponent does.
+                You can only use the links in the articles, and you cannot use the Back button if you misclick.
+                Your opponent will see your progress, and you will see theirs.</li>
           </ul>
           <h3>Ready?!</h3>
+          <p id="join"> You were invited to game <code id="game-id">{{game}}</code>. Press the button to join! </p>
+          <p id="pair"> This matches you with any other player who clicks this button! </p>
           <p> <button id="go">&raquo; Go!</button> </p>
 
+          <div id="friend">
+            <h3>Want to battle a friend?</h3>
+            <p> This will give you a game link you can share with your friend. </p>
+            <p> <button id="go-priv">&raquo; Go!</button> </p>
+          </div>
+
           <h3>Like WikiBattle?</h3>
-          <p>
-            <a href="https://github.com/goto-bus-stop/WikiBattle">It's on Github!</a>
-          </p>
+          <p><a href="https://github.com/goto-bus-stop/WikiBattle">It's on Github!</a></p>
+          <p>Also, consider <a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector">donating to Wikipedia</a> :)</p>
         </div>
       </div>
       <div id="left-mask"></div>
@@ -38,6 +53,10 @@
         </div>
       </div>
       <div id="right-mask"></div>
+      <div id="backlinks">
+        <h2>Backlinks</h2>
+        <ul></ul>
+      </div>
     </main>
     <script src="socket.io/socket.io.js"></script>
     <script src="javascripts/app.js"></script>

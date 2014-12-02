@@ -25,7 +25,7 @@ body {
 #main-head {
   height: 50px;
   background: #fff;
-  
+
   h1 { // target title usually
     padding-left: .5em;
   }
@@ -38,8 +38,36 @@ body {
   width: 50%;
 }
 
+#join { display: none }
+.invited {
+  #join { display: block }
+  #pair { display: none }
+}
+#game-link {
+  position: absolute;
+  height: 70px;
+  width: 300px;
+  top: 50%;
+  left: 50%;
+  margin: -35px 0 0 -150px;
+  display: none;
+  background: #fff;
+  border: 1px solid #333;
+  z-index: 10231032153;
+  box-sizing: border-box;
+  padding: 10px;
+  &.show { display: block }
+
+  input {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    cursor: pointer;
+  }
+}
+
 // left & right areas for player & opponent
-#left, #right, {
+#left, #right, #backlinks {
   position: absolute;
   top: 50px;
   bottom: 0;
@@ -55,6 +83,13 @@ body {
   right: 0;
   // no clicking in opponent area plis :'
   pointer-events: none;
+}
+#backlinks {
+  right: 0;
+  display: none;
+  &.open {
+    display: block;
+  }
 }
 
 // area masks

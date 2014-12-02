@@ -4,13 +4,22 @@ var currentGoal
   , targetTitle = document.getElementById('target-title')
   , targetHint = document.getElementById('target-hint')
   , goButton = document.getElementById('go')
+  , goPrivButton = document.getElementById('go-priv')
+  , gameLinkWrapEl = document.getElementById('game-link')
+  , gameLinkEl = gameLinkWrapEl.querySelector('input')
+  , backlinksEl = document.getElementById('backlinks')
+  , backlinksList = backlinksEl.querySelector('ul')
   , cachedPages = {}
-  , me = new Player(document.getElementById('left')
-                  , document.getElementById('left-mask'))
-  , opponent = new Player(document.getElementById('right')
-                        , document.getElementById('right-mask'))
+  , _players = {}
+  , me = Player(document.getElementById('left')
+              , document.getElementById('left-mask'))
+  , opponent = Player(document.getElementById('right')
+                    , document.getElementById('right-mask'))
+  , game = {}
+  , _private = false
 
 function Player(area, mask) {
+  if (!(this instanceof Player)) return new Player(area, mask)
   this.area = area
   this.mask = mask
   this.title = area.querySelector('.current-title')
@@ -18,24 +27,60 @@ function Player(area, mask) {
   this.path = []
 }
 
-me.content.addEventListener('click', onClick, false)
-me.area.addEventListener('mousewheel', throttle(onScroll, 50), false)
-opponent.content.addEventListener('click', preventDefault, false)
-opponent.content.addEventListener('mousewheel', preventDefault, false)
-
 goButton.addEventListener('click', go, false)
+goPrivButton.addEventListener('click', goPriv, false)
+
+if (location.hash.substr(0, 6) === '#game:') {
+  document.getElementById('game-id').innerHTML = location.hash.substr(1)
+  document.getElementById('friend').style.display = 'none'
+  addClass(document.body, 'invited')
+}
 
 function go() {
+  me.content.addEventListener('click', onClick, false)
+  me.area.addEventListener('mousewheel', throttle(onScroll, 50), false)
+  opponent.content.addEventListener('click', preventDefault, false)
+  opponent.content.addEventListener('mousewheel', preventDefault, false)
+
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
-  sock.on('waiting', waiting)
   sock.on('start', onStart)
   sock.on('navigated', onOpponentNavigated)
   sock.on('won', onWon)
   sock.on('lost', onLost)
+  sock.on('paths', onReceivePaths)
   sock.on('scrolled', onOpponentScrolled)
   sock.on('hint', onHint)
-  
-  goButton.parentNode.removeChild(goButton)
+  sock.on('backlinks', onBacklinks)
+  sock.on('id', function (id) { me.id = id, _players[id] = me })
+  sock.on('connection', function (id) { opponent.id = id, _players[id] = opponent })
+
+  var connectType = _private ? 'new' : 'pair'
+    , connectId = null
+  if (!_private && location.hash.substr(0, 6) === '#game:') {
+    connectType = 'join'
+    connectId = location.hash.substr(1)
+  }
+  sock.emit('gameType', connectType, connectId, function (err, gameId, playerId, status) {
+    if (err) {
+      alert(err)
+      return
+    }
+    game.id = gameId
+    location.hash = gameId
+    me.id = playerId
+    if (status === 'wait') {
+      waiting()
+    }
+  })
+
+  goButton.disabled = true
+  goButton.removeEventListener('click', go)
+  goPrivButton.disabled = true
+  goPrivButton.removeEventListener('click', goPriv)
+}
+function goPriv() {
+  _private = true
+  go(true)
 }
 
 function restart() {
@@ -57,9 +102,11 @@ function navigateTo(p, page, cb) {
   })
 }
 
-// Wiki related Helpers
+// Wiki related helpers
 function getWikiContent(page, cb) {
-  if (cachedPages[page]) return cb(null, cachedPages[page])
+  if (cachedPages[page]) {
+    return cb(null, cachedPages[page])
+  }
   var xhr = new XMLHttpRequest()
   xhr.open('GET', './wiki/' + page, true)
   xhr.addEventListener('load', function () {
@@ -72,7 +119,8 @@ function getWikiContent(page, cb) {
 function getPathHtml(path) {
   return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x, i) {
     var next = path[i + 1]
-    return '<li>' + x.page + (next ? ' (' + (Math.round((next.time - x.time) / 100) / 10) + ' seconds)' : '') + '</li>'
+      , duration = next ? ' (' + (Math.round((next.time - x.time) / 100) / 10) + ' seconds)' : ''
+    return '<li>' + (x.page === null ? '<i>Disconnected</i>' :  x.page + duration) + '</li>'
   }).join('') + '</ol>'
 }
 
@@ -85,11 +133,19 @@ function waiting() {
   opponent.content.innerHTML = ''
   addClass(me.mask, 'loading')
   addClass(opponent.mask, 'loading')
+  
+  if (_private) {
+    addClass(gameLinkWrapEl, 'show')
+    gameLinkEl.value = location
+    gameLinkEl.select()
+  }
 }
 
 function onStart(from, goal) {
   currentGoal = goal
   targetTitle.innerHTML = 'Target: ' + goal
+  location.hash = ''
+  removeClass(gameLinkWrapEl, 'show')
 
   navigateTo(me, from)
 }
@@ -98,17 +154,28 @@ function onHint(hint) {
   targetHint.style.display = 'block'
   targetHint.innerHTML = '<strong>Hint: </strong>' + hint
 }
-
-function onOpponentNavigated(page, cb) {
-  navigateTo(opponent, page, cb)
-}
-function onOpponentScrolled(top, width) {
-  // very rough estimation of where the opponent will roughly be on their screen size
-  // inaccurate as poop but it's only a gimmick anyway so it doesn't really matter
-  opponent.area.scrollTop = top * width / opponent.area.offsetWidth
+function onBacklinks(e, backlinks) {
+  if (e) throw e
+  var html = backlinks.map(function (l) { return '<li>' + l + '</li>' }).join('')
+  backlinksList.innerHTML = html
+  addClass(backlinksEl, 'open')
 }
 
-var reIsWiki = /^\/wiki\//
+function onOpponentNavigated(playerId, page, cb) {
+  if (me.id !== playerId && page !== null) {
+    navigateTo(opponent, page, cb)
+  }
+}
+function onOpponentScrolled(id, top, width) {
+  if (me.id !== id) {
+    // very rough estimation of where the opponent will roughly be on their screen size
+    // inaccurate as poop but it's only a gimmick anyway so it doesn't really matter
+    _players[id].area.scrollTop = top * width / opponent.area.offsetWidth
+  }
+}
+
+var reSimpleWiki = /^\/wiki\//
+  , reIndexWiki = /^\/w\/index\.php\?title=(.*?)(?:&|$)/
   , reInvalidPages = /^(File|Template):/
 function onClick(e) {
   var el = e.target
@@ -117,25 +184,45 @@ function onClick(e) {
   if (el) {
     e.preventDefault()
     href = el.getAttribute('href')
-    if (!reIsWiki.test(href)) return
-    next = href.replace(reIsWiki, '').replace(/#.*?$/, '').replace(/_/g, ' ')
+    if (reSimpleWiki.test(href)) {
+      next = href.replace(reSimpleWiki, '')
+    }
+    else if (next = reIndexWiki.exec(href)) {
+      next = next[1]
+    }
+    else {
+      return
+    }
+    next = next.replace(/#.*?$/, '').replace(/_/g, ' ')
     if (reInvalidPages.test(next)) return
     navigateTo(me, next)
   }
 }
 
 function onScroll(e) {
+  // timeout so we send the scrollTop *after* the scroll event instead of before
   setTimeout(function () {
     sock.emit('scroll', me.area.scrollTop, me.area.offsetWidth)
   }, 10)
 }
 
-function _onEnd(path, opponentPath) {
+function onWon() {
+  addClass(me.mask, 'won')
+  addClass(opponent.mask, 'lost')
+  targetTitle.innerHTML = 'WikiBattle: You won!'
+}
+function onLost() {
+  addClass(me.mask, 'lost')
+  addClass(opponent.mask, 'won')
+  targetTitle.innerHTML = 'WikiBattle: You lost!'
+}
+
+function onReceivePaths(paths) {
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
 
-  me.mask.innerHTML = getPathHtml(path)
-  opponent.mask.innerHTML = getPathHtml(opponentPath)
+  me.mask.innerHTML = getPathHtml(paths[me.id])
+  opponent.mask.innerHTML = getPathHtml(paths[opponent.id])
 
   sock.disconnect()
 
@@ -144,18 +231,6 @@ function _onEnd(path, opponentPath) {
   restartBt.innerHTML = 'Another Run?'
   targetTitle.appendChild(restartBt)
 }
-function onWon(path, opponentPath) {
-  addClass(me.mask, 'won')
-  addClass(opponent.mask, 'lost')
-  targetTitle.innerHTML = 'WikiBattle: You won!'
-  _onEnd(path, opponentPath)
-}
-function onLost(path, opponentPath) {
-  addClass(me.mask, 'lost')
-  addClass(opponent.mask, 'won')
-  targetTitle.innerHTML = 'WikiBattle: You lost!'
-  _onEnd(path, opponentPath)
- }
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
 function preventDefault(e) { e.preventDefault() }

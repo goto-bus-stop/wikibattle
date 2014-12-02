@@ -4,11 +4,12 @@ var express = require('express')
   , path = require('path')
   , http = require('http')
   , fs = require('fs')
-  , wiki = require('./wiki')
+  , util = require('util')
+  , wiki = require('./lib/wiki')
+  , Player = require('./lib/Player')
+  , WikiBattle = require('./lib/WikiBattle')
   , wikiPages = require('./pages.json') // array of page names that we can pick from
-  , debug = require('debug')('WikiBattle')
-
-var HINT_TIMEOUT = 90 // seconds
+  , debug = require('debug')('WikiBattle:app')
 
 function getRandom(arr) { return arr[Math.floor(arr.length * Math.random())] }
 
@@ -16,77 +17,86 @@ var app = express()
   , server = http.createServer(app)
   , io = require('socket.io')(server)
 
-// `pair` contains the most recently connected socket so we can… pair it with
-// the next. Once an opponent is found (i.e. a new socket connects) this will
-// be `null` again because there are no sockets waiting for opponents.
-var pair = null
+// `_pair` contains the most recently created game, which will be connected
+// to by the next socket
+var _pair = null
+  , _games = {}
+
+function newGame(player) {
+  var origin = getRandom(wikiPages)
+    , goal
+    , game
+  do { goal = getRandom(wikiPages) } while (goal === origin)
+  var game = WikiBattle(io, origin, goal)
+  game.connect(player)
+  player.sock.emit('waiting')
+  return game
+}
+
 io.on('connection', function (sock) {
-  var path = [] // path taken by this socket
-    , opponent // opponent socket
-    , opponentPath // path taken by opponent socket
-    , origin, goal // Starting Article & Target Article
-    , hintTimeout
+  var game
+    , player = Player(sock)
 
-  if (pair) {
-    opponent = pair.sock
-    opponentPath = pair.path
-    origin = pair.origin
-    goal = pair.goal
-    pair.opponent(sock, path)
-    pair = null
-
-    start()
-  }
-  else {
-    origin = getRandom(wikiPages)
-    do { goal = getRandom(wikiPages) } while (goal === origin)
-    pair = { sock: sock, opponent: function (o, p) { opponent = o, opponentPath = p, start() }, origin: origin, goal: goal, path: path }
-    sock.emit('waiting')
-  }
-
-  function start() {
-    sock.emit('start', origin, goal)
-
-    hintTimeout = setTimeout(sendHint, HINT_TIMEOUT * 1000)
-  }
-  function sendHint() {
-    wiki.getHint(goal, function (e, hint) { sock.emit('hint', hint) })
-  }
+  sock.on('gameType', function (type, id, cb) {
+    switch (type) {
+      case 'pair':
+        if (_pair) {
+          game = _pair
+          game.connect(player)
+          _pair = null
+          cb(null, game.id, player.id, 'start')
+          game.start()
+        }
+        else {
+          _pair = game = newGame(player)
+          cb(null, game.id, player.id, 'wait')
+        }
+        break
+      case 'new':
+        game = newGame(player)
+        _games[game.id] = game
+        cb(null, game.id, player.id, 'wait')
+        break
+      case 'join':
+        if (id in _games) {
+          game = _games[id]
+          game.connect(player)
+          delete _games[id]
+          cb(null, game.id, player.id, 'start')
+          game.start()
+        }
+        else {
+          cb('nonexistent game id')
+          sock.disconnect()
+        }
+        break
+      default:
+        cb('invalid game type')
+        sock.disconnect()
+        break
+    }
+  })
 
   sock.on('navigate', function (to) {
-    to = decodeURIComponent(to);
-    path.push({ page: to, time: Date.now() })
-    opponent.emit('navigated', to)
-
-    // lol maybe this needs some anti-cheat at some point so people don't just go
-    // `sock.emit('navigate', currentGoal)` in their browser consoles
-    // so insert imaginary `articleContainsLink(last(path), to)` here
-    if (to === goal) {
-      sock.emit('won', path, opponentPath)
-      opponent.emit('lost', opponentPath, path)
-    }
+    game.navigate(player, decodeURIComponent(to))
   })
 
   sock.on('scroll', function (top, areaWidth) {
     if (typeof top === 'number') {
-      opponent.emit('scrolled', top, areaWidth)
+      game.notifyScroll(player, top, areaWidth)
     }
   })
 
   sock.on('disconnect', function () {
-    // if this socket disconnected before finding an opponent,
-    // clear the Waiting Socket again
-    if (pair && pair.sock === sock) pair = null
-    // else notify the opponent
-    if (opponent) opponent.emit('disconnected')
-    // don't fetch the hint anymore if it's not needed
-    clearTimeout(hintTimeout)
+    if (game) {
+      game.disconnect(player)
+      // if this socket disconnected before finding an opponent,
+      // clear the "Waiting" game again
+      if (game === _pair) _pair = null
+      if (_games[game.id]) delete _games[game.id]
+    }
   })
 })
-
-// seems overkill for 2 files :'
-app.use(require('less-middleware')(path.join(__dirname, 'public')))
-app.use(express.static(path.join(__dirname, 'public')))
 
 // index page
 app.get('/', function (req, res) {
@@ -96,10 +106,14 @@ app.get('/', function (req, res) {
 // Wiki Article content
 app.get('/wiki/:page', function (req, res) {
   wiki.get(req.params.page, function (err, body) {
-    if (body) res.end(body)
+    if (body) res.end(body.content)
     else throw err
   })
 })
+
+// seems overkill for 2 files :'
+app.use(require('less-middleware')(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -115,6 +129,7 @@ if (app.get('env') === 'development') {
     res.write('<h1>' + err.message + '</h1>')
     res.write('<h2>' + err.status + '</h2>')
     res.write('<pre>' + err.stack + '</pre>')
+    res.end()
   })
 }
 
@@ -123,6 +138,7 @@ app.use(function (err, req, res, next) {
   res.writeHead(err.status || 500, { 'content-type': 'text/html' })
   res.write('<h1>' + err.message + '</h1>')
   res.write('<h2>' + err.status + '</h2>')
+  res.end()
 })
 
 app.set('port', process.env.PORT || 3000)

@@ -1,1 +1,5 @@
+node_modules
 public/stylesheets/style.css
+public/stylesheets/wiki1.css
+public/stylesheets/wiki2.css
+pages.json
