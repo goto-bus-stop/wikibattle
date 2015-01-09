@@ -111,8 +111,7 @@ app.get('/wiki/:page', function (req, res) {
   })
 })
 
-// seems overkill for 2 files :'
-app.use(require('less-middleware')(path.join(__dirname, 'public')))
+// two files!
 app.use(express.static(path.join(__dirname, 'public')))
 
 // catch 404 and forward to error handler
