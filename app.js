@@ -98,11 +98,9 @@ io.on('connection', function (sock) {
   })
 })
 
-// index page
-app.get('/', function (req, res) {
-  res.writeHead(200, { 'content-type': 'text/html' })
-  fs.createReadStream('views/index.html').pipe(res)
-})
+// index page + css + js
+app.use(express.static(path.join(__dirname, 'public')))
+
 // Wiki Article content
 app.get('/wiki/:page', function (req, res) {
   wiki.get(req.params.page, function (err, body) {
@@ -110,9 +108,6 @@ app.get('/wiki/:page', function (req, res) {
     else throw err
   })
 })
-
-// two files!
-app.use(express.static(path.join(__dirname, 'public')))
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
