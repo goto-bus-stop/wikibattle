@@ -87,7 +87,25 @@ body {
 #backlinks {
   right: 0;
   display: none;
-  &.open {
+  background: @mask-text-background;
+  opacity: 0.9;
+  width: 350px;
+  &.show {
+    display: block;
+  }
+}
+
+#show-backlinks {
+  position: absolute;
+  right: 0;
+  top: 50px;
+  padding: 3px;
+  background: #fff;
+  cursor: pointer;
+  display: none;
+  z-index: 1;
+
+  &.show {
     display: block;
   }
 }

@@ -1,20 +1,22 @@
 var sock
 
 var currentGoal
-  , targetTitle = document.getElementById('target-title')
-  , targetHint = document.getElementById('target-hint')
-  , goButton = document.getElementById('go')
-  , goPrivButton = document.getElementById('go-priv')
-  , gameLinkWrapEl = document.getElementById('game-link')
+  , targetTitle = document.querySelector('#target-title')
+  , targetHint = document.querySelector('#target-hint')
+  , goButton = document.querySelector('#go')
+  , goPrivButton = document.querySelector('#go-priv')
+  , gameLinkWrapEl = document.querySelector('#game-link')
   , gameLinkEl = gameLinkWrapEl.querySelector('input')
-  , backlinksEl = document.getElementById('backlinks')
+  , backlinksEl = document.querySelector('#backlinks')
   , backlinksList = backlinksEl.querySelector('ul')
+  , backlinksInfo = document.querySelector('#show-backlinks')
+  , backlinksInput = backlinksInfo.querySelector('input')
   , cachedPages = {}
   , _players = {}
-  , me = Player(document.getElementById('left')
-              , document.getElementById('left-mask'))
-  , opponent = Player(document.getElementById('right')
-                    , document.getElementById('right-mask'))
+  , me = Player(document.querySelector('#left')
+              , document.querySelector('#left-mask'))
+  , opponent = Player(document.querySelector('#right')
+                    , document.querySelector('#right-mask'))
   , game = {}
   , _private = false
 
@@ -31,8 +33,8 @@ goButton.addEventListener('click', go, false)
 goPrivButton.addEventListener('click', goPriv, false)
 
 if (location.hash.substr(0, 6) === '#game:') {
-  document.getElementById('game-id').innerHTML = location.hash.substr(1)
-  document.getElementById('friend').style.display = 'none'
+  document.querySelector('#game-id').innerHTML = location.hash.substr(1)
+  document.querySelector('#friend').style.display = 'none'
   addClass(document.body, 'invited')
 }
 
@@ -133,7 +135,7 @@ function waiting() {
   opponent.content.innerHTML = ''
   addClass(me.mask, 'loading')
   addClass(opponent.mask, 'loading')
-  
+
   if (_private) {
     addClass(gameLinkWrapEl, 'show')
     gameLinkEl.value = location
@@ -158,7 +160,15 @@ function onBacklinks(e, backlinks) {
   if (e) throw e
   var html = backlinks.map(function (l) { return '<li>' + l + '</li>' }).join('')
   backlinksList.innerHTML = html
-  addClass(backlinksEl, 'open')
+  backlinksInput.addEventListener('change', function () {
+    if (backlinksInput.checked) {
+      addClass(backlinksEl, 'show')
+    }
+    else {
+      removeClass(backlinksEl, 'show')
+    }
+  }, false)
+  addClass(backlinksInfo, 'show')
 }
 
 function onOpponentNavigated(playerId, page, cb) {
