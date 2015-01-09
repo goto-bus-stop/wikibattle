@@ -15,7 +15,7 @@ function getRandom(arr) { return arr[Math.floor(arr.length * Math.random())] }
 
 var app = express()
   , server = http.createServer(app)
-  , io = require('socket.io')(server)
+  , io = require('socket.io')(server, { serveClient: false })
 
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
