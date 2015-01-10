@@ -1,6 +1,6 @@
 { "name": "WikiBattle"
 , "description": "1v1 races through Wikipedia article links."
-, "version": "0.8.0"
+, "version": "0.9.0"
 , "license": "MIT"
 , "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues"
 , "author": "goto-bus-stop <rene@kooi.me>"
@@ -18,7 +18,8 @@
   , "url": "http://github.com/goto-bus-stop/WikiBattle.git"
   }
 , "scripts":
-  { "less": "./node_modules/less/bin/lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
+  { "start": "node app.js"
+  , "less": "./node_modules/less/bin/lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
   , "update": "node update.js"
   , "postinstall": "node update.js" }
 }

@@ -29,7 +29,6 @@ function newGame(player) {
   do { goal = getRandom(wikiPages) } while (goal === origin)
   var game = WikiBattle(io, origin, goal)
   game.connect(player)
-  player.sock.emit('waiting')
   return game
 }
 
