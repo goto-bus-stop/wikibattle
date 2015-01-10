@@ -68,8 +68,10 @@ function go() {
       return
     }
     game.id = gameId
-    location.hash = gameId
     me.id = playerId
+    if (connectType !== 'pair') {
+      location.hash = gameId
+    }
     if (status === 'wait') {
       waiting()
     }
