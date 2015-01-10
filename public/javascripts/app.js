@@ -11,7 +11,6 @@ var currentGoal
   , backlinksList = backlinksEl.querySelector('ul')
   , backlinksInfo = document.querySelector('#show-backlinks')
   , backlinksInput = backlinksInfo.querySelector('input')
-  , cachedPages = {}
   , _players = {}
   , me = Player(document.querySelector('#left')
               , document.querySelector('#left-mask'))
@@ -19,6 +18,7 @@ var currentGoal
                     , document.querySelector('#right-mask'))
   , game = {}
   , _private = false
+  , loader = PageLoader()
 
 function Player(area, mask) {
   if (!(this instanceof Player)) return new Player(area, mask)
@@ -97,7 +97,7 @@ function navigateTo(p, page, cb) {
   addClass(p.mask, 'loading')
   if (p === me) sock.emit('navigate', page)
   p.path.push(page)
-  getWikiContent(page, function (e, body) {
+  loader.load(page, function (e, body) {
     p.title.innerHTML = decodeURIComponent(page) + ' <small>(' + p.path.length + ' steps)</small>'
     p.content.innerHTML = body
     removeClass(p.mask, 'loading')
@@ -107,19 +107,6 @@ function navigateTo(p, page, cb) {
 }
 
 // Wiki related helpers
-function getWikiContent(page, cb) {
-  if (cachedPages[page]) {
-    return cb(null, cachedPages[page])
-  }
-  var xhr = new XMLHttpRequest()
-  xhr.open('GET', './wiki/' + page, true)
-  xhr.addEventListener('load', function () {
-    cachedPages[page] = xhr.responseText
-    cb(null, xhr.responseText)
-  })
-  xhr.addEventListener('error', function (e) { cb(e) })
-  xhr.send()
-}
 function getPathHtml(path) {
   return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x, i) {
     var next = path[i + 1]
@@ -266,4 +253,32 @@ function addClass(el, cls) {
 }
 function removeClass(el, cls) {
   el.classList.remove(cls)
+}
+
+function PageLoader() {
+  if (!(this instanceof PageLoader)) return new PageLoader
+
+  this._loading = {}
+}
+PageLoader.prototype.load = function (page, cb) {
+  var loading = this._loading
+  if (!loading[page]) {
+    loading[page] = [ cb ]
+
+    var xhr = new XMLHttpRequest()
+    xhr.open('GET', './wiki/' + page, true)
+    xhr.addEventListener('load', function () {
+      done(null, xhr.responseText)
+    })
+    xhr.addEventListener('error', done)
+    xhr.send()
+
+    function done(e, content) {
+      loading[page].forEach(function (cb) { cb(e, content) })
+      delete loading[page]
+    }
+  }
+  else {
+    loading[page].push(cb)
+  }
 }
