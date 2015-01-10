@@ -29,6 +29,19 @@ function Player(area, mask) {
   this.path = []
 }
 
+Player.prototype.navigateTo = function (page, cb) {
+  addClass(this.mask, 'loading')
+  this.path.push(page)
+  loader.load(page, function (e, body) {
+    this.title.innerHTML = decodeURIComponent(page) + ' <small>(' + this.path.length + ' steps)</small>'
+    this.content.innerHTML = body
+    removeClass(this.mask, 'loading')
+    this.area.scrollTop = 0
+    if (cb) cb(e)
+  }.bind(this))
+}
+
+
 goButton.addEventListener('click', go, false)
 goPrivButton.addEventListener('click', goPriv, false)
 
@@ -92,20 +105,6 @@ function restart() {
   location.href = location.pathname
 }
 
-// Player goes somewhere
-function navigateTo(p, page, cb) {
-  addClass(p.mask, 'loading')
-  if (p === me) sock.emit('navigate', page)
-  p.path.push(page)
-  loader.load(page, function (e, body) {
-    p.title.innerHTML = decodeURIComponent(page) + ' <small>(' + p.path.length + ' steps)</small>'
-    p.content.innerHTML = body
-    removeClass(p.mask, 'loading')
-    p.area.scrollTop = 0
-    if (cb) cb(e)
-  })
-}
-
 // Wiki related helpers
 function getPathHtml(path) {
   return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x, i) {
@@ -138,7 +137,7 @@ function onStart(from, goal) {
   location.hash = ''
   removeClass(gameLinkWrapEl, 'show')
 
-  navigateTo(me, from)
+  me.navigateTo(from)
 }
 
 function onHint(hint) {
@@ -162,7 +161,7 @@ function onBacklinks(e, backlinks) {
 
 function onOpponentNavigated(playerId, page, cb) {
   if (me.id !== playerId && page !== null) {
-    navigateTo(opponent, page, cb)
+    opponent.navigateTo(page, cb)
   }
 }
 function onOpponentScrolled(id, top, width) {
@@ -194,7 +193,8 @@ function onClick(e) {
     }
     next = next.replace(/#.*?$/, '').replace(/_/g, ' ')
     if (reInvalidPages.test(next)) return
-    navigateTo(me, next)
+    sock.emit('navigate', next)
+    me.navigateTo(next)
   }
 }
 
