@@ -9,9 +9,11 @@
   , "debug": "~1.0.4"
   , "less": "~2.2.0"
   , "socket.io": "^1.1.0"
-  , "async-cache": "^0.1.5"
   , "request": "^2.42.0"
   , "cheerio": "^0.18.0"
+  , "JSONStream": "^0.10.0"
+  , "map-async": "^0.1.1"
+  , "each-async": "^1.1.1"
   }
 , "repository":
   { "type": "git"
