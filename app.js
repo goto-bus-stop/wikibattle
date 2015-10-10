@@ -5,13 +5,12 @@ var express = require('express')
   , http = require('http')
   , fs = require('fs')
   , util = require('util')
+  , getRandom = require('random-item')
   , wiki = require('./lib/wiki')
   , Player = require('./lib/Player')
   , WikiBattle = require('./lib/WikiBattle')
   , wikiPages = require('./pages.json') // array of page names that we can pick from
   , debug = require('debug')('WikiBattle:app')
-
-function getRandom(arr) { return arr[Math.floor(arr.length * Math.random())] }
 
 var app = express()
   , server = http.createServer(app)

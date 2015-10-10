@@ -12,7 +12,8 @@
   , "cheerio": "^0.19.0"
   , "JSONStream": "^1.0.6"
   , "map-async": "^0.1.1"
-  , "each-async": "^1.1.1" }
+  , "each-async": "^1.1.1"
+  , "random-item": "^1.0.0" }
 , "devDependencies":
   { "less": "^2.5.3" }
 , "repository": "goto-bus-stop/WikiBattle"
