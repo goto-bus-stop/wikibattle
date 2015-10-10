@@ -1,3 +1,5 @@
+var classes = require('component-classes')
+
 var sock
 
 var currentGoal
@@ -30,17 +32,17 @@ function Player(area, mask) {
 }
 
 Player.prototype.navigateTo = function (page, cb) {
-  addClass(this.mask, 'loading')
+  var maskClass = classes(this.mask)
+  maskClass.add('loading')
   this.path.push(page)
   loader.load(page, function (e, body) {
     this.title.innerHTML = decodeURIComponent(page) + ' <small>(' + this.path.length + ' steps)</small>'
     this.content.innerHTML = body
-    removeClass(this.mask, 'loading')
+    maskClass.remove('loading')
     this.area.scrollTop = 0
     if (cb) cb(e)
   }.bind(this))
 }
-
 
 goButton.addEventListener('click', go, false)
 goPrivButton.addEventListener('click', goPriv, false)
@@ -48,7 +50,7 @@ goPrivButton.addEventListener('click', goPriv, false)
 if (location.hash.substr(0, 6) === '#game:') {
   document.querySelector('#game-id').innerHTML = location.hash.substr(1)
   document.querySelector('#friend').style.display = 'none'
-  addClass(document.body, 'invited')
+  classes(document.body).add('invited')
 }
 
 function go() {
@@ -121,11 +123,11 @@ function waiting() {
   targetTitle.innerHTML = 'WikiBattle: Waiting for Opponent&hellip;'
   me.content.innerHTML = ''
   opponent.content.innerHTML = ''
-  addClass(me.mask, 'loading')
-  addClass(opponent.mask, 'loading')
+  classes(me.mask).add('loading')
+  classes(opponent.mask).add('loading')
 
   if (_private) {
-    addClass(gameLinkWrapEl, 'show')
+    classes(gameLinkWrapEl).add('show')
     gameLinkEl.value = location
     gameLinkEl.select()
   }
@@ -135,7 +137,7 @@ function onStart(from, goal) {
   currentGoal = goal
   targetTitle.innerHTML = 'Target: ' + goal
   location.hash = ''
-  removeClass(gameLinkWrapEl, 'show')
+  classes(gameLinkWrapEl).remove('show')
 
   me.navigateTo(from)
 }
@@ -147,16 +149,17 @@ function onHint(hint) {
 function onBacklinks(e, backlinks) {
   if (e) throw e
   var html = backlinks.map(function (l) { return '<li>' + l + '</li>' }).join('')
+  var backlinksClass = classes(backlinksEl)
   backlinksList.innerHTML = html
   backlinksInput.addEventListener('change', function () {
     if (backlinksInput.checked) {
-      addClass(backlinksEl, 'show')
+      backlinksClass.add('show')
     }
     else {
-      removeClass(backlinksEl, 'show')
+      backlinksClass.remove('show')
     }
   }, false)
-  addClass(backlinksInfo, 'show')
+  classes(backlinksInfo).add('show')
 }
 
 function onOpponentNavigated(playerId, page, cb) {
@@ -206,13 +209,13 @@ function onScroll(e) {
 }
 
 function onWon() {
-  addClass(me.mask, 'won')
-  addClass(opponent.mask, 'lost')
+  classes(me.mask).add('won')
+  classes(opponent.mask).add('lost')
   targetTitle.innerHTML = 'WikiBattle: You won!'
 }
 function onLost() {
-  addClass(me.mask, 'lost')
-  addClass(opponent.mask, 'won')
+  classes(me.mask).add('lost')
+  classes(opponent.mask).add('won')
   targetTitle.innerHTML = 'WikiBattle: You lost!'
 }
 
@@ -246,13 +249,6 @@ function throttle(func, wait) {
     }
     if (!invoked) return invoked = true, func.apply(this, arguments)
   }
-}
-
-function addClass(el, cls) {
-  el.classList.add(cls)
-}
-function removeClass(el, cls) {
-  el.classList.remove(cls)
 }
 
 function PageLoader() {
