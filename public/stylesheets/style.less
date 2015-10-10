@@ -7,6 +7,8 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.hide { display: none }
+
 // mask colours
 .loading { background-color: fade(#fff, 30%); }
 .lost { background-color: fade(@loss-color, 30%); }
@@ -86,13 +88,9 @@ body {
 }
 #backlinks {
   right: 0;
-  display: none;
   background: @mask-text-background;
   opacity: 0.9;
   width: 350px;
-  &.show {
-    display: block;
-  }
 }
 
 #show-backlinks {
@@ -102,12 +100,7 @@ body {
   padding: 3px;
   background: #fff;
   cursor: pointer;
-  display: none;
   z-index: 1;
-
-  &.show {
-    display: block;
-  }
 }
 
 // area masks

@@ -6,6 +6,8 @@ var throttle = require('throttleit')
 var loadPage = require('./load-page')
 
 var hint = require('./views/hint')
+var backlinks = require('./views/backlinks')
+var backlinksToggle = require('./views/backlinks-toggle')
 
 var sock
 
@@ -15,10 +17,6 @@ var currentGoal
   , goPrivButton = document.querySelector('#go-priv')
   , gameLinkWrapEl = document.querySelector('#game-link')
   , gameLinkEl = gameLinkWrapEl.querySelector('input')
-  , backlinksEl = document.querySelector('#backlinks')
-  , backlinksList = backlinksEl.querySelector('ul')
-  , backlinksInfo = document.querySelector('#show-backlinks')
-  , backlinksInput = backlinksInfo.querySelector('input')
   , _players = {}
   , me = Player(document.querySelector('#left')
               , document.querySelector('#left-mask'))
@@ -65,6 +63,10 @@ function go() {
   opponent.content.addEventListener('mousewheel', preventDefault, false)
 
   render(document.body, hint())
+  render(document.querySelector('#main'), [
+    backlinksToggle(),
+    backlinks()
+  ])
 
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
   sock.on('start', onStart)
@@ -151,18 +153,7 @@ function onStart(from, goal) {
 
 function onBacklinks(e, backlinks) {
   if (e) throw e
-  var html = backlinks.map(function (l) { return '<li>' + l + '</li>' }).join('')
-  var backlinksClass = classes(backlinksEl)
-  backlinksList.innerHTML = html
-  backlinksInput.addEventListener('change', function () {
-    if (backlinksInput.checked) {
-      backlinksClass.add('show')
-    }
-    else {
-      backlinksClass.remove('show')
-    }
-  }, false)
-  classes(backlinksInfo).add('show')
+  bus.emit('backlinks', backlinks)
 }
 
 function onOpponentNavigated(playerId, page, cb) {
