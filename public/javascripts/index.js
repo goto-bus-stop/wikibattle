@@ -1,4 +1,5 @@
 var classes = require('component-classes')
+var throttle = require('throttleit')
 
 var sock
 
@@ -236,20 +237,6 @@ function onReceivePaths(paths) {
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
 function preventDefault(e) { e.preventDefault() }
-
-// stolen from https://github.com/component/throttle/
-function throttle(func, wait) {
-  var last = 0 // last invokation timestamp
-    , invoked = 0 // number of times invoked
-  return function throttled () {
-    var now = new Date().getTime()
-    if (now - last >= wait) { // reset
-      last = now
-      invoked = false
-    }
-    if (!invoked) return invoked = true, func.apply(this, arguments)
-  }
-}
 
 function PageLoader() {
   if (!(this instanceof PageLoader)) return new PageLoader
