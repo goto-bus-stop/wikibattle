@@ -1,13 +1,16 @@
+var bus = require('bus')
 var classes = require('component-classes')
+var render = require('crel')
 var throttle = require('throttleit')
 
 var loadPage = require('./load-page')
+
+var hint = require('./views/hint')
 
 var sock
 
 var currentGoal
   , targetTitle = document.querySelector('#target-title')
-  , targetHint = document.querySelector('#target-hint')
   , goButton = document.querySelector('#go')
   , goPrivButton = document.querySelector('#go-priv')
   , gameLinkWrapEl = document.querySelector('#game-link')
@@ -61,6 +64,8 @@ function go() {
   opponent.content.addEventListener('click', preventDefault, false)
   opponent.content.addEventListener('mousewheel', preventDefault, false)
 
+  render(document.body, hint())
+
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
   sock.on('start', onStart)
   sock.on('navigated', onOpponentNavigated)
@@ -68,7 +73,7 @@ function go() {
   sock.on('lost', onLost)
   sock.on('paths', onReceivePaths)
   sock.on('scrolled', onOpponentScrolled)
-  sock.on('hint', onHint)
+  sock.on('hint', function (hintText) { bus.emit('hint', hintText) })
   sock.on('backlinks', onBacklinks)
   sock.on('id', function (id) { me.id = id, _players[id] = me })
   sock.on('connection', function (id) { opponent.id = id, _players[id] = opponent })
@@ -144,10 +149,6 @@ function onStart(from, goal) {
   me.navigateTo(from)
 }
 
-function onHint(hint) {
-  targetHint.style.display = 'block'
-  targetHint.innerHTML = '<strong>Hint: </strong>' + hint
-}
 function onBacklinks(e, backlinks) {
   if (e) throw e
   var html = backlinks.map(function (l) { return '<li>' + l + '</li>' }).join('')
