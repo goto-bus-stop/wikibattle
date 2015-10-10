@@ -1,4 +1,5 @@
 node_modules
+public/app.js
 public/stylesheets/style.css
 public/stylesheets/wiki1.css
 public/stylesheets/wiki2.css
