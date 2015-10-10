@@ -1,6 +1,8 @@
 var classes = require('component-classes')
 var throttle = require('throttleit')
 
+var loadPage = require('./load-page')
+
 var sock
 
 var currentGoal
@@ -21,7 +23,6 @@ var currentGoal
                     , document.querySelector('#right-mask'))
   , game = {}
   , _private = false
-  , loader = PageLoader()
 
 function Player(area, mask) {
   if (!(this instanceof Player)) return new Player(area, mask)
@@ -36,7 +37,7 @@ Player.prototype.navigateTo = function (page, cb) {
   var maskClass = classes(this.mask)
   maskClass.add('loading')
   this.path.push(page)
-  loader.load(page, function (e, body) {
+  loadPage(page, function (e, body) {
     this.title.innerHTML = decodeURIComponent(page) + ' <small>(' + this.path.length + ' steps)</small>'
     this.content.innerHTML = body
     maskClass.remove('loading')
@@ -237,31 +238,3 @@ function onReceivePaths(paths) {
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
 function preventDefault(e) { e.preventDefault() }
-
-function PageLoader() {
-  if (!(this instanceof PageLoader)) return new PageLoader
-
-  this._loading = {}
-}
-PageLoader.prototype.load = function (page, cb) {
-  var loading = this._loading
-  if (!loading[page]) {
-    loading[page] = [ cb ]
-
-    var xhr = new XMLHttpRequest()
-    xhr.open('GET', './wiki/' + page, true)
-    xhr.addEventListener('load', function () {
-      done(null, xhr.responseText)
-    })
-    xhr.addEventListener('error', done)
-    xhr.send()
-
-    function done(e, content) {
-      loading[page].forEach(function (cb) { cb(e, content) })
-      delete loading[page]
-    }
-  }
-  else {
-    loading[page].push(cb)
-  }
-}
