@@ -1,4 +1,4 @@
-{ "name": "WikiBattle"
+{ "name": "wikibattle"
 , "description": "1v1 races through Wikipedia article links."
 , "version": "0.9.1"
 , "license": "MIT"
