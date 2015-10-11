@@ -8,6 +8,7 @@ var loadPage = require('./load-page')
 var hint = require('./views/hint')
 var backlinks = require('./views/backlinks')
 var backlinksToggle = require('./views/backlinks-toggle')
+var pathTaken = require('./views/path')
 
 var sock
 
@@ -116,15 +117,6 @@ function restart() {
   location.href = location.pathname
 }
 
-// Wiki related helpers
-function getPathHtml(path) {
-  return '<div class="path"><h3>Path</h3><ol>' + path.map(function (x, i) {
-    var next = path[i + 1]
-      , duration = next ? ' (' + (Math.round((next.time - x.time) / 100) / 10) + ' seconds)' : ''
-    return '<li>' + (x.page === null ? '<i>Disconnected</i>' :  x.page + duration) + '</li>'
-  }).join('') + '</ol>'
-}
-
 // WebSocket Events
 function waiting() {
   me.title.innerHTML = 'Your Article'
@@ -143,6 +135,9 @@ function waiting() {
 }
 
 function onStart(from, goal) {
+  render(me.mask, pathTaken(me.id))
+  render(opponent.mask, pathTaken(opponent.id))
+
   currentGoal = goal
   targetTitle.innerHTML = 'Target: ' + goal
   location.hash = ''
@@ -217,8 +212,7 @@ function onReceivePaths(paths) {
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
 
-  me.mask.innerHTML = getPathHtml(paths[me.id])
-  opponent.mask.innerHTML = getPathHtml(paths[opponent.id])
+  bus.emit('paths', paths)
 
   sock.disconnect()
 
