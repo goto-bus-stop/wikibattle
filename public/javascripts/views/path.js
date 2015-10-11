@@ -1,6 +1,6 @@
 var bus = require('bus')
 var classes = require('component-classes')
-var empty = require('../empty-element')
+var empty = require('empty-element')
 var render = require('crel')
 
 module.exports = function (by) {

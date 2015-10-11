@@ -1,7 +1,7 @@
 var bus = require('bus')
 var classes = require('component-classes')
 var render = require('crel')
-var empty = require('../empty-element')
+var empty = require('empty-element')
 
 module.exports = function () {
   return new Backlinks().el

@@ -8,6 +8,7 @@
   { "bus": "^0.1.0"
   , "component-classes": "^1.2.4"
   , "crel": "^2.1.8"
+  , "empty-element": "^1.0.0"
   , "throttleit": "^1.0.0"
   , "express": "^4.13.3"
   , "debug": "^2.2.0"
