@@ -5,6 +5,7 @@ var throttle = require('throttleit')
 
 var loadPage = require('./load-page')
 
+var gameLink = require('./views/game-link')
 var hint = require('./views/hint')
 var backlinks = require('./views/backlinks')
 var backlinksToggle = require('./views/backlinks-toggle')
@@ -16,8 +17,6 @@ var currentGoal
   , targetTitle = document.querySelector('#target-title')
   , goButton = document.querySelector('#go')
   , goPrivButton = document.querySelector('#go-priv')
-  , gameLinkWrapEl = document.querySelector('#game-link')
-  , gameLinkEl = gameLinkWrapEl.querySelector('input')
   , _players = {}
   , me = Player(document.querySelector('#left')
               , document.querySelector('#left-mask'))
@@ -65,6 +64,7 @@ function go() {
 
   render(document.body, hint())
   render(document.querySelector('#main'), [
+    gameLink(),
     backlinksToggle(),
     backlinks()
   ])
@@ -128,9 +128,7 @@ function waiting() {
   classes(opponent.mask).add('loading')
 
   if (_private) {
-    classes(gameLinkWrapEl).add('show')
-    gameLinkEl.value = location
-    gameLinkEl.select()
+    bus.emit('game-link', location.href)
   }
 }
 
@@ -138,10 +136,11 @@ function onStart(from, goal) {
   render(me.mask, pathTaken(me.id))
   render(opponent.mask, pathTaken(opponent.id))
 
+  bus.emit('start', goal)
+
   currentGoal = goal
   targetTitle.innerHTML = 'Target: ' + goal
   location.hash = ''
-  classes(gameLinkWrapEl).remove('show')
 
   me.navigateTo(from)
 }
