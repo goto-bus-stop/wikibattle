@@ -18,10 +18,10 @@ var currentGoal
   , goButton = document.querySelector('#go')
   , goPrivButton = document.querySelector('#go-priv')
   , _players = {}
-  , me = Player(document.querySelector('#left')
-              , document.querySelector('#left-mask'))
-  , opponent = Player(document.querySelector('#right')
-                    , document.querySelector('#right-mask'))
+  , me = Player(document.querySelector('#left .wb-article')
+              , document.querySelector('#left .wb-mask'))
+  , opponent = Player(document.querySelector('#right .wb-article')
+                    , document.querySelector('#right .wb-mask'))
   , game = {}
   , _private = false
 

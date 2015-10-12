@@ -72,9 +72,7 @@ body {
   top: 50px;
   bottom: 0;
   width: 50%;
-  padding: 0 5px;
   box-sizing: border-box;
-  overflow-y: scroll;
 }
 #left {
   left: 0;
@@ -84,6 +82,26 @@ body {
   // no clicking in opponent area plis :'
   pointer-events: none;
 }
+
+.wb-fill {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 0; right: 0;
+}
+
+.wb-article:extend(.wb-fill) {
+  padding: 0 5px;
+  overflow-y: scroll;
+}
+
+.wb-mask:extend(.wb-fill, .hide) {
+  overflow-y: auto;
+
+  &.loading, &.lost, &.won {
+    display: block;
+  }
+}
+
 #backlinks {
   right: 0;
   background: @mask-text-background;

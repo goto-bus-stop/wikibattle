@@ -14,8 +14,9 @@
     </header>
     <main id="main">
       <div id="left">
-        <h2 class="current-title">How It Works</h2>
-        <div class="content">
+        <div class="wb-article">
+          <h2 class="current-title">How It Works</h2>
+          <div class="content">
           <ul>
             <li>When you press "Go!", you will be paired with another player.</li>
             <li>You and your opponent will be dropped into a Starting Article which will show up in this area.
@@ -43,16 +44,19 @@
           <p><a href="https://github.com/goto-bus-stop/WikiBattle">It's on Github!</a></p>
           <p>Also, consider <a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector">donating to Wikipedia</a> :)</p>
         </div>
+        </div>
+        <div class="wb-mask"></div>
       </div>
-      <div id="left-mask"></div>
 
       <div id="right">
-        <h2 class="current-title">Opponent's Article Title</h2>
-        <div class="content">
-          Your opponent's progress will show here, so you can steal their ideas if you so please.
+        <div class="wb-article">
+          <h2 class="current-title">Opponent's Article Title</h2>
+          <div class="content">
+            Your opponent's progress will show here, so you can steal their ideas if you so please.
+          </div>
         </div>
+        <div class="wb-mask"></div>
       </div>
-      <div id="right-mask"></div>
     </main>
     <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
     <script src="./app.js"></script>
