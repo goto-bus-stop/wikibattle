@@ -67,20 +67,26 @@ body {
 }
 
 // left & right areas for player & opponent
-#left, #right, #backlinks {
+.wb-player {
   position: absolute;
   top: 50px;
   bottom: 0;
   width: 50%;
   box-sizing: border-box;
+
+  &--left {
+    left: 0;
+  }
+  &--right {
+    right: 0;
+  }
 }
-#left {
-  left: 0;
-}
-#right {
-  right: 0;
-  // no clicking in opponent area plis :'
-  pointer-events: none;
+#backlinks {
+  position: absolute;
+  top: 50px;
+  bottom: 0;
+  width: 50%;
+  box-sizing: border-box;
 }
 
 .wb-fill {
