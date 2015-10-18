@@ -1,10 +1,12 @@
 import bus from 'bus'
 import classes from 'component-classes'
+import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
 
 import loadPage from './load-page'
 
+import pageTitle from './views/page-title'
 import gameLink from './views/game-link'
 import hint from './views/hint'
 import backlinks from './views/backlinks'
@@ -14,7 +16,7 @@ import playerMask from './views/player-mask'
 var sock
 
 var currentGoal
-  , targetTitle = document.querySelector('#target-title')
+  , header = document.querySelector('#main-head')
   , goButton = document.querySelector('#go')
   , goPrivButton = document.querySelector('#go-priv')
   , _players = {}
@@ -61,6 +63,7 @@ function go() {
   opponent.content.addEventListener('mousewheel', preventDefault, false)
 
   render(document.body, hint())
+  render(empty(header), pageTitle(me))
   render(document.querySelector('#main'), [
     gameLink(),
     backlinksToggle(),
@@ -119,7 +122,6 @@ function restart() {
 function waiting() {
   me.title.innerHTML = 'Your Article'
   opponent.title.innerHTML = 'Opponent\'s Article'
-  targetTitle.innerHTML = 'WikiBattle: Waiting for Opponent&hellip;'
   me.content.innerHTML = ''
   opponent.content.innerHTML = ''
   bus.emit('waiting-for-opponent')
@@ -133,10 +135,11 @@ function onStart(from, goal) {
   render(me.area.parentNode, playerMask(me.id))
   render(opponent.area.parentNode, playerMask(opponent.id))
 
+  bus.on('restart', restart)
+
   bus.emit('start', goal)
 
   currentGoal = goal
-  targetTitle.innerHTML = 'Target: ' + goal
   location.hash = ''
 
   me.navigateTo(from)
@@ -195,11 +198,9 @@ function onScroll(e) {
 
 function onWon() {
   bus.emit('game-over', me)
-  targetTitle.innerHTML = 'WikiBattle: You won!'
 }
 function onLost() {
   bus.emit('game-over', opponent)
-  targetTitle.innerHTML = 'WikiBattle: You lost!'
 }
 
 function onReceivePaths(paths) {
@@ -209,11 +210,6 @@ function onReceivePaths(paths) {
   bus.emit('paths', paths)
 
   sock.disconnect()
-
-  var restartBt = document.createElement('button')
-  restartBt.addEventListener('click', restart, false)
-  restartBt.innerHTML = 'Another Run?'
-  targetTitle.appendChild(restartBt)
 }
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
