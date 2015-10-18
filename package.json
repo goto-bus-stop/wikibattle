@@ -20,7 +20,8 @@
   , "each-async": "^1.1.1"
   , "random-item": "^1.0.0" }
 , "devDependencies":
-  { "browserify": "^11.2.0"
+  { "babelify": "^6.3.0"
+  , "browserify": "^11.2.0"
   , "less": "^2.5.3" }
 , "repository": "goto-bus-stop/WikiBattle"
 , "scripts":
@@ -28,5 +29,5 @@
   , "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
   , "update": "node update.js"
   , "postinstall": "node update.js"
-  , "build": "browserify -e public/javascripts/index.js -o public/app.js"
+  , "build": "browserify -t [ babelify --stage 0 ] -e public/javascripts/index.js -o public/app.js"
   , "prepublish": "npm run build" } }
