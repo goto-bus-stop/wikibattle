@@ -3,25 +3,25 @@ import classes from 'component-classes'
 import empty from 'empty-element'
 import render from 'crel'
 
-export default function path (by) {
-  return new Path(by).el
+export default function path (player) {
+  return new Path(player).el
 }
 
-function Path (by) {
+function Path (player) {
   this.onPaths = this.onPaths.bind(this)
 
   this.list = render('ol')
   this.el = render('div', { class: 'path hide' }, [ render('h3', 'Path'), this.list ])
   this.classes = classes(this.el)
 
-  this.by = by
+  this.player = player
   bus.on('paths', this.onPaths)
 }
 
 Path.prototype.onPaths = function (paths) {
-  if (paths[this.by]) {
+  if (paths[this.player.id]) {
     this.classes.remove('hide')
-    this.setPathList(paths[this.by])
+    this.setPathList(paths[this.player.id])
   }
 }
 

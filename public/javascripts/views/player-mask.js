@@ -4,21 +4,21 @@ import render from 'crel'
 
 import path from './path'
 
-export default function playerMask (playerId) {
-  return new PlayerMask(playerId).el
+export default function playerMask (player) {
+  return new PlayerMask(player).el
 }
 
-function PlayerMask (playerId) {
+function PlayerMask (player) {
   this.setLoading = this.setLoading.bind(this)
   this.onArticleLoading = this.onArticleLoading.bind(this)
   this.onArticleLoaded = this.onArticleLoaded.bind(this)
   this.onGameStart = this.onGameStart.bind(this)
   this.onGameOver = this.onGameOver.bind(this)
 
-  this.player = playerId
+  this.player = player
 
   this.el = render('div', { class: 'wb-mask hide' },
-                   [ path(playerId) ])
+                   [ path(player) ])
   this.classes = classes(this.el)
 
   this.isLoading = false
@@ -62,20 +62,20 @@ PlayerMask.prototype.onGameStart = function () {
 }
 
 PlayerMask.prototype.onArticleLoading = function (e) {
-  if (e.player.id === this.player) {
+  if (e.player.id === this.player.id) {
     this.setLoading()
   }
 }
 
 PlayerMask.prototype.onArticleLoaded = function (e) {
-  if (e.player.id === this.player) {
+  if (e.player.id === this.player.id) {
     this.setNotLoading()
   }
 }
 
 PlayerMask.prototype.onGameOver = function (winner) {
   this.isGameOver = true
-  if (winner.id === this.player) {
+  if (winner.id === this.player.id) {
     this.classes.add('won')
   } else {
     this.classes.add('lost')

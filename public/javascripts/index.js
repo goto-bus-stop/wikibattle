@@ -64,6 +64,7 @@ function go (isPrivate) {
 
   bus.on('navigate', onNavigate)
   bus.on('scroll', throttle(onScroll, 50))
+  bus.on('restart', restart)
 
   render(document.body, hint())
   render(empty(header), pageTitle(me))
@@ -72,8 +73,10 @@ function go (isPrivate) {
     backlinksToggle(),
     backlinks()
   ])
-  render(empty(me.el), article(me, true))
-  render(empty(opponent.el), article(opponent, false))
+  render(empty(me.el),
+         [ article(me, true), playerMask(me) ])
+  render(empty(opponent.el),
+         [ article(opponent, false), playerMask(opponent) ])
 
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
   sock.on('start', onStart)
@@ -138,15 +141,8 @@ function waiting () {
 }
 
 function onStart (from, goal) {
-  render(me.el, playerMask(me.id))
-  render(opponent.el, playerMask(opponent.id))
-
-  bus.on('restart', restart)
-
   bus.emit('start', goal)
-
   location.hash = ''
-
   me.navigateTo(from)
 }
 
