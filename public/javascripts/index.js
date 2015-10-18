@@ -9,7 +9,7 @@ var gameLink = require('./views/game-link')
 var hint = require('./views/hint')
 var backlinks = require('./views/backlinks')
 var backlinksToggle = require('./views/backlinks-toggle')
-var pathTaken = require('./views/path')
+var playerMask = require('./views/player-mask')
 
 var sock
 
@@ -18,30 +18,28 @@ var currentGoal
   , goButton = document.querySelector('#go')
   , goPrivButton = document.querySelector('#go-priv')
   , _players = {}
-  , me = Player(document.querySelector('#left .wb-article')
-              , document.querySelector('#left .wb-mask'))
-  , opponent = Player(document.querySelector('#right .wb-article')
-                    , document.querySelector('#right .wb-mask'))
+  , me = Player(document.querySelector('#left'))
+  , opponent = Player(document.querySelector('#right'))
   , game = {}
   , _private = false
 
-function Player(area, mask) {
-  if (!(this instanceof Player)) return new Player(area, mask)
+function Player(el) {
+  if (!(this instanceof Player)) return new Player(el)
+  this.el = el
+  var area = el.querySelector('.wb-article')
   this.area = area
-  this.mask = mask
   this.title = area.querySelector('.current-title')
   this.content = area.querySelector('.content')
   this.path = []
 }
 
 Player.prototype.navigateTo = function (page, cb) {
-  var maskClass = classes(this.mask)
-  maskClass.add('loading')
   this.path.push(page)
+  bus.emit('article-loading', { player: this, title: page })
   loadPage(page, function (e, body) {
     this.title.innerHTML = decodeURIComponent(page) + ' <small>(' + this.path.length + ' steps)</small>'
     this.content.innerHTML = body
-    maskClass.remove('loading')
+    bus.emit('article-loaded', { player: this, title: page, body: body })
     this.area.scrollTop = 0
     if (cb) cb(e)
   }.bind(this))
@@ -124,8 +122,7 @@ function waiting() {
   targetTitle.innerHTML = 'WikiBattle: Waiting for Opponent&hellip;'
   me.content.innerHTML = ''
   opponent.content.innerHTML = ''
-  classes(me.mask).add('loading')
-  classes(opponent.mask).add('loading')
+  bus.emit('waiting-for-opponent')
 
   if (_private) {
     bus.emit('game-link', location.href)
@@ -133,8 +130,8 @@ function waiting() {
 }
 
 function onStart(from, goal) {
-  render(me.mask, pathTaken(me.id))
-  render(opponent.mask, pathTaken(opponent.id))
+  render(me.area.parentNode, playerMask(me.id))
+  render(opponent.area.parentNode, playerMask(opponent.id))
 
   bus.emit('start', goal)
 
@@ -197,13 +194,11 @@ function onScroll(e) {
 }
 
 function onWon() {
-  classes(me.mask).add('won')
-  classes(opponent.mask).add('lost')
+  bus.emit('game-over', me)
   targetTitle.innerHTML = 'WikiBattle: You won!'
 }
 function onLost() {
-  classes(me.mask).add('lost')
-  classes(opponent.mask).add('won')
+  bus.emit('game-over', opponent)
   targetTitle.innerHTML = 'WikiBattle: You lost!'
 }
 

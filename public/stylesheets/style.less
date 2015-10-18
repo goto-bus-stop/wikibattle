@@ -100,12 +100,8 @@ body {
   overflow-y: scroll;
 }
 
-.wb-mask:extend(.wb-fill, .hide) {
+.wb-mask:extend(.wb-fill) {
   overflow-y: auto;
-
-  &.loading, &.lost, &.won {
-    display: block;
-  }
 }
 
 #backlinks {
