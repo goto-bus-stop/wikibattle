@@ -8,6 +8,7 @@ import io from 'socket.io-client'
 import loadPage from './load-page'
 
 import pageTitle from './views/page-title'
+import startGameButton from './views/start-game-button'
 import gameLink from './views/game-link'
 import hint from './views/hint'
 import backlinks from './views/backlinks'
@@ -18,13 +19,13 @@ var sock
 
 var currentGoal
   , header = document.querySelector('#main-head')
-  , goButton = document.querySelector('#go')
-  , goPrivButton = document.querySelector('#go-priv')
   , _players = {}
   , me = Player(document.querySelector('#left'))
   , opponent = Player(document.querySelector('#right'))
   , game = {}
   , _private = false
+
+init()
 
 function Player(el) {
   if (!(this instanceof Player)) return new Player(el)
@@ -48,16 +49,24 @@ Player.prototype.navigateTo = function (page, cb) {
   }.bind(this))
 }
 
-goButton.addEventListener('click', go, false)
-goPrivButton.addEventListener('click', goPriv, false)
+function init() {
+  if (location.hash.substr(0, 6) === '#game:') {
+    document.querySelector('#game-id').innerHTML = location.hash.substr(1)
+    document.querySelector('#friend').style.display = 'none'
+    classes(document.body).add('invited')
+  }
 
-if (location.hash.substr(0, 6) === '#game:') {
-  document.querySelector('#game-id').innerHTML = location.hash.substr(1)
-  document.querySelector('#friend').style.display = 'none'
-  classes(document.body).add('invited')
+  let startGameWrapper = document.querySelector('#go')
+  let startGamePrivateWrapper = document.querySelector('#go-priv')
+
+  render(empty(startGameWrapper), startGameButton(false))
+  render(empty(startGamePrivateWrapper), startGameButton(true))
+  bus.on('connect', go)
 }
 
-function go() {
+function go(isPrivate) {
+  _private = isPrivate
+
   me.content.addEventListener('click', onClick, false)
   me.area.addEventListener('mousewheel', throttle(onScroll, 50), false)
   opponent.content.addEventListener('click', preventDefault, false)
@@ -103,15 +112,6 @@ function go() {
       waiting()
     }
   })
-
-  goButton.disabled = true
-  goButton.removeEventListener('click', go)
-  goPrivButton.disabled = true
-  goPrivButton.removeEventListener('click', goPriv)
-}
-function goPriv() {
-  _private = true
-  go(true)
 }
 
 function restart() {
