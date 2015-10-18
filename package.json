@@ -23,7 +23,9 @@
 , "devDependencies":
   { "babelify": "^6.3.0"
   , "browserify": "^11.2.0"
-  , "less": "^2.5.3" }
+  , "clean-css": "^3.4.6"
+  , "less": "^2.5.3"
+  , "uglify-js": "^2.5.0" }
 , "repository": "goto-bus-stop/WikiBattle"
 , "scripts":
   { "start": "node app.js"
@@ -31,4 +33,7 @@
   , "update": "node update.js"
   , "postinstall": "node update.js"
   , "build": "browserify --debug -t [ babelify --stage 0 ] -e public/javascripts/index.js -o public/app.js"
+  , "minify-css": "cleancss public/stylesheets/style.css -o public/stylesheets/style.css"
+  , "minify-js": "uglifyjs public/app.js -m -o public/app.js"
+  , "prod": "npm run less && npm run minify-css && npm run build && npm run minify-js"
   , "prepublish": "npm run build" } }
