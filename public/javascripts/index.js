@@ -178,6 +178,3 @@ function onReceivePaths (paths) {
   bus.emit('paths', paths)
   sock.disconnect()
 }
-
-// other helpers that are half stolen and not really related to WikiBattle in any way
-function preventDefault (e) { e.preventDefault() }
