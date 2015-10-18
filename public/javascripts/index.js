@@ -3,6 +3,7 @@ import classes from 'component-classes'
 import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
+import io from 'socket.io-client'
 
 import loadPage from './load-page'
 
