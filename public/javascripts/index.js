@@ -17,8 +17,7 @@ import playerMask from './views/player-mask'
 
 var sock
 
-var currentGoal
-  , header = document.querySelector('#main-head')
+var header = document.querySelector('#main-head')
   , _players = {}
   , me = Player(document.querySelector('#left'))
   , opponent = Player(document.querySelector('#right'))
@@ -140,7 +139,6 @@ function onStart(from, goal) {
 
   bus.emit('start', goal)
 
-  currentGoal = goal
   location.hash = ''
 
   me.navigateTo(from)

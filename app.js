@@ -3,8 +3,6 @@
 var express = require('express')
   , path = require('path')
   , http = require('http')
-  , fs = require('fs')
-  , util = require('util')
   , getRandom = require('random-item')
   , wiki = require('./lib/wiki')
   , Player = require('./lib/Player')
@@ -24,7 +22,6 @@ var _pair = null
 function newGame(player) {
   var origin = getRandom(wikiPages)
     , goal
-    , game
   do { goal = getRandom(wikiPages) } while (goal === origin)
   var game = WikiBattle(io, origin, goal)
   game.connect(player)
