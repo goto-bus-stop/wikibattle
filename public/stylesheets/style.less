@@ -120,18 +120,3 @@ body {
   cursor: pointer;
   z-index: 1;
 }
-
-// area masks
-#left-mask, #right-mask, #click-mask {
-  position: absolute;
-  top: 50px; bottom: 0;
-  width: 50%;
-  display: none;
-  &.loading, &.lost, &.won {
-    display: block;
-  }
-}
-#left-mask { left: 0 }
-#right-mask { right: 0 }
-// this one always exists so the player's pointer never actually :hovers the opponent area
-#click-mask { right: 0; display: block }
