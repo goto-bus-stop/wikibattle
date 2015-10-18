@@ -1,15 +1,15 @@
-var bus = require('bus')
-var classes = require('component-classes')
-var render = require('crel')
-var throttle = require('throttleit')
+import bus from 'bus'
+import classes from 'component-classes'
+import render from 'crel'
+import throttle from 'throttleit'
 
-var loadPage = require('./load-page')
+import loadPage from './load-page'
 
-var gameLink = require('./views/game-link')
-var hint = require('./views/hint')
-var backlinks = require('./views/backlinks')
-var backlinksToggle = require('./views/backlinks-toggle')
-var playerMask = require('./views/player-mask')
+import gameLink from './views/game-link'
+import hint from './views/hint'
+import backlinks from './views/backlinks'
+import backlinksToggle from './views/backlinks-toggle'
+import playerMask from './views/player-mask'
 
 var sock
 

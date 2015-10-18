@@ -1,10 +1,10 @@
-var bus = require('bus')
-var classes = require('component-classes')
-var render = require('crel')
+import bus from 'bus'
+import classes from 'component-classes'
+import render from 'crel'
 
-var path = require('./path')
+import path from './path'
 
-module.exports = function (playerId) {
+export default function playerMask(playerId) {
   return new PlayerMask(playerId).el
 }
 

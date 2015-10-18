@@ -1,8 +1,8 @@
-var bus = require('bus')
-var classes = require('component-classes')
-var crel = require('crel')
+import bus from 'bus'
+import classes from 'component-classes'
+import crel from 'crel'
 
-module.exports = function () {
+export default function backlinksToggle() {
   return new BacklinksToggle().el
 }
 

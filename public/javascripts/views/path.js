@@ -1,9 +1,9 @@
-var bus = require('bus')
-var classes = require('component-classes')
-var empty = require('empty-element')
-var render = require('crel')
+import bus from  'bus'
+import classes from  'component-classes'
+import empty from  'empty-element'
+import render from  'crel'
 
-module.exports = function (by) {
+export default function path(by) {
   return new Path(by).el
 }
 

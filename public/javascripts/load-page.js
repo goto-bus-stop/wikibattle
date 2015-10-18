@@ -1,8 +1,6 @@
-module.exports = load
-
 var loading = {}
 
-function load(page, cb) {
+export default function load(page, cb) {
   if (!loading[page]) {
     loading[page] = [ cb ]
 
