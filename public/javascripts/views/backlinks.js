@@ -3,11 +3,11 @@ import classes from 'component-classes'
 import render from 'crel'
 import empty from 'empty-element'
 
-export default function backlinks() {
+export default function backlinks () {
   return new Backlinks().el
 }
 
-function Backlinks() {
+function Backlinks () {
   this.setBacklinks = this.setBacklinks.bind(this)
   this.show = this.show.bind(this)
   this.hide = this.hide.bind(this)

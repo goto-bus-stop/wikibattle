@@ -4,11 +4,11 @@ import render from 'crel'
 
 import path from './path'
 
-export default function playerMask(playerId) {
+export default function playerMask (playerId) {
   return new PlayerMask(playerId).el
 }
 
-function PlayerMask(playerId) {
+function PlayerMask (playerId) {
   this.setLoading = this.setLoading.bind(this)
   this.onArticleLoading = this.onArticleLoading.bind(this)
   this.onArticleLoaded = this.onArticleLoaded.bind(this)

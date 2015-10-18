@@ -1,13 +1,13 @@
-import bus from  'bus'
-import classes from  'component-classes'
-import empty from  'empty-element'
-import render from  'crel'
+import bus from 'bus'
+import classes from 'component-classes'
+import empty from 'empty-element'
+import render from 'crel'
 
-export default function path(by) {
+export default function path (by) {
   return new Path(by).el
 }
 
-function Path(by) {
+function Path (by) {
   this.onPaths = this.onPaths.bind(this)
 
   this.list = render('ol')
@@ -28,8 +28,8 @@ Path.prototype.onPaths = function (paths) {
 Path.prototype.setPathList = function (path) {
   empty(this.list)
   render(this.list, path.map(function (entry, i) {
-    var next = path[i + 1]
-      , duration = next ? ' (' + (Math.round((next.time - entry.time) / 100) / 10) + ' seconds)' : ''
-    return render('li', (entry.page === null ? render('i', 'Disconnected') :  entry.page + duration))
+    const next = path[i + 1]
+    const duration = next ? ` (${Math.round((next.time - entry.time) / 100) / 10} seconds)` : ''
+    return render('li', (entry.page === null ? render('i', 'Disconnected') : entry.page + duration))
   }))
 }

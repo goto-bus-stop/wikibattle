@@ -1,11 +1,11 @@
 import bus from 'bus'
 import render from 'crel'
 
-export default function startGameButton(isPrivate) {
+export default function startGameButton (isPrivate) {
   return new StartGameButton(isPrivate).el
 }
 
-function StartGameButton(isPrivate) {
+function StartGameButton (isPrivate) {
   this.onClick = this.onClick.bind(this)
 
   this.isPrivate = isPrivate

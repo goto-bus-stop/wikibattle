@@ -1,16 +1,16 @@
 console.log('updating wiki assets & pages list')
 
 var cheerio = require('cheerio')
-  , request = require('request')
-  , fs = require('fs')
-  , path = require('path')
+var request = require('request')
+var fs = require('fs')
+var path = require('path')
 
 var cssUrl = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,teahouse|ext.rtlcite,wikihiero|ext.uls.nojs|mediawiki.skinning.interface|mediawiki.ui.button|skins.vector.styles&only=styles&skin=vector&*'
 var cssUrl2 = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=site&only=styles&skin=vector&*'
 
 dlCss()
 
-function dlCss() {
+function dlCss () {
   console.log('downloading css 1/2')
   request(cssUrl, function (e, _, body) {
     if (e) throw e
@@ -21,7 +21,7 @@ function dlCss() {
     })
   })
 }
-function dlCss2() {
+function dlCss2 () {
   console.log('downloading css 2/2')
   request(cssUrl2, function (e, _, body) {
     if (e) throw e
@@ -33,7 +33,7 @@ function dlCss2() {
   })
 }
 
-function updatePages() {
+function updatePages () {
   console.log('updating pages')
   request('https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages', function (e, _, body) {
     if (e) throw e

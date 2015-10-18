@@ -2,11 +2,11 @@ import bus from 'bus'
 import classes from 'component-classes'
 import render from 'crel'
 
-export default function hint() {
+export default function hint () {
   return new Hint().el
 }
 
-function Hint() {
+function Hint () {
   this.el = render('div', { id: 'target-hint', class: 'hide' })
   this.classes = classes(this.el)
 

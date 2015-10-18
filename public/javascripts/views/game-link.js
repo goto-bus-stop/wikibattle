@@ -2,11 +2,11 @@ import bus from 'bus'
 import classes from 'component-classes'
 import render from 'crel'
 
-export default function gameLink() {
+export default function gameLink () {
   return new GameLink().el
 }
 
-function GameLink() {
+function GameLink () {
   this.showLink = this.showLink.bind(this)
   this.hide = this.hide.bind(this)
 

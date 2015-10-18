@@ -2,11 +2,11 @@ import bus from 'bus'
 import empty from 'empty-element'
 import render from 'crel'
 
-export default function pageTitle(pov) {
+export default function pageTitle (pov) {
   return new PageTitle(pov).el
 }
 
-function PageTitle(pov) {
+function PageTitle (pov) {
   this.onWaiting = this.onWaiting.bind(this)
   this.onGameStart = this.onGameStart.bind(this)
   this.onGameOver = this.onGameOver.bind(this)

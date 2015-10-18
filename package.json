@@ -25,10 +25,12 @@
   , "browserify": "^11.2.0"
   , "clean-css": "^3.4.6"
   , "less": "^2.5.3"
+  , "standard": "^5.3.1"
   , "uglify-js": "^2.5.0" }
 , "repository": "goto-bus-stop/WikiBattle"
 , "scripts":
   { "start": "node app.js"
+  , "lint": "standard"
   , "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
   , "update": "node update.js"
   , "postinstall": "node update.js"

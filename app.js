@@ -1,27 +1,27 @@
 // this was just edited from the default express generated app
 // because it is a quick'n'verydirty project…thing
 var express = require('express')
-  , path = require('path')
-  , http = require('http')
-  , getRandom = require('random-item')
-  , wiki = require('./lib/wiki')
-  , Player = require('./lib/Player')
-  , WikiBattle = require('./lib/WikiBattle')
-  , wikiPages = require('./pages.json') // array of page names that we can pick from
-  , debug = require('debug')('WikiBattle:app')
+var path = require('path')
+var http = require('http')
+var getRandom = require('random-item')
+var wiki = require('./lib/wiki')
+var Player = require('./lib/Player')
+var WikiBattle = require('./lib/WikiBattle')
+var wikiPages = require('./pages.json') // array of page names that we can pick from
+var debug = require('debug')('WikiBattle:app')
 
 var app = express()
-  , server = http.createServer(app)
-  , io = require('socket.io')(server, { serveClient: false })
+var server = http.createServer(app)
+var io = require('socket.io')(server, { serveClient: false })
 
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
 var _pair = null
-  , _games = {}
+var _games = {}
 
-function newGame(player) {
+function newGame (player) {
   var origin = getRandom(wikiPages)
-    , goal
+  var goal
   do { goal = getRandom(wikiPages) } while (goal === origin)
   var game = WikiBattle(io, origin, goal)
   game.connect(player)
@@ -30,7 +30,7 @@ function newGame(player) {
 
 io.on('connection', function (sock) {
   var game
-    , player = Player(sock)
+  var player = Player(sock)
 
   sock.on('gameType', function (type, id, cb) {
     switch (type) {
@@ -41,8 +41,7 @@ io.on('connection', function (sock) {
           _pair = null
           cb(null, game.id, player.id, 'start')
           game.start()
-        }
-        else {
+        } else {
           _pair = game = newGame(player)
           cb(null, game.id, player.id, 'wait')
         }
@@ -59,8 +58,7 @@ io.on('connection', function (sock) {
           delete _games[id]
           cb(null, game.id, player.id, 'start')
           game.start()
-        }
-        else {
+        } else {
           cb('nonexistent game id')
           sock.disconnect()
         }

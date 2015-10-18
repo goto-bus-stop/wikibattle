@@ -1,3 +1,5 @@
+/* global location, alert */
+
 import bus from 'bus'
 import classes from 'component-classes'
 import empty from 'empty-element'
@@ -15,21 +17,21 @@ import backlinks from './views/backlinks'
 import backlinksToggle from './views/backlinks-toggle'
 import playerMask from './views/player-mask'
 
-var sock
+let sock
 
-var header = document.querySelector('#main-head')
-  , _players = {}
-  , me = Player(document.querySelector('#left'))
-  , opponent = Player(document.querySelector('#right'))
-  , game = {}
-  , _private = false
+const header = document.querySelector('#main-head')
+const _players = {}
+const me = Player(document.querySelector('#left'))
+const opponent = Player(document.querySelector('#right'))
+const game = {}
+let _private = false
 
 init()
 
-function Player(el) {
+function Player (el) {
   if (!(this instanceof Player)) return new Player(el)
   this.el = el
-  var area = el.querySelector('.wb-article')
+  const area = el.querySelector('.wb-article')
   this.area = area
   this.title = area.querySelector('.current-title')
   this.content = area.querySelector('.content')
@@ -48,7 +50,7 @@ Player.prototype.navigateTo = function (page, cb) {
   }.bind(this))
 }
 
-function init() {
+function init () {
   if (location.hash.substr(0, 6) === '#game:') {
     document.querySelector('#game-id').innerHTML = location.hash.substr(1)
     document.querySelector('#friend').style.display = 'none'
@@ -63,7 +65,7 @@ function init() {
   bus.on('connect', go)
 }
 
-function go(isPrivate) {
+function go (isPrivate) {
   _private = isPrivate
 
   me.content.addEventListener('click', onClick, false)
@@ -86,13 +88,19 @@ function go(isPrivate) {
   sock.on('lost', onLost)
   sock.on('paths', onReceivePaths)
   sock.on('scrolled', onOpponentScrolled)
-  sock.on('hint', function (hintText) { bus.emit('hint', hintText) })
+  sock.on('hint', hintText => { bus.emit('hint', hintText) })
   sock.on('backlinks', onBacklinks)
-  sock.on('id', function (id) { me.id = id, _players[id] = me })
-  sock.on('connection', function (id) { opponent.id = id, _players[id] = opponent })
+  sock.on('id', id => {
+    me.id = id
+    _players[id] = me
+  })
+  sock.on('connection', id => {
+    opponent.id = id
+    _players[id] = opponent
+  })
 
-  var connectType = _private ? 'new' : 'pair'
-    , connectId = null
+  let connectType = _private ? 'new' : 'pair'
+  let connectId = null
   if (!_private && location.hash.substr(0, 6) === '#game:') {
     connectType = 'join'
     connectId = location.hash.substr(1)
@@ -113,13 +121,13 @@ function go(isPrivate) {
   })
 }
 
-function restart() {
+function restart () {
   // lol
   location.href = location.pathname
 }
 
 // WebSocket Events
-function waiting() {
+function waiting () {
   me.title.innerHTML = 'Your Article'
   opponent.title.innerHTML = 'Opponent\'s Article'
   me.content.innerHTML = ''
@@ -131,7 +139,7 @@ function waiting() {
   }
 }
 
-function onStart(from, goal) {
+function onStart (from, goal) {
   render(me.area.parentNode, playerMask(me.id))
   render(opponent.area.parentNode, playerMask(opponent.id))
 
@@ -144,17 +152,17 @@ function onStart(from, goal) {
   me.navigateTo(from)
 }
 
-function onBacklinks(e, backlinks) {
+function onBacklinks (e, backlinks) {
   if (e) throw e
   bus.emit('backlinks', backlinks)
 }
 
-function onOpponentNavigated(playerId, page, cb) {
+function onOpponentNavigated (playerId, page, cb) {
   if (me.id !== playerId && page !== null) {
     opponent.navigateTo(page, cb)
   }
 }
-function onOpponentScrolled(id, top, width) {
+function onOpponentScrolled (id, top, width) {
   if (me.id !== id) {
     // very rough estimation of where the opponent will roughly be on their screen size
     // inaccurate as poop but it's only a gimmick anyway so it doesn't really matter
@@ -162,23 +170,21 @@ function onOpponentScrolled(id, top, width) {
   }
 }
 
-var reSimpleWiki = /^\/wiki\//
-  , reIndexWiki = /^\/w\/index\.php\?title=(.*?)(?:&|$)/
-  , reInvalidPages = /^(File|Template):/
-function onClick(e) {
-  var el = e.target
-    , next, href
+const reSimpleWiki = /^\/wiki\//
+const reIndexWiki = /^\/w\/index\.php\?title=(.*?)(?:&|$)/
+const reInvalidPages = /^(File|Template):/
+function onClick (e) {
+  let el = e.target
   while (el && el.tagName !== 'A' && el.tagName !== 'AREA') el = el.parentNode
   if (el) {
     e.preventDefault()
-    href = el.getAttribute('href')
+    let href = el.getAttribute('href')
+    let next
     if (reSimpleWiki.test(href)) {
       next = href.replace(reSimpleWiki, '')
-    }
-    else if (next = reIndexWiki.exec(href)) {
+    } else if ((next = reIndexWiki.exec(href))) {
       next = next[1]
-    }
-    else {
+    } else {
       return
     }
     next = next.replace(/#.*?$/, '').replace(/_/g, ' ')
@@ -188,21 +194,21 @@ function onClick(e) {
   }
 }
 
-function onScroll(e) {
+function onScroll (e) {
   // timeout so we send the scrollTop *after* the scroll event instead of before
   setTimeout(function () {
     sock.emit('scroll', me.area.scrollTop, me.area.offsetWidth)
   }, 10)
 }
 
-function onWon() {
+function onWon () {
   bus.emit('game-over', me)
 }
-function onLost() {
+function onLost () {
   bus.emit('game-over', opponent)
 }
 
-function onReceivePaths(paths) {
+function onReceivePaths (paths) {
   me.content.removeEventListener('click', onClick)
   me.content.addEventListener('click', preventDefault, false)
 
@@ -212,4 +218,4 @@ function onReceivePaths(paths) {
 }
 
 // other helpers that are half stolen and not really related to WikiBattle in any way
-function preventDefault(e) { e.preventDefault() }
+function preventDefault (e) { e.preventDefault() }

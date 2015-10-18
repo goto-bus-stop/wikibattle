@@ -2,11 +2,11 @@ import bus from 'bus'
 import classes from 'component-classes'
 import crel from 'crel'
 
-export default function backlinksToggle() {
+export default function backlinksToggle () {
   return new BacklinksToggle().el
 }
 
-function BacklinksToggle() {
+function BacklinksToggle () {
   this.onChange = this.onChange.bind(this)
   this.show = this.show.bind(this)
 
