@@ -15,6 +15,7 @@ import gameLink from './views/game-link'
 import hint from './views/hint'
 import backlinks from './views/backlinks'
 import backlinksToggle from './views/backlinks-toggle'
+import article from './views/article'
 import playerMask from './views/player-mask'
 
 let sock
@@ -31,23 +32,16 @@ init()
 function Player (el) {
   if (!(this instanceof Player)) return new Player(el)
   this.el = el
-  const area = el.querySelector('.wb-article')
-  this.area = area
-  this.title = area.querySelector('.current-title')
-  this.content = area.querySelector('.content')
   this.path = []
 }
 
 Player.prototype.navigateTo = function (page, cb) {
   this.path.push(page)
   bus.emit('article-loading', { player: this, title: page })
-  loadPage(page, function (e, body) {
-    this.title.innerHTML = decodeURIComponent(page) + ' <small>(' + this.path.length + ' steps)</small>'
-    this.content.innerHTML = body
+  loadPage(page, (e, body) => {
     bus.emit('article-loaded', { player: this, title: page, body: body })
-    this.area.scrollTop = 0
     if (cb) cb(e)
-  }.bind(this))
+  })
 }
 
 function init () {
@@ -68,10 +62,8 @@ function init () {
 function go (isPrivate) {
   _private = isPrivate
 
-  me.content.addEventListener('click', onClick, false)
-  me.area.addEventListener('mousewheel', throttle(onScroll, 50), false)
-  opponent.content.addEventListener('click', preventDefault, false)
-  opponent.content.addEventListener('mousewheel', preventDefault, false)
+  bus.on('navigate', onNavigate)
+  bus.on('scroll', throttle(onScroll, 50))
 
   render(document.body, hint())
   render(empty(header), pageTitle(me))
@@ -80,6 +72,8 @@ function go (isPrivate) {
     backlinksToggle(),
     backlinks()
   ])
+  render(empty(me.el), article(me, true))
+  render(empty(opponent.el), article(opponent, false))
 
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
   sock.on('start', onStart)
@@ -121,6 +115,15 @@ function go (isPrivate) {
   })
 }
 
+function onNavigate (next) {
+  sock.emit('navigate', next)
+  me.navigateTo(next)
+}
+
+function onScroll (top, width) {
+  sock.emit('scroll', top, width)
+}
+
 function restart () {
   // lol
   location.href = location.pathname
@@ -128,20 +131,15 @@ function restart () {
 
 // WebSocket Events
 function waiting () {
-  me.title.innerHTML = 'Your Article'
-  opponent.title.innerHTML = 'Opponent\'s Article'
-  me.content.innerHTML = ''
-  opponent.content.innerHTML = ''
   bus.emit('waiting-for-opponent')
-
   if (_private) {
     bus.emit('game-link', location.href)
   }
 }
 
 function onStart (from, goal) {
-  render(me.area.parentNode, playerMask(me.id))
-  render(opponent.area.parentNode, playerMask(opponent.id))
+  render(me.el, playerMask(me.id))
+  render(opponent.el, playerMask(opponent.id))
 
   bus.on('restart', restart)
 
@@ -163,42 +161,10 @@ function onOpponentNavigated (playerId, page, cb) {
   }
 }
 function onOpponentScrolled (id, top, width) {
+  // TODO check this on the server
   if (me.id !== id) {
-    // very rough estimation of where the opponent will roughly be on their screen size
-    // inaccurate as poop but it's only a gimmick anyway so it doesn't really matter
-    _players[id].area.scrollTop = top * width / opponent.area.offsetWidth
+    bus.emit('article-scrolled', id, top, width)
   }
-}
-
-const reSimpleWiki = /^\/wiki\//
-const reIndexWiki = /^\/w\/index\.php\?title=(.*?)(?:&|$)/
-const reInvalidPages = /^(File|Template):/
-function onClick (e) {
-  let el = e.target
-  while (el && el.tagName !== 'A' && el.tagName !== 'AREA') el = el.parentNode
-  if (el) {
-    e.preventDefault()
-    let href = el.getAttribute('href')
-    let next
-    if (reSimpleWiki.test(href)) {
-      next = href.replace(reSimpleWiki, '')
-    } else if ((next = reIndexWiki.exec(href))) {
-      next = next[1]
-    } else {
-      return
-    }
-    next = next.replace(/#.*?$/, '').replace(/_/g, ' ')
-    if (reInvalidPages.test(next)) return
-    sock.emit('navigate', next)
-    me.navigateTo(next)
-  }
-}
-
-function onScroll (e) {
-  // timeout so we send the scrollTop *after* the scroll event instead of before
-  setTimeout(function () {
-    sock.emit('scroll', me.area.scrollTop, me.area.offsetWidth)
-  }, 10)
 }
 
 function onWon () {
@@ -209,11 +175,7 @@ function onLost () {
 }
 
 function onReceivePaths (paths) {
-  me.content.removeEventListener('click', onClick)
-  me.content.addEventListener('click', preventDefault, false)
-
   bus.emit('paths', paths)
-
   sock.disconnect()
 }
 
