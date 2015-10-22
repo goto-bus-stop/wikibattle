@@ -157,10 +157,7 @@ function onOpponentNavigated (playerId, page, cb) {
   }
 }
 function onOpponentScrolled (id, top, width) {
-  // TODO check this on the server
-  if (me.id !== id) {
-    bus.emit('article-scrolled', id, top, width)
-  }
+  bus.emit('article-scrolled', id, top, width)
 }
 
 function onWon () {
