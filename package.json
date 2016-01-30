@@ -23,8 +23,11 @@
   , "each-async": "^1.1.1"
   , "random-item": "^1.0.0" }
 , "devDependencies":
-  { "babelify": "^6.3.0"
-  , "browserify": "^11.2.0"
+  { "babel-cli": "^6.4.5"
+  , "babel-preset-es2015": "^6.3.13"
+  , "babel-preset-stage-0": "^6.3.13"
+  , "babelify": "^7.2.0"
+  , "browserify": "^13.0.0"
   , "clean-css": "^3.4.6"
   , "less": "^2.5.3"
   , "standard": "^5.3.1"
@@ -36,8 +39,12 @@
   , "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
   , "update": "node update.js"
   , "postinstall": "node update.js"
-  , "build": "browserify --debug -t [ babelify --stage 0 ] -e public/javascripts/index.js -o public/app.js"
+  , "build:server": "babel --out-dir lib src"
+  , "build:client": "browserify --debug -t [ babelify ] -e public/javascripts/index.js -o public/app.js"
+  , "build": "npm run build:server && npm run build:client"
   , "minify-css": "cleancss public/stylesheets/style.css -o public/stylesheets/style.css"
   , "minify-js": "uglifyjs public/app.js -m -o public/app.js"
   , "prod": "npm run less && npm run minify-css && npm run build && npm run minify-js"
-  , "prepublish": "npm run build" } }
+  , "prepublish": "npm run build" }
+, "babel":
+  { "presets": [ "es2015", "stage-0" ] } }
