@@ -1,9 +1,9 @@
-var wiki = require('./wiki')
-var EventEmitter = require('events').EventEmitter
+const wiki = require('./wiki')
+const { EventEmitter } = require('events')
 
-var $id = 0
-var HINT_TIMEOUT = 40 // seconds
-var BACKLINKS_TIMEOUT = 90 // seconds
+let $id = 0
+const HINT_TIMEOUT = 40 // seconds
+const BACKLINKS_TIMEOUT = 90 // seconds
 
 module.exports = WikiBattle
 
@@ -11,25 +11,24 @@ function WikiBattle (io, origin, goal) {
   if (!(this instanceof WikiBattle)) return new WikiBattle(io, origin, goal)
   EventEmitter.call(this)
   $id %= 2e15 // should be enough for anyone!
-  this.id = 'game:' + (++$id)
+  this.id = `game:${++$id}`
   this.players = []
   this.origin = origin
   this.goal = goal
   this.io = io
 }
 
-WikiBattle.prototype.emitSocket = function () {
-  var args = arguments
-  return this.players.forEach(function (player) {
-    var sock = player.sock
+WikiBattle.prototype.emitSocket = function (...args) {
+  return this.players.forEach(player => {
+    const sock = player.sock
     if (sock) {
-      sock.emit.apply(sock, args)
+      sock.emit(...args)
     }
   })
 }
 
 WikiBattle.prototype.connect = function (connectingPlayer) {
-  this.players.forEach(function (player) {
+  this.players.forEach(player => {
     player.notifyConnect(connectingPlayer)
     connectingPlayer.notifyConnect(player)
   })
@@ -41,8 +40,10 @@ WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
   disconnectingPlayer.disconnect()
   this.navigate(disconnectingPlayer, null)
 
-  var connected = this.players.filter(function (p) { return p.connected })
-  connected.forEach(function (p) { p.notifyDisconnect(disconnectingPlayer) })
+  var connected = this.players.filter(p => p.connected)
+  connected.forEach(p => {
+    p.notifyDisconnect(disconnectingPlayer)
+  })
   if (connected.length === 1) {
     connected[0].win()
     this.end()
@@ -50,13 +51,13 @@ WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
 }
 
 WikiBattle.prototype.checkWin = function () {
-  var goal = this.goal
+  const hasWon = p => p.current() === this.goal
   if (this.players.some(hasWon)) {
-    this.players.forEach(function (p) { hasWon(p) ? p.win() : p.lose() })
+    this.players.forEach(p => {
+      hasWon(p) ? p.win() : p.lose()
+    })
     this.end()
   }
-
-  function hasWon (p) { return p.current() === goal }
 }
 
 WikiBattle.prototype.navigate = function (player, to) {
@@ -66,24 +67,22 @@ WikiBattle.prototype.navigate = function (player, to) {
 }
 
 WikiBattle.prototype.sendHint = function () {
-  var wb = this
-  wiki.get(this.goal, function (e, page) {
-    wb.emitSocket('hint', e || page.getHint())
+  wiki.get(this.goal, (e, page) => {
+    this.emitSocket('hint', e || page.getHint())
   })
 }
 
 WikiBattle.prototype.sendBacklinks = function () {
-  var wb = this
-  wiki.get(this.goal, function (e, page) {
-    if (e) return wb.emitSocket('backlinks', e)
-    page.getBacklinks(function (e, back) {
-      wb.emitSocket('backlinks', e, back)
+  wiki.get(this.goal, (e, page) => {
+    if (e) return this.emitSocket('backlinks', e)
+    page.getBacklinks((e, back) => {
+      this.emitSocket('backlinks', e, back)
     })
   })
 }
 
 WikiBattle.prototype.sendPaths = function () {
-  var paths = this.players.reduce(function (paths, p) {
+  const paths = this.players.reduce((paths, p) => {
     paths[p.id] = p.path
     return paths
   }, {})
@@ -93,7 +92,9 @@ WikiBattle.prototype.sendPaths = function () {
 WikiBattle.prototype.start = function () {
   this.emitSocket('start', this.origin, this.goal)
 
-  this.players.forEach(function (p) { this.navigate(p, this.origin) }, this)
+  this.players.forEach(p => {
+    this.navigate(p, this.origin)
+  })
 
   this.hintTimeout = setTimeout(this.sendHint.bind(this), HINT_TIMEOUT * 1000)
   this.backlinksTimeout = setTimeout(this.sendBacklinks.bind(this), BACKLINKS_TIMEOUT * 1000)

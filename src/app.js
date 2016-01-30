@@ -1,38 +1,38 @@
 // this was just edited from the default express generated app
 // because it is a quick'n'verydirty project…thing
-var express = require('express')
-var path = require('path')
-var http = require('http')
-var getRandom = require('random-item')
-var wiki = require('./wiki')
-var Player = require('./Player')
-var WikiBattle = require('./WikiBattle')
-var wikiPages = require('../pages.json') // array of page names that we can pick from
-var debug = require('debug')('WikiBattle:app')
+const express = require('express')
+const path = require('path')
+const http = require('http')
+const getRandom = require('random-item')
+const wiki = require('./wiki')
+const Player = require('./Player')
+const WikiBattle = require('./WikiBattle')
+const wikiPages = require('../pages.json') // array of page names that we can pick from
+const debug = require('debug')('WikiBattle:app')
 
-var app = express()
-var server = http.createServer(app)
-var io = require('socket.io')(server, { serveClient: false })
+const app = express()
+const server = http.createServer(app)
+const io = require('socket.io')(server, { serveClient: false })
 
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
-var _pair = null
-var _games = {}
+let _pair = null
+const _games = {}
 
 function newGame (player) {
-  var origin = getRandom(wikiPages)
-  var goal
+  const origin = getRandom(wikiPages)
+  let goal
   do { goal = getRandom(wikiPages) } while (goal === origin)
-  var game = WikiBattle(io, origin, goal)
+  const game = WikiBattle(io, origin, goal)
   game.connect(player)
   return game
 }
 
-io.on('connection', function (sock) {
-  var game
-  var player = Player(sock)
+io.on('connection', sock => {
+  let game
+  const player = Player(sock)
 
-  sock.on('gameType', function (type, id, cb) {
+  sock.on('gameType', (type, id, cb) => {
     switch (type) {
       case 'pair':
         if (_pair) {
@@ -70,17 +70,17 @@ io.on('connection', function (sock) {
     }
   })
 
-  sock.on('navigate', function (to) {
+  sock.on('navigate', to => {
     game.navigate(player, decodeURIComponent(to))
   })
 
-  sock.on('scroll', function (top, areaWidth) {
+  sock.on('scroll', (top, areaWidth) => {
     if (typeof top === 'number') {
       game.notifyScroll(player, top, areaWidth)
     }
   })
 
-  sock.on('disconnect', function () {
+  sock.on('disconnect', () => {
     if (game) {
       game.disconnect(player)
       // if this socket disconnected before finding an opponent,
@@ -95,41 +95,41 @@ io.on('connection', function (sock) {
 app.use(express.static(path.join(__dirname, '../public')))
 
 // Wiki Article content
-app.get('/wiki/:page', function (req, res) {
-  wiki.get(req.params.page, function (err, body) {
+app.get('/wiki/:page', (req, res) => {
+  wiki.get(req.params.page, (err, body) => {
     if (body) res.end(body.content)
     else throw err
   })
 })
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  var err = new Error('Not Found')
+app.use((req, res, next) => {
+  const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
 // error handlers
 if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
+  app.use((err, req, res, next) => {
     res.writeHead(err.status || 500, { 'content-type': 'text/html' })
-    res.write('<h1>' + err.message + '</h1>')
-    res.write('<h2>' + err.status + '</h2>')
-    res.write('<pre>' + err.stack + '</pre>')
+    res.write(`<h1>${err.message}</h1>`)
+    res.write(`<h2>${err.status}</h2>`)
+    res.write(`<pre>${err.stack}</pre>`)
     res.end()
   })
 }
 
 // production error handler
-app.use(function (err, req, res, next) {
+app.use((err, req, res, next) => {
   res.writeHead(err.status || 500, { 'content-type': 'text/html' })
-  res.write('<h1>' + err.message + '</h1>')
-  res.write('<h2>' + err.status + '</h2>')
+  res.write(`<h1>${err.message}</h1>`)
+  res.write(`<h2>${err.status}</h2>`)
   res.end()
 })
 
 app.set('port', process.env.PORT || 3000)
 
-server.listen(app.get('port'), function () {
-  debug('Express server listening on port ' + server.address().port)
+server.listen(app.get('port'), () => {
+  debug(`Express server listening on port ${server.address().port}`)
 })

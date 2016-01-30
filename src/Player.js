@@ -15,7 +15,7 @@ function Player (sock) {
 }
 
 Player.prototype.current = function () {
-  var current = this.path[this.path.length - 1]
+  const current = this.path[this.path.length - 1]
   return current ? current.page : undefined
 }
 
