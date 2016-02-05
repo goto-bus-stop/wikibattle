@@ -79,7 +79,7 @@ function getPage (title, realCb) {
       const eol = content.indexOf('\n')
       const firstLine = content.substr(0, eol)
       const body = content.substr(eol)
-      cb(null, WikiPage(title, body, JSON.parse(firstLine)))
+      cb(null, WikiPage(title, body, JSON.parse(firstLine).links))
     })
   })
 
