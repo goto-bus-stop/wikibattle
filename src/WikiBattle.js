@@ -61,9 +61,8 @@ WikiBattle.prototype.checkWin = function () {
 }
 
 WikiBattle.prototype.navigate = function (player, to) {
-  //Not knowing that much about JS this could result into a bit of a trainwreck
   wiki.get(player.current(), (e, page) => {
-    if(page.linksTo(to)){
+    if(!e && page.linksTo(to)){
       player.navigateTo(to)
       this.emitSocket('navigated', player.id, to)
       this.checkWin()
