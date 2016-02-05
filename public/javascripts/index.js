@@ -115,7 +115,7 @@ function go (isPrivate) {
   })
 }
 
-function onNavigated (next) {
+function onNavigate (next) {
   sock.emit('navigate', next)
 }
 
