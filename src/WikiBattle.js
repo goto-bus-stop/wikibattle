@@ -60,12 +60,19 @@ WikiBattle.prototype.checkWin = function () {
   }
 }
 
+WikiBattle.prototype.navigateInner = function (player, to) {
+  player.navigateTo(to)
+  this.emitSocket('navigated', player.id, to)
+  this.checkWin()
+}
+
 WikiBattle.prototype.navigate = function (player, to) {
+  if (!player.current()) {
+    this.navigateInner(player, to)
+  }
   wiki.get(player.current(), (e, page) => {
     if(!e && page.linksTo(to)){
-      player.navigateTo(to)
-      this.emitSocket('navigated', player.id, to)
-      this.checkWin()
+      this.navigateInner(player, to)
     } else {
       //Maybe put some fancy "Do not cheat" page here?
     }
