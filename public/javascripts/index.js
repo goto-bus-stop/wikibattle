@@ -80,17 +80,13 @@ function go (isPrivate) {
 
   sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
   sock.on('start', onStart)
-  sock.on('navigated', onOpponentNavigated)
+  sock.on('navigated', onNavigated)
   sock.on('won', onWon)
   sock.on('lost', onLost)
   sock.on('paths', onReceivePaths)
   sock.on('scrolled', onOpponentScrolled)
   sock.on('hint', hintText => { bus.emit('hint', hintText) })
   sock.on('backlinks', onBacklinks)
-  sock.on('id', id => {
-    me.id = id
-    _players[id] = me
-  })
   sock.on('connection', id => {
     opponent.id = id
     _players[id] = opponent
@@ -109,6 +105,7 @@ function go (isPrivate) {
     }
     game.id = gameId
     me.id = playerId
+    _players[playerId] = me
     if (connectType !== 'pair') {
       location.hash = gameId
     }
@@ -118,9 +115,8 @@ function go (isPrivate) {
   })
 }
 
-function onNavigate (next) {
+function onNavigated (next) {
   sock.emit('navigate', next)
-  me.navigateTo(next)
 }
 
 function onScroll (top, width) {
@@ -151,9 +147,9 @@ function onBacklinks (e, backlinks) {
   bus.emit('backlinks', backlinks)
 }
 
-function onOpponentNavigated (playerId, page, cb) {
-  if (me.id !== playerId && page !== null) {
-    opponent.navigateTo(page, cb)
+function onNavigated (playerId, page, cb) {
+  if (_players[playerId] && page !== null) {
+    _players[playerId].navigateTo(page, cb)
   }
 }
 function onOpponentScrolled (id, top, width) {
