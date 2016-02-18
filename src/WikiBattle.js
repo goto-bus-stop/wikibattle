@@ -71,7 +71,7 @@ WikiBattle.prototype.navigateInner = function (player, to) {
 
 WikiBattle.prototype.navigate = function (player, to) {
   debug('navigate (maybe)', player.id, `${player.current()} -> ${to}`)
-  if (!player.current()) {
+  if (to === null || !player.current()) {
     return this.navigateInner(player, to)
   }
   wiki.get(player.current(), (e, page) => {
