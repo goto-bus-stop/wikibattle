@@ -36,6 +36,7 @@
 , "scripts":
   { "start": "node app.js"
   , "lint": "standard src/**/*.js"
+  , "test": "npm run lint"
   , "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css"
   , "update": "node update.js"
   , "postinstall": "node update.js"

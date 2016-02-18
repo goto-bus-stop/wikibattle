@@ -75,10 +75,10 @@ WikiBattle.prototype.navigate = function (player, to) {
     return this.navigateInner(player, to)
   }
   wiki.get(player.current(), (e, page) => {
-    if(!e && page.linksTo(to)){
+    if (!e && page.linksTo(to)) {
       this.navigateInner(player, to)
     } else {
-      //Maybe put some fancy "Do not cheat" page here?
+      // Maybe put some fancy "Do not cheat" page here?
     }
   })
 }
