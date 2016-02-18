@@ -1,5 +1,6 @@
 const wiki = require('./wiki')
 const { EventEmitter } = require('events')
+const debug = require('debug')('WikiBattle:game')
 
 let $id = 0
 const HINT_TIMEOUT = 40 // seconds
@@ -28,6 +29,7 @@ WikiBattle.prototype.emitSocket = function (...args) {
 }
 
 WikiBattle.prototype.connect = function (connectingPlayer) {
+  debug('connect player', connectingPlayer.id)
   this.players.forEach(player => {
     player.notifyConnect(connectingPlayer)
     connectingPlayer.notifyConnect(player)
@@ -37,6 +39,7 @@ WikiBattle.prototype.connect = function (connectingPlayer) {
 }
 
 WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
+  debug('disconnect player', disconnectingPlayer.id)
   disconnectingPlayer.disconnect()
   this.navigate(disconnectingPlayer, null)
 
@@ -67,6 +70,7 @@ WikiBattle.prototype.navigateInner = function (player, to) {
 }
 
 WikiBattle.prototype.navigate = function (player, to) {
+  debug('navigate (maybe)', player.id, `${player.current()} -> ${to}`)
   if (!player.current()) {
     this.navigateInner(player, to)
   }
