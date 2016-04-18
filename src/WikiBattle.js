@@ -20,7 +20,7 @@ function WikiBattle (io, origin, goal) {
 }
 
 WikiBattle.prototype.emitSocket = function (...args) {
-  return this.players.forEach(player => {
+  return this.players.forEach((player) => {
     const sock = player.sock
     if (sock) {
       sock.emit(...args)
@@ -30,7 +30,7 @@ WikiBattle.prototype.emitSocket = function (...args) {
 
 WikiBattle.prototype.connect = function (connectingPlayer) {
   debug('connect player', connectingPlayer.id)
-  this.players.forEach(player => {
+  this.players.forEach((player) => {
     player.notifyConnect(connectingPlayer)
     connectingPlayer.notifyConnect(player)
   })
@@ -43,8 +43,8 @@ WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
   disconnectingPlayer.disconnect()
   this.navigate(disconnectingPlayer, null)
 
-  var connected = this.players.filter(p => p.connected)
-  connected.forEach(p => {
+  var connected = this.players.filter((p) => p.connected)
+  connected.forEach((p) => {
     p.notifyDisconnect(disconnectingPlayer)
   })
   if (connected.length === 1) {
@@ -54,9 +54,9 @@ WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
 }
 
 WikiBattle.prototype.checkWin = function () {
-  const hasWon = p => p.current() === this.goal
+  const hasWon = (p) => p.current() === this.goal
   if (this.players.some(hasWon)) {
-    this.players.forEach(p => {
+    this.players.forEach((p) => {
       hasWon(p) ? p.win() : p.lose()
     })
     this.end()
@@ -109,7 +109,7 @@ WikiBattle.prototype.sendPaths = function () {
 WikiBattle.prototype.start = function () {
   this.emitSocket('start', this.origin, this.goal)
 
-  this.players.forEach(p => {
+  this.players.forEach((p) => {
     this.navigate(p, this.origin)
   })
 
@@ -124,7 +124,7 @@ WikiBattle.prototype.end = function () {
 }
 
 WikiBattle.prototype.notifyScroll = function (scroller, top, width) {
-  this.players.forEach(player => {
+  this.players.forEach((player) => {
     if (scroller !== player) {
       player.notifyScroll(scroller, top, width)
     }

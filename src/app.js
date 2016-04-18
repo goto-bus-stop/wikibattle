@@ -28,7 +28,7 @@ function newGame (player) {
   return game
 }
 
-io.on('connection', sock => {
+io.on('connection', (sock) => {
   let game
   const player = Player(sock)
 
@@ -70,7 +70,7 @@ io.on('connection', sock => {
     }
   })
 
-  sock.on('navigate', to => {
+  sock.on('navigate', (to) => {
     game.navigate(player, decodeURIComponent(to))
   })
 

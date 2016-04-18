@@ -24,14 +24,14 @@ function WikiPage (title, content, links) {
 
 WikiPage.prototype.getLinks = function () {
   return this.links
-    .filter(link => link['ns'] === 0 && 'exists' in link)
-    .map(link => link['*'])
+    .filter((link) => link['ns'] === 0 && 'exists' in link)
+    .map((link) => link['*'])
 }
 
 WikiPage.prototype.linksTo = function (target) {
   target = target.replace(/\s/g, '_')
   return this.getLinks()
-    .some(link => link.replace(/\s/g, '_') === target)
+    .some((link) => link.replace(/\s/g, '_') === target)
 }
 
 WikiPage.prototype.getHint = function () {
@@ -58,11 +58,11 @@ WikiPage.prototype.getBacklinks = function (cb) {
   }, (err, _, body) => {
     if (err) return cb(err)
     body = JSON.parse(body)
-    cb(null, body.query.backlinks.map(l => l.title))
+    cb(null, body.query.backlinks.map((l) => l.title))
   })
 }
 
-fs.mkdir(CACHE_LOCATION, e => { /* ignore error, badass! */ })
+fs.mkdir(CACHE_LOCATION, (e) => { /* ignore error, badass! */ })
 
 function getPage (title, realCb) {
   // if we're already fetching this page, don't start a new request
@@ -91,7 +91,7 @@ function getPage (title, realCb) {
       headers: wikiBattleHeaders
     })
       .pipe(JSONStream.parse('parse'))
-      .on('data', parse => {
+      .on('data', (parse) => {
         fs.writeFile(cacheFile,
                      JSON.stringify({ links: parse.links }) + '\n' + parse.text['*'],
                      () => { debug('cached', title) })
