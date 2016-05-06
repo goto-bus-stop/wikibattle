@@ -1,14 +1,16 @@
 // this was just edited from the default express generated app
 // because it is a quick'n'verydirty project…thing
 const express = require('express')
+const fs = require('fs')
 const path = require('path')
 const http = require('http')
 const getRandom = require('random-item')
 const wiki = require('./wiki')
 const Player = require('./Player')
 const WikiBattle = require('./WikiBattle')
-const wikiPages = require('../pages.json') // array of page names that we can pick from
 const debug = require('debug')('WikiBattle:app')
+const PAGES_FILE = require.resolve('../pages.json')
+let wikiPages = require(PAGES_FILE) // array of page names that we can pick from
 
 const app = express()
 const server = http.createServer(app)
@@ -129,6 +131,12 @@ app.use((err, req, res, next) => {
 })
 
 app.set('port', process.env.PORT || 3000)
+
+fs.watch(PAGES_FILE, () => {
+  debug('Reloading pages')
+  delete require.cache[PAGES_FILE]
+  wikiPages = require(PAGES_FILE)
+})
 
 server.listen(app.get('port'), () => {
   debug(`Express server listening on port ${server.address().port}`)
