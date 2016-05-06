@@ -2,9 +2,27 @@
 @loss-color: #700;
 @mask-text-background: #f5f5f5;
 
-// probably gets overwritten by Wiki sheets but :'
-body {
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+button {
+  background: #ccc;
+  padding: 10px;
+  cursor: pointer;
+}
+
+#main .wb-instructions li { // specificity!…
+  margin-bottom: 0;
+}
+
+.wb-game-start-options::after {
+  display: block;
+  content: ' ';
+  clear: both;
+}
+
+.wb-game-start {
+  float: left;
+  width: 50%;
+  box-sizing: border-box;
+  padding: 0 10px 0 0;
 }
 
 .hide { display: none }
@@ -26,10 +44,15 @@ body {
 
 #main-head {
   height: 50px;
-  background: #fff;
+  line-height: 50px;
+  background: #eee;
 
   h1 { // target title usually
     padding-left: .5em;
+    button {
+      margin-left: .5em;
+      line-height: 1;
+    }
   }
 }
 
@@ -38,6 +61,8 @@ body {
   top: 0;
   right: 0;
   width: 50%;
+  font-size: 90%;
+  overflow: hidden;
 }
 
 #join { display: none }
@@ -96,7 +121,7 @@ body {
 }
 
 .wb-article:extend(.wb-fill) {
-  padding: 0 5px;
+  padding: 0 5px 0 10px;
   overflow-y: scroll;
 }
 
