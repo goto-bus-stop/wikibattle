@@ -5,29 +5,17 @@ var request = require('request')
 var fs = require('fs')
 var path = require('path')
 
-var cssUrl = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,teahouse|ext.rtlcite,wikihiero|ext.uls.nojs|mediawiki.skinning.interface|mediawiki.ui.button|skins.vector.styles&only=styles&skin=vector&*'
-var cssUrl2 = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=site&only=styles&skin=vector&*'
+var cssUrl = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=site|ext.cite.styles|ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse|ext.tmh.thumbnail.styles|ext.uls.nojs|ext.visualEditor.desktopArticleTarget.noscript|ext.wikimediaBadges|mediawiki.page.gallery.styles|mediawiki.raggett|mediawiki.ui.button,icon|skins.minerva.base.reset,styles|skins.minerva.content.styles|skins.minerva.icons.images|skins.minerva.tablet.styles|wikibase.client.init&only=styles&only=styles&skin=minerva'
 
 dlCss()
 
 function dlCss () {
-  console.log('downloading css 1/2')
+  console.log('downloading css')
   request(cssUrl, function (e, _, body) {
     if (e) throw e
-    fs.writeFile(path.join(__dirname, 'public/stylesheets/wiki1.css'), body, function (e) {
+    fs.writeFile(path.join(__dirname, 'public/stylesheets/wiki.css'), body, function (e) {
       if (e) throw e
-      console.log('downloaded css 1/2')
-      dlCss2()
-    })
-  })
-}
-function dlCss2 () {
-  console.log('downloading css 2/2')
-  request(cssUrl2, function (e, _, body) {
-    if (e) throw e
-    fs.writeFile(path.join(__dirname, 'public/stylesheets/wiki2.css'), body, function (e) {
-      if (e) throw e
-      console.log('downloaded css 2/2')
+      console.log('downloaded css')
       updatePages()
     })
   })
