@@ -1,4 +1,5 @@
 import bus from 'bus'
+import closest from 'closest'
 import delegate from 'component-delegate'
 import empty from 'empty-element'
 import render from 'crel'
@@ -32,7 +33,16 @@ function Article (player, isSelf) {
     [ render('div', { class: 'heading-holder' }, this.title), this.content ]
   )
 
-  this.el.addEventListener('click', preventDefault, false)
+  this.el.addEventListener('click', (event) => {
+    const target = closest(event.target, 'a')
+    if (target) {
+      const href = target.getAttribute('href')
+      if (href[0] === '#') {
+        return
+      }
+    }
+    event.preventDefault()
+  }, false)
   if (isSelf) {
     this.delegatedOnClick = delegate.bind(this.el, 'a, area', 'click', this.onClick)
     this.el.addEventListener('mousewheel', this.onScroll, false)
