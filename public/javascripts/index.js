@@ -5,8 +5,8 @@ import classes from 'component-classes'
 import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
-import io from 'socket.io-client'
 
+import SocketEvents from '../../src/SocketEvents'
 import loadPage from './load-page'
 
 import pageTitle from './views/page-title'
@@ -78,16 +78,27 @@ function go (isPrivate) {
   render(empty(opponent.el),
          [ article(opponent, false), playerMask(opponent) ])
 
-  sock = io.connect(location.protocol + '//' + location.hostname + ':' + location.port)
+  const protocol = location.protocol.replace(/^http/, 'ws')
+  const { hostname, port } = location
+  sock = SocketEvents(
+    new WebSocket(`${protocol}//${hostname}:${port}`)
+  )
+
+  sock.on('error', (error) => {
+    alert(error)
+  })
+
   sock.on('start', onStart)
   sock.on('navigated', onNavigated)
   sock.on('won', onWon)
   sock.on('lost', onLost)
   sock.on('paths', onReceivePaths)
   sock.on('scrolled', onOpponentScrolled)
-  sock.on('hint', hintText => { bus.emit('hint', hintText) })
+  sock.on('hint', (hintText) => {
+    bus.emit('hint', hintText)
+  })
   sock.on('backlinks', onBacklinks)
-  sock.on('connection', id => {
+  sock.on('connection', (id) => {
     opponent.id = id
     _players[id] = opponent
   })
@@ -98,21 +109,20 @@ function go (isPrivate) {
     connectType = 'join'
     connectId = location.hash.substr(1)
   }
-  sock.emit('gameType', connectType, connectId, function (err, gameId, playerId, status) {
-    if (err) {
-      alert(err)
-      return
-    }
+
+  sock.on('game', (gameId, playerId) => {
     game.id = gameId
     me.id = playerId
     _players[playerId] = me
+
     if (connectType !== 'pair') {
       location.hash = gameId
     }
-    if (status === 'wait') {
-      waiting()
-    }
+
+    waiting()
   })
+
+  sock.emit('gameType', connectType, connectId)
 }
 
 function onNavigate (next) {

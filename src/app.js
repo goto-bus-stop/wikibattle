@@ -1,5 +1,3 @@
-// this was just edited from the default express generated app
-// because it is a quick'n'verydirty project…thing
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
@@ -8,13 +6,15 @@ const getRandom = require('random-item')
 const wiki = require('./wiki')
 const Player = require('./Player')
 const WikiBattle = require('./WikiBattle')
+const SocketEvents = require('./SocketEvents')
 const debug = require('debug')('WikiBattle:app')
 const PAGES_FILE = require.resolve('../pages.json')
 let wikiPages = require(PAGES_FILE) // array of page names that we can pick from
 
 const app = express()
 const server = http.createServer(app)
-const io = require('socket.io')(server, { serveClient: false })
+const { Server } = require('ws')
+const ws = new Server({ server })
 
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
@@ -25,49 +25,51 @@ function newGame (player) {
   const origin = getRandom(wikiPages)
   let goal
   do { goal = getRandom(wikiPages) } while (goal === origin)
-  const game = WikiBattle(io, origin, goal)
+  const game = WikiBattle(origin, goal)
   game.connect(player)
   return game
 }
 
-io.on('connection', (sock) => {
+ws.on('connection', (raw) => {
   let game
+  const sock = SocketEvents(raw)
   const player = Player(sock)
 
-  sock.on('gameType', (type, id, cb) => {
+  sock.on('gameType', (type, id) => {
     switch (type) {
       case 'pair':
+        debug('gameType', type, id, !!_pair)
         if (_pair) {
           game = _pair
           game.connect(player)
           _pair = null
-          cb(null, game.id, player.id, 'start')
+          sock.emit('game', game.id, player.id)
           game.start()
         } else {
           _pair = game = newGame(player)
-          cb(null, game.id, player.id, 'wait')
+          sock.emit('game', game.id, player.id)
         }
         break
       case 'new':
         game = newGame(player)
         _games[game.id] = game
-        cb(null, game.id, player.id, 'wait')
+        sock.emit('game', game.id, player.id)
         break
       case 'join':
         if (id in _games) {
           game = _games[id]
           game.connect(player)
           delete _games[id]
-          cb(null, game.id, player.id, 'start')
+          sock.emit('game', game.id, player.id)
           game.start()
         } else {
-          cb('nonexistent game id')
-          sock.disconnect()
+          sock.emit('error', 'nonexistent game id')
+          sock.close()
         }
         break
       default:
-        cb('invalid game type')
-        sock.disconnect()
+        sock.emit('error', 'invalid game type')
+        sock.close()
         break
     }
   })
@@ -82,7 +84,7 @@ io.on('connection', (sock) => {
     }
   })
 
-  sock.on('disconnect', () => {
+  raw.on('close', () => {
     if (game) {
       game.disconnect(player)
       // if this socket disconnected before finding an opponent,
