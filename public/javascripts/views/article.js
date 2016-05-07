@@ -29,7 +29,7 @@ function Article (player, isSelf) {
   this.content = render('div', { class: 'wb-article-content content' })
   this.el = render(
     'div', { class: 'wb-article' },
-    [ this.title, this.content ]
+    [ render('div', { class: 'heading-holder' }, this.title), this.content ]
   )
 
   this.el.addEventListener('click', preventDefault, false)
