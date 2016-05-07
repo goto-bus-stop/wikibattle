@@ -1,4 +1,6 @@
 const express = require('express')
+const compression = require('compression')
+const serveStatic = require('serve-static')
 const fs = require('fs')
 const path = require('path')
 const http = require('http')
@@ -15,6 +17,8 @@ const app = express()
 const server = http.createServer(app)
 const { Server } = require('ws')
 const ws = new Server({ server })
+
+app.use(compression())
 
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
@@ -96,7 +100,7 @@ ws.on('connection', (raw) => {
 })
 
 // index page + css + js
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(serveStatic(path.join(__dirname, '../public')))
 
 // Wiki Article content
 app.get('/wiki/:page', (req, res) => {
