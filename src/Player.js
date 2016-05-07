@@ -4,7 +4,7 @@ module.exports = Player
 
 /**
  * Manages one Player's socket. (i.e. Sends events and stores state.)
- * @param {io.Socket} sock A Socket.IO websocket instance.
+ * @param {SocketEvents} sock A WebSocket events wrapper.
  */
 function Player (sock) {
   if (!(this instanceof Player)) return new Player(sock)
@@ -34,7 +34,7 @@ Player.prototype.lose = function () {
 Player.prototype.disconnect = function () {
   if (this.sock) {
     this.connected = false
-    this.sock.disconnect()
+    this.sock.close()
     this.sock = null
   }
 }

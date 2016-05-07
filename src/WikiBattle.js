@@ -8,15 +8,14 @@ const BACKLINKS_TIMEOUT = 90 // seconds
 
 module.exports = WikiBattle
 
-function WikiBattle (io, origin, goal) {
-  if (!(this instanceof WikiBattle)) return new WikiBattle(io, origin, goal)
+function WikiBattle (origin, goal) {
+  if (!(this instanceof WikiBattle)) return new WikiBattle(origin, goal)
   EventEmitter.call(this)
   $id %= 2e15 // should be enough for anyone!
   this.id = `game:${++$id}`
   this.players = []
   this.origin = origin
   this.goal = goal
-  this.io = io
 }
 
 WikiBattle.prototype.emitSocket = function (...args) {
