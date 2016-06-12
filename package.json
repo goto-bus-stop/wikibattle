@@ -8,7 +8,7 @@
   "dependencies": {
     "JSONStream": "^1.0.6",
     "bus": "^0.1.0",
-    "cheerio": "^0.20.0",
+    "cheerio": "^0.21.0",
     "closest": "0.0.1",
     "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
