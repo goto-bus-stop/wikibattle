@@ -45,7 +45,7 @@ function Article (player, isSelf) {
   }, false)
   if (isSelf) {
     this.delegatedOnClick = delegate.bind(this.el, 'a, area', 'click', this.onClick)
-    this.el.addEventListener('mousewheel', this.onScroll, false)
+    this.el.addEventListener('scroll', this.onScroll, false)
   } else {
     this.el.addEventListener('mousewheel', preventDefault, false)
   }
@@ -101,6 +101,6 @@ Article.prototype.onArticleScrolled = function (playerId, top, width) {
 Article.prototype.onGameOver = function (winner) {
   if (this.isSelf) {
     delegate.unbind(this.el, 'click', this.delegatedOnClick)
-    this.el.removeEventListener('mousewheel', this.onScroll)
+    this.el.removeEventListener('scroll', this.onScroll)
   }
 }
