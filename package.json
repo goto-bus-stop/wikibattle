@@ -35,7 +35,7 @@
     "browserify": "^13.0.0",
     "clean-css": "^3.4.6",
     "less": "^2.5.3",
-    "standard": "^7.0.0",
+    "standard": "^8.0.0",
     "uglify-js": "^2.5.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
