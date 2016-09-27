@@ -33,7 +33,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
-    "clean-css": "^3.4.6",
+    "clean-css": "^3.4.20",
     "less": "^2.5.3",
     "standard": "^8.0.0",
     "uglify-js": "^2.5.0"
