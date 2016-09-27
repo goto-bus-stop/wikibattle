@@ -6,7 +6,7 @@
   "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues",
   "author": "goto-bus-stop <rene@kooi.me>",
   "dependencies": {
-    "JSONStream": "^1.0.6",
+    "JSONStream": "^1.2.1",
     "bus": "^0.1.0",
     "cheerio": "^0.22.0",
     "closest": "0.0.1",
