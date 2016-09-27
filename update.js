@@ -5,7 +5,7 @@ var request = require('request')
 var fs = require('fs')
 var path = require('path')
 
-var cssUrl = 'https://bits.wikimedia.org/en.wikipedia.org/load.php?debug=false&lang=en&modules=site|ext.cite.styles|ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse|ext.tmh.thumbnail.styles|ext.uls.nojs|ext.visualEditor.desktopArticleTarget.noscript|ext.wikimediaBadges|mediawiki.page.gallery.styles|mediawiki.raggett|mediawiki.ui.button,icon|skins.minerva.base.reset,styles|skins.minerva.content.styles|skins.minerva.icons.images|skins.minerva.tablet.styles|wikibase.client.init&only=styles&only=styles&skin=minerva'
+var cssUrl = 'https://en.wikipedia.org/w/load.php?debug=false&lang=en&modules=site|ext.cite.styles|ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse|ext.tmh.thumbnail.styles|ext.visualEditor.desktopArticleTarget.noscript|ext.wikimediaBadges|mediawiki.page.gallery.styles|mediawiki.ui.button,icon|skins.minerva.base.reset,styles|skins.minerva.content.styles|skins.minerva.icons.images|skins.minerva.tablet.styles|wikibase.client.init&only=styles&only=styles&skin=minerva'
 
 dlCss()
 
