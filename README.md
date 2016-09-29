@@ -1,9 +1,9 @@
-WikiBattle
-----------
+[WikiBattle]
+------------
 
 1v1 races through Wikipedia article links.
 
-[http://WikiBattle.me](http://WikiBattle.me)
+[http://WikiBattle.me][WikiBattle]
 
 ### Objective
 
@@ -12,7 +12,7 @@ their way to the target article wins. Use only links in the articles, no back
 button.
 
 Articles are randomly selected from the top 5000 most popular articles of the
-previous week, compiled by [Andrew G. West](https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages).
+previous week, compiled by [Andrew G. West][Top 5000 pages].
 
 After 40 seconds, you will get a hint, consisting of the first 200 characters of
 the first paragraph of the target article. After 90 seconds, you will also get a
@@ -29,4 +29,8 @@ Then you'll be live at localhost:3000!
 
 ### License
 
-[MIT](./LICENSE)
+[MIT]
+
+[WikiBattle]: http://WikiBattle.me
+[Top 5000 pages]: https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages
+[MIT]: ./LICENSE
