@@ -47,13 +47,15 @@ WikiPage.prototype.getHint = function () {
 WikiPage.prototype.getBacklinks = function (cb) {
   request({
     uri: 'https://en.wikipedia.org/w/api.php',
-    qs: { action: 'query',
-          format: 'json',
-          list: 'backlinks',
-          bltitle: this.title,
-          blfilterredir: 'all',
-          blnamespace: 0,
-          bllimit: BACKLINKS_LIMIT },
+    qs: {
+      action: 'query',
+      format: 'json',
+      list: 'backlinks',
+      bltitle: this.title,
+      blfilterredir: 'all',
+      blnamespace: 0,
+      bllimit: BACKLINKS_LIMIT
+    },
     headers: wikiBattleHeaders
   }, (err, _, body) => {
     if (err) return cb(err)
