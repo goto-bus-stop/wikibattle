@@ -6,11 +6,9 @@ const http = require('http')
 const debug = require('debug')('WikiBattle:app')
 
 const wiki = require('./wiki')
-const Player = require('./Player')
-const WikiBattle = require('./WikiBattle')
-const SocketEvents = require('./SocketEvents')
 const WikiPages = require('./WikiPages')
 const MatchMaker = require('./MatchMaker')
+const SocketHandler = require('./SocketHandler')
 
 const PAGES_FILE = require.resolve('../pages.json')
 
@@ -26,52 +24,8 @@ const matchMaker = MatchMaker({
   pages: wikiPages
 })
 
-ws.on('connection', (raw) => {
-  let game
-  const sock = SocketEvents(raw)
-  const player = Player(sock)
-
-  sock.on('gameType', (type, id) => {
-    switch (type) {
-      case 'pair':
-        game = matchMaker.pair(player)
-        break
-      case 'new':
-        game = matchMaker.new(player)
-        break
-      case 'join':
-        try {
-          game = matchMaker.join(player, id)
-        } catch (e) {
-          sock.emit('error', e.message)
-          sock.close()
-        }
-        break
-      default:
-        sock.emit('error', 'invalid game type')
-        sock.close()
-        break
-    }
-  })
-
-  sock.on('navigate', (to) => {
-    game.navigate(player, decodeURIComponent(to))
-  })
-
-  sock.on('scroll', (top, areaWidth) => {
-    if (typeof top === 'number') {
-      game.notifyScroll(player, top, areaWidth)
-    }
-  })
-
-  raw.on('close', () => {
-    if (game) {
-      game.disconnect(player)
-
-      matchMaker.disconnected(game)
-    }
-  })
-})
+const handler = SocketHandler(ws, matchMaker)
+handler.start()
 
 // index page + css + js
 app.use(serveStatic(path.join(__dirname, '../public')))
