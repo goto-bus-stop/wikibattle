@@ -105,6 +105,20 @@ button {
   &--right {
     right: 0;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+
+    &--left {
+      top: 50px;
+      bottom: 50px;
+    }
+    &--right {
+      bottom: 0px;
+      top: auto;
+      height: 50px;
+    }
+  }
 }
 #backlinks {
   position: absolute;
