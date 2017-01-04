@@ -5,13 +5,15 @@ const fs = require('fs')
 const path = require('path')
 const http = require('http')
 const getRandom = require('random-item')
+const debug = require('debug')('WikiBattle:app')
+
 const wiki = require('./wiki')
 const Player = require('./Player')
 const WikiBattle = require('./WikiBattle')
 const SocketEvents = require('./SocketEvents')
-const debug = require('debug')('WikiBattle:app')
+const WikiPages = require('./WikiPages')
+
 const PAGES_FILE = require.resolve('../pages.json')
-let wikiPages = require(PAGES_FILE) // array of page names that we can pick from
 
 const app = express()
 const server = http.createServer(app)
@@ -20,15 +22,15 @@ const ws = new Server({ server })
 
 app.use(compression())
 
+const wikiPages = WikiPages(PAGES_FILE)
+
 // `_pair` contains the most recently created game, which will be connected
 // to by the next socket
 let _pair = null
 const _games = {}
 
 function newGame (player) {
-  const origin = getRandom(wikiPages)
-  let goal
-  do { goal = getRandom(wikiPages) } while (goal === origin)
+  const [origin, goal] = wikiPages.randomPair()
   const game = WikiBattle(origin, goal)
   game.connect(player)
   return game
@@ -137,12 +139,6 @@ app.use((err, req, res, next) => {
 })
 
 app.set('port', process.env.PORT || 3000)
-
-fs.watch(PAGES_FILE, () => {
-  debug('Reloading pages')
-  delete require.cache[PAGES_FILE]
-  wikiPages = require(PAGES_FILE)
-})
 
 server.listen(app.get('port'), () => {
   debug(`Express server listening on port ${server.address().port}`)
