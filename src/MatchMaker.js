@@ -25,7 +25,7 @@ MatchMaker.prototype.pair = function (player) {
     this.waitingPair = null
 
     game.connect(player)
-    player.sock.emit('game', game.id, player.id)
+    player.notifyJoinedGame(game)
     game.start()
 
     return game
@@ -35,7 +35,7 @@ MatchMaker.prototype.pair = function (player) {
   const game = this.createGame(player)
   this.waitingPair = game
 
-  player.sock.emit('game', game.id, player.id)
+  player.notifyJoinedGame(game)
 
   return game
 }
@@ -46,7 +46,7 @@ MatchMaker.prototype.new = function (player) {
   const game = this.createGame(player)
   this.games[game.id] = game
 
-  player.sock.emit('game', game.id, player.id)
+  player.notifyJoinedGame(game)
 
   return game
 }
@@ -62,7 +62,7 @@ MatchMaker.prototype.join = function (player, id) {
   game.connect(player)
   delete this.games[id]
 
-  player.sock.emit('game', game.id, player.id)
+  player.notifyJoinedGame(game)
   game.start()
 
   return game

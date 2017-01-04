@@ -39,6 +39,10 @@ Player.prototype.disconnect = function () {
   }
 }
 
+Player.prototype.notifyJoinedGame = function (game) {
+  this.sock && this.sock.emit('game', game.id, this.id)
+}
+
 Player.prototype.notifyConnect = function (player) {
   this.sock && this.sock.emit('connection', player.id)
 }
