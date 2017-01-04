@@ -10,6 +10,7 @@ const Player = require('./Player')
 const WikiBattle = require('./WikiBattle')
 const SocketEvents = require('./SocketEvents')
 const WikiPages = require('./WikiPages')
+const MatchMaker = require('./MatchMaker')
 
 const PAGES_FILE = require.resolve('../pages.json')
 
@@ -21,18 +22,9 @@ const ws = new WebSocketServer({ server })
 app.use(compression())
 
 const wikiPages = WikiPages(PAGES_FILE)
-
-// `_pair` contains the most recently created game, which will be connected
-// to by the next socket
-let _pair = null
-const _games = {}
-
-function newGame (player) {
-  const [origin, goal] = wikiPages.randomPair()
-  const game = WikiBattle(origin, goal)
-  game.connect(player)
-  return game
-}
+const matchMaker = MatchMaker({
+  pages: wikiPages
+})
 
 ws.on('connection', (raw) => {
   let game
@@ -42,32 +34,16 @@ ws.on('connection', (raw) => {
   sock.on('gameType', (type, id) => {
     switch (type) {
       case 'pair':
-        debug('gameType', type, id, !!_pair)
-        if (_pair) {
-          game = _pair
-          game.connect(player)
-          _pair = null
-          sock.emit('game', game.id, player.id)
-          game.start()
-        } else {
-          _pair = game = newGame(player)
-          sock.emit('game', game.id, player.id)
-        }
+        game = matchMaker.pair(player)
         break
       case 'new':
-        game = newGame(player)
-        _games[game.id] = game
-        sock.emit('game', game.id, player.id)
+        game = matchMaker.new(player)
         break
       case 'join':
-        if (id in _games) {
-          game = _games[id]
-          game.connect(player)
-          delete _games[id]
-          sock.emit('game', game.id, player.id)
-          game.start()
-        } else {
-          sock.emit('error', 'nonexistent game id')
+        try {
+          game = matchMaker.join(player, id)
+        } catch (e) {
+          sock.emit('error', e.message)
           sock.close()
         }
         break
@@ -91,10 +67,8 @@ ws.on('connection', (raw) => {
   raw.on('close', () => {
     if (game) {
       game.disconnect(player)
-      // if this socket disconnected before finding an opponent,
-      // clear the "Waiting" game again
-      if (game === _pair) _pair = null
-      if (_games[game.id]) delete _games[game.id]
+
+      matchMaker.disconnected(game)
     }
   })
 })

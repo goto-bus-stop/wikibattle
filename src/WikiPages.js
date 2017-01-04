@@ -5,7 +5,7 @@ const debug = require('debug')('WikiBattle:pages')
 module.exports = WikiPages
 
 function WikiPages (filename) {
-  if (!(this instanceof WikiPages)) return new WikiPages()
+  if (!(this instanceof WikiPages)) return new WikiPages(filename)
 
   this.pages = null
   this.filename = filename
