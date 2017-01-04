@@ -2,8 +2,6 @@ const fs = require('fs')
 const getRandom = require('random-item')
 const debug = require('debug')('WikiBattle:pages')
 
-const PAGES_FILE = require.resolve('../pages.json')
-
 module.exports = WikiPages
 
 function WikiPages (filename) {

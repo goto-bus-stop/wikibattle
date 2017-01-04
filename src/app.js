@@ -1,10 +1,8 @@
 const express = require('express')
 const compression = require('compression')
 const serveStatic = require('serve-static')
-const fs = require('fs')
 const path = require('path')
 const http = require('http')
-const getRandom = require('random-item')
 const debug = require('debug')('WikiBattle:app')
 
 const wiki = require('./wiki')
@@ -17,8 +15,8 @@ const PAGES_FILE = require.resolve('../pages.json')
 
 const app = express()
 const server = http.createServer(app)
-const { Server } = require('ws')
-const ws = new Server({ server })
+const WebSocketServer = require('ws').Server
+const ws = new WebSocketServer({ server })
 
 app.use(compression())
 
