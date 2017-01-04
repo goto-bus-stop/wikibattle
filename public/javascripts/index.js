@@ -149,7 +149,6 @@ function waiting () {
 function onStart (from, goal) {
   bus.emit('start', goal)
   location.hash = ''
-  me.navigateTo(from)
 }
 
 function onBacklinks (e, backlinks) {
