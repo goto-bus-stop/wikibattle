@@ -49,7 +49,6 @@
     "test": "npm run lint",
     "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css",
     "update": "node update.js",
-    "postinstall": "node update.js",
     "compile:server": "babel --out-dir lib src",
     "compile:client": "browserify --debug -t [ babelify ] -e public/javascripts/index.js -o public/app.js",
     "compile": "npm run compile:server && npm run compile:client",
