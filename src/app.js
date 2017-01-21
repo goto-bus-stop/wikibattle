@@ -4,13 +4,16 @@ const serveStatic = require('serve-static')
 const path = require('path')
 const http = require('http')
 const debug = require('debug')('WikiBattle:app')
+const schedule = require('node-schedule').scheduleJob
 
 const wiki = require('./wiki')
+const WikiUpdater = require('./WikiUpdater')
 const WikiPages = require('./WikiPages')
 const MatchMaker = require('./MatchMaker')
 const SocketHandler = require('./SocketHandler')
 
-const PAGES_FILE = require.resolve('../pages.json')
+const CSS_FILE = path.join(__dirname, '../public/stylesheets/wiki.css')
+const PAGES_FILE = path.join(__dirname, '../pages.json')
 
 const app = express()
 const server = http.createServer(app)
@@ -19,6 +22,10 @@ const ws = new WebSocketServer({ server })
 
 app.use(compression())
 
+const updater = WikiUpdater({
+  cssPath: CSS_FILE,
+  pagesPath: PAGES_FILE
+})
 const wikiPages = WikiPages(PAGES_FILE)
 const matchMaker = MatchMaker({
   pages: wikiPages
@@ -26,6 +33,16 @@ const matchMaker = MatchMaker({
 
 const handler = SocketHandler(ws, matchMaker)
 handler.start()
+
+updater.update()
+schedule('0 0 0 * * *', () => {
+  updater.update((err) => {
+    if (err) {
+      console.error('Update failed:')
+      console.error(err.stack)
+    }
+  })
+})
 
 // index page + css + js
 app.use(serveStatic(path.join(__dirname, '../public')))

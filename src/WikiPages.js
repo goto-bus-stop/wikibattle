@@ -1,4 +1,5 @@
 const fs = require('fs')
+const ms = require('ms')
 const getRandom = require('random-item')
 const debug = require('debug')('WikiBattle:pages')
 
@@ -22,8 +23,10 @@ WikiPages.prototype.load = function () {
 
 WikiPages.prototype.startWatching = function () {
   fs.watch(this.filename, () => {
-    debug('Reloading pages')
-    this.load()
+    setTimeout(() => {
+      debug('Reloading pages')
+      this.load()
+    }, ms('2 seconds'))
   })
 }
 
