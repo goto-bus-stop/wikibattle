@@ -18,7 +18,7 @@
     "compression": "^1.6.1",
     "crel": "^3.0.0",
     "crypto-random-string": "^1.0.0",
-    "debug": "^2.2.0",
+    "debug": "^2.6.0",
     "dom-event": "^1.0.0",
     "each-async": "^1.1.1",
     "empty-element": "^1.0.0",
@@ -32,6 +32,7 @@
     "serve-static": "^1.10.2",
     "throttleit": "^1.0.0",
     "ws": "^1.1.0",
+    "ws-events": "^1.0.0",
     "xhr": "^2.3.3"
   },
   "devDependencies": {

@@ -1,4 +1,4 @@
-const SocketEvents = require('./SocketEvents')
+const SocketEvents = require('ws-events')
 const Player = require('./Player')
 
 module.exports = SocketHandler
