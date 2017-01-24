@@ -1,9 +1,9 @@
-const wiki = require('./wiki')
 const { EventEmitter } = require('events')
 const debug = require('debug')('WikiBattle:game')
 const ms = require('ms')
+const generateId = require('crypto-random-string')
+const wiki = require('./wiki')
 
-let $id = 0
 const HINT_TIMEOUT = ms('40 seconds')
 const BACKLINKS_TIMEOUT = ms('90 seconds')
 
@@ -16,8 +16,7 @@ module.exports = WikiBattle
 function WikiBattle (origin, goal) {
   if (!(this instanceof WikiBattle)) return new WikiBattle(origin, goal)
   EventEmitter.call(this)
-  $id %= 2e15 // should be enough for anyone!
-  this.id = `game:${++$id}`
+  this.id = generateId(7)
   this.players = []
   this.origin = origin
   this.goal = goal

@@ -1,4 +1,4 @@
-var $id = 0
+const generateId = require('crypto-random-string')
 
 module.exports = Player
 
@@ -8,7 +8,7 @@ module.exports = Player
  */
 function Player (sock) {
   if (!(this instanceof Player)) return new Player(sock)
-  this.id = ++$id
+  this.id = generateId(7)
   this.sock = sock
   this.path = []
   this.connected = true

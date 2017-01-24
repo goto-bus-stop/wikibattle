@@ -17,6 +17,7 @@
     "component-emitter": "^1.2.1",
     "compression": "^1.6.1",
     "crel": "^3.0.0",
+    "crypto-random-string": "^1.0.0",
     "debug": "^2.2.0",
     "each-async": "^1.1.1",
     "empty-element": "^1.0.0",
