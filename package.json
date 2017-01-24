@@ -31,7 +31,8 @@
     "request": "^2.64.0",
     "serve-static": "^1.10.2",
     "throttleit": "^1.0.0",
-    "ws": "^1.1.0"
+    "ws": "^1.1.0",
+    "xhr": "^2.3.3"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
