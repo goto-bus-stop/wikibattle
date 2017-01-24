@@ -6,7 +6,7 @@ import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
 
-import SocketEvents from '../../src/SocketEvents'
+import wsEvents from 'ws-events'
 import loadPage from './load-page'
 
 import pageTitle from './views/page-title'
@@ -80,7 +80,7 @@ function go (isPrivate) {
 
   const protocol = location.protocol.replace(/^http/, 'ws')
   const { hostname, port } = location
-  sock = SocketEvents(
+  sock = wsEvents(
     new WebSocket(`${protocol}//${hostname}:${port}`)
   )
 
@@ -174,5 +174,5 @@ function onLost () {
 
 function onReceivePaths (paths) {
   bus.emit('paths', paths)
-  sock.disconnect()
+  sock.close()
 }
