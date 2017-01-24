@@ -8,6 +8,10 @@ const BACKLINKS_TIMEOUT = 90 // seconds
 
 module.exports = WikiBattle
 
+/**
+ * Represents a 1v1 WikiBattle match.
+ */
+
 function WikiBattle (origin, goal) {
   if (!(this instanceof WikiBattle)) return new WikiBattle(origin, goal)
   EventEmitter.call(this)
@@ -18,6 +22,10 @@ function WikiBattle (origin, goal) {
   this.goal = goal
 }
 
+/**
+ * Send a message to all players.
+ */
+
 WikiBattle.prototype.emitSocket = function (...args) {
   return this.players.forEach((player) => {
     const sock = player.sock
@@ -26,6 +34,10 @@ WikiBattle.prototype.emitSocket = function (...args) {
     }
   })
 }
+
+/**
+ * Add a new player to the game.
+ */
 
 WikiBattle.prototype.connect = function (connectingPlayer) {
   debug('connect player', connectingPlayer.id)
@@ -36,6 +48,10 @@ WikiBattle.prototype.connect = function (connectingPlayer) {
   this.players.push(connectingPlayer)
   return this
 }
+
+/**
+ * Remove a player from the game.
+ */
 
 WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
   debug('disconnect player', disconnectingPlayer.id)
@@ -52,6 +68,10 @@ WikiBattle.prototype.disconnect = function (disconnectingPlayer) {
   }
 }
 
+/**
+ * Check if any player has reached the target article.
+ */
+
 WikiBattle.prototype.checkWin = function () {
   const hasWon = (p) => p.current() === this.goal
   if (this.players.some(hasWon)) {
@@ -62,17 +82,28 @@ WikiBattle.prototype.checkWin = function () {
   }
 }
 
+/**
+ * Navigate a player to the next article.
+ *
+ * @api private
+ */
+
 WikiBattle.prototype.navigateInner = function (player, to) {
   player.navigateTo(to)
   this.emitSocket('navigated', player.id, to)
   this.checkWin()
 }
 
+/**
+ * Attempt to navigate to an article.
+ */
+
 WikiBattle.prototype.navigate = function (player, to) {
   debug('navigate (maybe)', player.id, `${player.current()} -> ${to}`)
   if (to === null || !player.current()) {
     return this.navigateInner(player, to)
   }
+  // Check that the current article links to the next.
   wiki.get(player.current(), (e, page) => {
     if (!e && page.linksTo(to)) {
       this.navigateInner(player, to)
@@ -82,11 +113,19 @@ WikiBattle.prototype.navigate = function (player, to) {
   })
 }
 
+/**
+ * Send a hint for the target article to the players.
+ */
+
 WikiBattle.prototype.sendHint = function () {
   wiki.get(this.goal, (e, page) => {
     this.emitSocket('hint', e || page.getHint())
   })
 }
+
+/**
+ * Send a list of articles that link to the target article to the players.
+ */
 
 WikiBattle.prototype.sendBacklinks = function () {
   wiki.get(this.goal, (e, page) => {
@@ -97,6 +136,10 @@ WikiBattle.prototype.sendBacklinks = function () {
   })
 }
 
+/**
+ * Send the final paths taken by each player to the players.
+ */
+
 WikiBattle.prototype.sendPaths = function () {
   const paths = this.players.reduce((paths, p) => {
     paths[p.id] = p.path
@@ -104,6 +147,10 @@ WikiBattle.prototype.sendPaths = function () {
   }, {})
   this.emitSocket('paths', paths)
 }
+
+/**
+ * Start the game.
+ */
 
 WikiBattle.prototype.start = function () {
   this.emitSocket('start', this.origin, this.goal)
@@ -116,11 +163,19 @@ WikiBattle.prototype.start = function () {
   this.backlinksTimeout = setTimeout(this.sendBacklinks.bind(this), BACKLINKS_TIMEOUT * 1000)
 }
 
+/**
+ * End the game.
+ */
+
 WikiBattle.prototype.end = function () {
   this.sendPaths()
   clearTimeout(this.hintTimeout)
   clearTimeout(this.backlinksTimeout)
 }
+
+/**
+ * Notify all other players that a player's scroll position has changed.
+ */
 
 WikiBattle.prototype.notifyScroll = function (scroller, top, width) {
   this.players.forEach((player) => {

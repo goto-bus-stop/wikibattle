@@ -5,6 +5,10 @@ const debug = require('debug')('WikiBattle:pages')
 
 module.exports = WikiPages
 
+/**
+ * Possible starting and goal wikipedia articles manager.
+ */
+
 function WikiPages (filename) {
   if (!(this instanceof WikiPages)) return new WikiPages(filename)
 
@@ -15,11 +19,19 @@ function WikiPages (filename) {
   this.startWatching()
 }
 
+/**
+ * Load article titles from the pages file.
+ */
+
 WikiPages.prototype.load = function () {
   debug('Loading pages')
   delete require.cache[this.filename]
   this.pages = require(this.filename)
 }
+
+/**
+ * Begin watching the pages file, and reload when it changes.
+ */
 
 WikiPages.prototype.startWatching = function () {
   fs.watch(this.filename, () => {
@@ -30,9 +42,17 @@ WikiPages.prototype.startWatching = function () {
   })
 }
 
+/**
+ * Get a random article name.
+ */
+
 WikiPages.prototype.random = function () {
   return getRandom(this.pages)
 }
+
+/**
+ * Get a pair of random article names, guaranteed to be two different pages.
+ */
 
 WikiPages.prototype.randomPair = function () {
   const one = this.random()

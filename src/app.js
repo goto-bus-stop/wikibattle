@@ -31,8 +31,16 @@ const matchMaker = MatchMaker({
   pages: wikiPages
 })
 
+/**
+ * Set up the WebSocket communications handler.
+ */
+
 const handler = SocketHandler(ws, matchMaker)
 handler.start()
+
+/**
+ * Start the wikipedia article list updater.
+ */
 
 updater.update()
 schedule('0 0 0 * * *', () => {
@@ -44,10 +52,16 @@ schedule('0 0 0 * * *', () => {
   })
 })
 
-// index page + css + js
+/**
+ * Serve the application.
+ */
+
 app.use(serveStatic(path.join(__dirname, '../public')))
 
-// Wiki Article content
+/**
+ * Serve proxied Wikipedia articles.
+ */
+
 app.get('/wiki/:page', (req, res) => {
   wiki.get(req.params.page, (err, body) => {
     if (body) res.end(body.content)
@@ -55,14 +69,16 @@ app.get('/wiki/:page', (req, res) => {
   })
 })
 
-// catch 404 and forward to error handler
+/**
+ * Handle errors.
+ */
+
 app.use((req, res, next) => {
   const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
-// error handlers
 if (app.get('env') === 'development') {
   app.use((err, req, res, next) => {
     res.writeHead(err.status || 500, { 'content-type': 'text/html' })
@@ -71,15 +87,18 @@ if (app.get('env') === 'development') {
     res.write(`<pre>${err.stack}</pre>`)
     res.end()
   })
+} else {
+  app.use((err, req, res, next) => {
+    res.writeHead(err.status || 500, { 'content-type': 'text/html' })
+    res.write(`<h1>${err.message}</h1>`)
+    res.write(`<h2>${err.status}</h2>`)
+    res.end()
+  })
 }
 
-// production error handler
-app.use((err, req, res, next) => {
-  res.writeHead(err.status || 500, { 'content-type': 'text/html' })
-  res.write(`<h1>${err.message}</h1>`)
-  res.write(`<h2>${err.status}</h2>`)
-  res.end()
-})
+/**
+ * Run the server.
+ */
 
 app.set('port', process.env.PORT || 3000)
 

@@ -15,6 +15,10 @@ const CACHE_MAX = 1000 // articles
 
 const wikiBattleHeaders = { 'user-agent': 'WikiBattle/1.0 (http://wikibattle.me/, rene@kooi.me)' }
 
+/**
+ * Represents a wikipedia article page.
+ */
+
 function WikiPage (title, content, links) {
   if (!(this instanceof WikiPage)) return new WikiPage(title, content, links)
   this.title = title
@@ -22,17 +26,29 @@ function WikiPage (title, content, links) {
   this.links = links
 }
 
+/**
+ * Get a list of articles that are linked from this one.
+ */
+
 WikiPage.prototype.getLinks = function () {
   return this.links
     .filter((link) => link['ns'] === 0 && 'exists' in link)
     .map((link) => link['*'])
 }
 
+/**
+ * Check if this article links to a given target article.
+ */
+
 WikiPage.prototype.linksTo = function (target) {
   target = target.replace(/\s/g, '_')
   return this.getLinks()
     .some((link) => link.replace(/\s/g, '_') === target)
 }
+
+/**
+ * Extract a short hint text from the article content.
+ */
 
 WikiPage.prototype.getHint = function () {
   try {
@@ -43,6 +59,10 @@ WikiPage.prototype.getHint = function () {
     return `(Could not load hint: [${e.message}])`
   }
 }
+
+/**
+ * Load article titles that link to this article.
+ */
 
 WikiPage.prototype.getBacklinks = function (cb) {
   request({
@@ -65,6 +85,10 @@ WikiPage.prototype.getBacklinks = function (cb) {
 }
 
 fs.mkdir(CACHE_LOCATION, (e) => { /* ignore error, badass! */ })
+
+/**
+ * Load a wikipedia page with metadata.
+ */
 
 function getPage (title, realCb) {
   // if we're already fetching this page, don't start a new request
@@ -103,6 +127,10 @@ function getPage (title, realCb) {
 
   cleanCache()
 }
+
+/**
+ * Clean old cached articles.
+ */
 
 function cleanCache () {
   fs.readdir(CACHE_LOCATION, (e, files) => {
