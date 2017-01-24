@@ -3,6 +3,7 @@ import closest from 'closest'
 import delegate from 'component-delegate'
 import empty from 'empty-element'
 import render from 'crel'
+import { on, off } from 'dom-event'
 
 export default function article (player, isSelf) {
   return new Article(player, isSelf).el
@@ -33,7 +34,7 @@ function Article (player, isSelf) {
     [ render('div', { class: 'heading-holder' }, this.title), this.content ]
   )
 
-  this.el.addEventListener('click', (event) => {
+  on(this.el, 'click', (event) => {
     const target = closest(event.target, 'a')
     if (target) {
       const href = target.getAttribute('href')
@@ -42,12 +43,12 @@ function Article (player, isSelf) {
       }
     }
     event.preventDefault()
-  }, false)
+  })
   if (isSelf) {
     this.delegatedOnClick = delegate.bind(this.el, 'a, area', 'click', this.onClick)
-    this.el.addEventListener('scroll', this.onScroll, false)
+    on(this.el, 'scroll', this.onScroll)
   } else {
-    this.el.addEventListener('mousewheel', preventDefault, false)
+    on(this.el, 'mousewheel', preventDefault)
   }
 
   bus.on('article-loaded', this.onArticleLoaded)
@@ -101,6 +102,6 @@ Article.prototype.onArticleScrolled = function (playerId, top, width) {
 Article.prototype.onGameOver = function (winner) {
   if (this.isSelf) {
     delegate.unbind(this.el, 'click', this.delegatedOnClick)
-    this.el.removeEventListener('scroll', this.onScroll)
+    off(this.el, 'scroll', this.onScroll)
   }
 }

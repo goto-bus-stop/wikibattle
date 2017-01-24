@@ -1,5 +1,6 @@
 import bus from 'bus'
 import render from 'crel'
+import { on, off } from 'dom-event'
 
 export default function startGameButton (isPrivate) {
   return new StartGameButton(isPrivate).el
@@ -11,12 +12,12 @@ function StartGameButton (isPrivate) {
   this.isPrivate = isPrivate
 
   this.el = render('button', '» Go!')
-  this.el.addEventListener('click', this.onClick, false)
+  on(this.el, 'click', this.onClick)
 }
 
 StartGameButton.prototype.disable = function () {
   this.el.disabled = true
-  this.el.removeEventListener('click', this.onClick)
+  off(this.el, 'click', this.onClick)
 }
 
 StartGameButton.prototype.onClick = function () {

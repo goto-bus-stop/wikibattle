@@ -1,6 +1,7 @@
 import bus from 'bus'
 import empty from 'empty-element'
 import render from 'crel'
+import { on } from 'dom-event'
 
 export default function pageTitle (pov) {
   return new PageTitle(pov).el
@@ -37,7 +38,7 @@ PageTitle.prototype.onGameOver = function (winner) {
 
   const text = `Game over: You ${won ? 'won' : 'lost'}!`
   const restart = render('button', 'Another Run?')
-  restart.addEventListener('click', () => bus.emit('restart'), false)
+  on(restart, 'click', () => bus.emit('restart'))
 
   render(empty(this.el), [ text, restart ])
 }
