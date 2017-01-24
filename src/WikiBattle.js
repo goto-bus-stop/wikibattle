@@ -1,10 +1,11 @@
 const wiki = require('./wiki')
 const { EventEmitter } = require('events')
 const debug = require('debug')('WikiBattle:game')
+const ms = require('ms')
 
 let $id = 0
-const HINT_TIMEOUT = 40 // seconds
-const BACKLINKS_TIMEOUT = 90 // seconds
+const HINT_TIMEOUT = ms('40 seconds')
+const BACKLINKS_TIMEOUT = ms('90 seconds')
 
 module.exports = WikiBattle
 
@@ -159,8 +160,8 @@ WikiBattle.prototype.start = function () {
     this.navigate(p, this.origin)
   })
 
-  this.hintTimeout = setTimeout(this.sendHint.bind(this), HINT_TIMEOUT * 1000)
-  this.backlinksTimeout = setTimeout(this.sendBacklinks.bind(this), BACKLINKS_TIMEOUT * 1000)
+  this.hintTimeout = setTimeout(this.sendHint.bind(this), HINT_TIMEOUT)
+  this.backlinksTimeout = setTimeout(this.sendBacklinks.bind(this), BACKLINKS_TIMEOUT)
 }
 
 /**
