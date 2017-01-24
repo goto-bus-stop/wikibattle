@@ -37,7 +37,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
-    "clean-css": "^3.4.20",
+    "cssnano-cli": "^1.0.5",
     "less": "^2.5.3",
     "standard": "^8.6.0",
     "uglify-js": "^2.5.0"
@@ -52,7 +52,7 @@
     "compile:server": "babel --out-dir lib src",
     "compile:client": "browserify --debug -t [ babelify ] -e public/javascripts/index.js -o public/app.js",
     "compile": "npm run compile:server && npm run compile:client",
-    "minify-css": "cleancss public/stylesheets/style.css -o public/stylesheets/style.css",
+    "minify-css": "cssnano public/stylesheets/style.css public/stylesheets/style.css",
     "minify-js": "uglifyjs public/app.js -mc -o public/app.js",
     "dev": "npm run compile && npm run less",
     "prod": "npm run less && npm run minify-css && npm run compile && npm run minify-js",
