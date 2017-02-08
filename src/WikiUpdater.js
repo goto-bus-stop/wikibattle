@@ -2,9 +2,10 @@ const fs = require('fs')
 const after = require('after')
 const cheerio = require('cheerio')
 const request = require('request')
+const newless = require('newless')
 const debug = require('debug')('WikiBattle:updater')
 
-module.exports = WikiUpdater
+module.exports = (opts) => new WikiUpdater(opts)
 
 const noop = () => {}
 
@@ -28,104 +29,104 @@ const getTextContent = (el) =>
  * Synchronizes data from Wikipedia.
  */
 
-function WikiUpdater (opts) {
-  if (!(this instanceof WikiUpdater)) return new WikiUpdater(opts)
-
-  this.cssPath = opts.cssPath
-  this.pagesPath = opts.pagesPath
-  this.request = request.defaults({ baseUrl: 'https://en.wikipedia.org/' })
-}
-
-/**
- * Load CSS source from Wikipedia servers.
- */
-
-WikiUpdater.prototype.loadCss = function (cb) {
-  debug('loading wikipedia css')
-
-  const modules = [
-    'site',
-    'ext.cite.styles',
-    'ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse',
-    'ext.tmh.thumbnail.styles',
-    'ext.visualEditor.desktopArticleTarget.noscript',
-    'ext.wikimediaBadges',
-    'mediawiki.page.gallery.styles',
-    'mediawiki.ui.button,icon',
-    'skins.minerva.base.reset,styles',
-    'skins.minerva.content.styles',
-    'skins.minerva.icons.images',
-    'skins.minerva.tablet.styles',
-    'wikibase.client.init'
-  ].join('|')
-  const qs = {
-    debug: false,
-    lang: 'en',
-    modules,
-    only: 'styles',
-    skin: 'minerva'
+const WikiUpdater = newless(class WikiUpdater {
+  constructor (opts) {
+    this.cssPath = opts.cssPath
+    this.pagesPath = opts.pagesPath
+    this.request = request.defaults({ baseUrl: 'https://en.wikipedia.org/' })
   }
 
-  this.request('/w/load.php', { qs }, (err, res, body) => {
-    cb(err, body)
-  })
-}
+  /**
+   * Load CSS source from Wikipedia servers.
+   */
 
-/**
- * Load names of the current top 5000 most popular pages on Wikipedia.
- */
+  loadCss (cb) {
+    debug('loading wikipedia css')
 
-WikiUpdater.prototype.loadPages = function (cb) {
-  debug('loading top wikipedia articles')
+    const modules = [
+      'site',
+      'ext.cite.styles',
+      'ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse',
+      'ext.tmh.thumbnail.styles',
+      'ext.visualEditor.desktopArticleTarget.noscript',
+      'ext.wikimediaBadges',
+      'mediawiki.page.gallery.styles',
+      'mediawiki.ui.button,icon',
+      'skins.minerva.base.reset,styles',
+      'skins.minerva.content.styles',
+      'skins.minerva.icons.images',
+      'skins.minerva.tablet.styles',
+      'wikibase.client.init'
+    ].join('|')
+    const qs = {
+      debug: false,
+      lang: 'en',
+      modules,
+      only: 'styles',
+      skin: 'minerva'
+    }
 
-  this.request('/wiki/Wikipedia:Top_5000_pages', (err, res, body) => {
-    if (err) return cb(err)
+    this.request('/w/load.php', { qs }, (err, res, body) => {
+      cb(err, body)
+    })
+  }
 
-    const $ = cheerio.load(body)
+  /**
+   * Load names of the current top 5000 most popular pages on Wikipedia.
+   */
 
-    const pageNames = $('.wikitable td:nth-child(2) a')
-      .toArray()
-      .filter(isWikiPageLink)
-      .map((el) => getTextContent($(el)))
+  loadPages (cb) {
+    debug('loading top wikipedia articles')
 
-    cb(null, pageNames)
-  })
-}
+    this.request('/wiki/Wikipedia:Top_5000_pages', (err, res, body) => {
+      if (err) return cb(err)
 
-/**
- * Load and sync the WikiBattle CSS file with Wikipedia.
- */
+      const $ = cheerio.load(body)
 
-WikiUpdater.prototype.updateCss = function (cb = noop) {
-  this.loadCss((err, contents) => {
-    if (err) return cb(err)
+      const pageNames = $('.wikitable td:nth-child(2) a')
+        .toArray()
+        .filter(isWikiPageLink)
+        .map((el) => getTextContent($(el)))
 
-    debug('saving css')
-    fs.writeFile(this.cssPath, contents, 'utf8', cb)
-  })
-}
+      cb(null, pageNames)
+    })
+  }
 
-/**
- * Load and sync the WikiBattle start/end pages pool with the top 5000 most
- * popular Wikipedia pages from the past week.
- */
+  /**
+   * Load and sync the WikiBattle CSS file with Wikipedia.
+   */
 
-WikiUpdater.prototype.updatePages = function (cb = noop) {
-  this.loadPages((err, pageNames) => {
-    if (err) return cb(err)
+  updateCss (cb = noop) {
+    this.loadCss((err, contents) => {
+      if (err) return cb(err)
 
-    debug('saving pages')
-    fs.writeFile(this.pagesPath, JSON.stringify(pageNames), 'utf8', cb)
-  })
-}
+      debug('saving css')
+      fs.writeFile(this.cssPath, contents, 'utf8', cb)
+    })
+  }
 
-/**
- * Sync CSS and articles from Wikipedia.
- */
+  /**
+   * Load and sync the WikiBattle start/end pages pool with the top 5000 most
+   * popular Wikipedia pages from the past week.
+   */
 
-WikiUpdater.prototype.update = function (cb = noop) {
-  cb = after(2, cb)
+  updatePages (cb = noop) {
+    this.loadPages((err, pageNames) => {
+      if (err) return cb(err)
 
-  this.updateCss(cb)
-  this.updatePages(cb)
-}
+      debug('saving pages')
+      fs.writeFile(this.pagesPath, JSON.stringify(pageNames), 'utf8', cb)
+    })
+  }
+
+  /**
+   * Sync CSS and articles from Wikipedia.
+   */
+
+  update (cb = noop) {
+    cb = after(2, cb)
+
+    this.updateCss(cb)
+    this.updatePages(cb)
+  }
+})

@@ -4,6 +4,7 @@ const serveStatic = require('serve-static')
 const path = require('path')
 const http = require('http')
 const debug = require('debug')('WikiBattle:app')
+const newless = require('newless')
 const schedule = require('node-schedule').scheduleJob
 
 const wiki = require('./wiki')
@@ -17,8 +18,8 @@ const PAGES_FILE = path.join(__dirname, '../pages.json')
 
 const app = express()
 const server = http.createServer(app)
-const WebSocketServer = require('ws').Server
-const ws = new WebSocketServer({ server })
+const WebSocketServer = newless(require('ws').Server)
+const ws = WebSocketServer({ server })
 
 app.use(compression())
 

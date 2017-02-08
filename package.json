@@ -26,6 +26,7 @@
     "inflight": "^1.0.4",
     "map-async": "^0.1.1",
     "ms": "^0.7.2",
+    "newless": "^0.3.0",
     "node-schedule": "^1.2.0",
     "random-item": "^1.0.0",
     "request": "^2.64.0",
