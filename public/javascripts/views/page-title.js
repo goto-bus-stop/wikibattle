@@ -26,7 +26,7 @@ PageTitle.prototype.text = function (text) {
 }
 
 PageTitle.prototype.onWaiting = function () {
-  this.text('WikiBattle: Waiting for Opponent…')
+  this.text('Waiting for Opponent…')
 }
 
 PageTitle.prototype.onGameStart = function (goal) {
