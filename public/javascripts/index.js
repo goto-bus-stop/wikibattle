@@ -116,7 +116,7 @@ function go (isPrivate) {
     _players[playerId] = me
 
     if (connectType !== 'pair') {
-      location.hash = gameId
+      location.hash = `#game:${gameId}`
     }
 
     waiting()
