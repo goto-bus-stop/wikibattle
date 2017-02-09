@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
-    "babel-preset-latest": "^6.22.0",
+    "babel-preset-env": "^1.1.8",
     "babelify": "^7.2.0",
     "browserify": "^14.0.0",
     "cssnano-cli": "^1.0.5",
@@ -62,10 +62,5 @@
     "prod": "npm run less && npm run minify-css && npm run compile && npm run minify-js",
     "build": "npm run prod && npm run update",
     "prepublish": "npm run build"
-  },
-  "babel": {
-    "presets": [
-      "latest"
-    ]
   }
 }
