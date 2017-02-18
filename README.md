@@ -3,7 +3,7 @@
 
 1v1 races through Wikipedia article links.
 
-[https://wikibattle.now.sh][WikiBattle]
+[https://wikibattle.me][WikiBattle]
 
 ### Objective
 
@@ -31,6 +31,6 @@ Then you'll be live at localhost:3000!
 
 [MIT]
 
-[WikiBattle]: https://wikibattle.now.sh
+[WikiBattle]: https://wikibattle.me
 [Top 5000 pages]: https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages
 [MIT]: ./LICENSE
