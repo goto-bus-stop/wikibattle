@@ -107,7 +107,7 @@ function go (isPrivate) {
   let connectId = null
   if (!_private && location.hash.substr(0, 6) === '#game:') {
     connectType = 'join'
-    connectId = location.hash.substr(1)
+    connectId = location.hash.substr(6)
   }
 
   sock.on('game', (gameId, playerId) => {
