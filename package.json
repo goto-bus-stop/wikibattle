@@ -44,6 +44,7 @@
     "browserify": "^14.0.0",
     "cssnano-cli": "^1.0.5",
     "less": "^2.5.3",
+    "rollupify": "^0.3.9",
     "standard": "^8.6.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
@@ -54,7 +55,7 @@
     "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css",
     "update": "node update.js",
     "compile:server": "babel --out-dir lib src",
-    "compile:client": "browserify --debug -t [ babelify ] -e public/javascripts/index.js -o public/app.js",
+    "compile:client": "browserify --debug -t rollupify -t babelify -e public/javascripts/index.js -o public/app.js",
     "compile": "npm run compile:server && npm run compile:client",
     "minify-css": "cssnano public/stylesheets/style.css public/stylesheets/style.css",
     "minify-js": "babili public/app.js -o public/app.js",
