@@ -46,7 +46,7 @@
     "cssnano-cli": "^1.0.5",
     "less": "^2.5.3",
     "rollupify": "^0.3.9",
-    "standard": "^9.0.0"
+    "standard": "^10.0.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
