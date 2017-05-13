@@ -1,9 +1,9 @@
-import bus from 'bus'
-import classes from 'component-classes'
-import render from 'crel'
-import empty from 'empty-element'
+const bus = require('bus')
+const classes = require('component-classes')
+const render = require('crel')
+const empty = require('empty-element')
 
-export default function backlinks () {
+module.exports = function backlinks () {
   return new Backlinks().el
 }
 

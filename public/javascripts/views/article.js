@@ -1,11 +1,11 @@
-import bus from 'bus'
-import closest from 'closest'
-import delegate from 'component-delegate'
-import empty from 'empty-element'
-import render from 'crel'
-import { on, off } from 'dom-event'
+const bus = require('bus')
+const closest = require('closest')
+const delegate = require('component-delegate')
+const empty = require('empty-element')
+const render = require('crel')
+const { on, off } = require('dom-event')
 
-export default function article (player, isSelf) {
+module.exports = function article (player, isSelf) {
   return new Article(player, isSelf).el
 }
 

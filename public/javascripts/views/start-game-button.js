@@ -1,8 +1,8 @@
-import bus from 'bus'
-import render from 'crel'
-import { on, off } from 'dom-event'
+const bus = require('bus')
+const render = require('crel')
+const { on, off } = require('dom-event')
 
-export default function startGameButton (isPrivate) {
+module.exports = function startGameButton (isPrivate) {
   return new StartGameButton(isPrivate).el
 }
 

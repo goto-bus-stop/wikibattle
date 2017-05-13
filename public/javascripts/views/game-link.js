@@ -1,8 +1,8 @@
-import bus from 'bus'
-import classes from 'component-classes'
-import render from 'crel'
+const bus = require('bus')
+const classes = require('component-classes')
+const render = require('crel')
 
-export default function gameLink () {
+module.exports = function gameLink () {
   return new GameLink().el
 }
 

@@ -1,9 +1,9 @@
-import bus from 'bus'
-import classes from 'component-classes'
-import crel from 'crel'
-import { on } from 'dom-event'
+const bus = require('bus')
+const classes = require('component-classes')
+const crel = require('crel')
+const { on } = require('dom-event')
 
-export default function backlinksToggle () {
+module.exports = function backlinksToggle () {
   return new BacklinksToggle().el
 }
 
