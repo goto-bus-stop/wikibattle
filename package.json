@@ -10,7 +10,7 @@
     "JSONStream": "^1.2.1",
     "after": "^0.8.2",
     "bus": "^0.1.0",
-    "cheerio": "^0.22.0",
+    "cheerio": "^1.0.0-rc.1",
     "closest": "0.0.1",
     "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
