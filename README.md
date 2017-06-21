@@ -1,6 +1,8 @@
 [WikiBattle][]
 --------------
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/goto-bus-stop/wikibattle.svg)](https://greenkeeper.io/)
+
 1v1 races through Wikipedia article links.
 
 [https://wikibattle.me][WikiBattle]
