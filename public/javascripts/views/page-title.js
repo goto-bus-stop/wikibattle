@@ -1,7 +1,7 @@
-const bus = require('bus')
 const empty = require('empty-element')
 const render = require('crel')
 const { on } = require('dom-event')
+const bus = require('../bus')
 
 module.exports = function pageTitle (pov) {
   return new PageTitle(pov).el

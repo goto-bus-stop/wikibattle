@@ -1,6 +1,6 @@
-const bus = require('bus')
 const render = require('crel')
 const { on, off } = require('dom-event')
+const bus = require('../bus')
 
 module.exports = function startGameButton (isPrivate) {
   return new StartGameButton(isPrivate).el

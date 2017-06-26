@@ -1,6 +1,6 @@
-const bus = require('bus')
 const classes = require('component-classes')
 const render = require('crel')
+const bus = require('../bus')
 
 const path = require('./path')
 

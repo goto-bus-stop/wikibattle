@@ -1,9 +1,9 @@
-const bus = require('bus')
 const closest = require('closest')
 const delegate = require('component-delegate')
 const empty = require('empty-element')
 const render = require('crel')
 const { on, off } = require('dom-event')
+const bus = require('../bus')
 
 module.exports = function article (player, isSelf) {
   return new Article(player, isSelf).el
@@ -81,7 +81,7 @@ Article.prototype.onClick = function ({ delegateTarget: el }) {
 Article.prototype.onScroll = function (e) {
   // timeout so we get the scrollTop *after* the scroll event instead of before
   setTimeout(() => {
-    bus.emit('scroll', this.el.scrollTop, this.el.offsetWidth)
+    bus.emit('scroll', { scroll: this.el.scrollTop, width: this.el.offsetWidth })
   }, 10)
 }
 
@@ -91,8 +91,8 @@ Article.prototype.onArticleLoaded = function ({ player, title, body }) {
   }
 }
 
-Article.prototype.onArticleScrolled = function (playerId, top, width) {
-  if (this.player.id === playerId) {
+Article.prototype.onArticleScrolled = function ({ id, top, width }) {
+  if (this.player.id === id) {
     // very rough estimation of where the opponent will roughly be on their screen size
     // inaccurate as poop but it's only a gimmick anyway so it doesn't really matter
     this.el.scrollTop = top * width / this.el.offsetWidth

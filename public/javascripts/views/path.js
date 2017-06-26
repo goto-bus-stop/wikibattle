@@ -1,7 +1,7 @@
-const bus = require('bus')
 const classes = require('component-classes')
 const empty = require('empty-element')
 const render = require('crel')
+const bus = require('../bus')
 
 module.exports = function path (player) {
   return new Path(player).el

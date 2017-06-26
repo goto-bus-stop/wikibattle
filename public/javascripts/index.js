@@ -1,14 +1,12 @@
 /* global location, alert */
 
-const bus = require('bus')
 const classes = require('component-classes')
 const empty = require('empty-element')
 const render = require('crel')
 const throttle = require('throttleit')
-
 const wsEvents = require('ws-events')
+const bus = require('./bus')
 const loadPage = require('./load-page')
-
 const pageTitle = require('./views/page-title')
 const startGameButton = require('./views/start-game-button')
 const gameLink = require('./views/game-link')
@@ -129,8 +127,8 @@ function onNavigate (next) {
   sock.emit('navigate', next)
 }
 
-function onScroll (top, width) {
-  sock.emit('scroll', top, width)
+function onScroll ({ scroll, width }) {
+  sock.emit('scroll', scroll, width)
 }
 
 function restart () {
@@ -162,7 +160,7 @@ function onNavigated (playerId, page, cb) {
   }
 }
 function onOpponentScrolled (id, top, width) {
-  bus.emit('article-scrolled', id, top, width)
+  bus.emit('article-scrolled', { id, top, width })
 }
 
 function onWon () {

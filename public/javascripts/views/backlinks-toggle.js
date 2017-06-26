@@ -1,7 +1,7 @@
-const bus = require('bus')
 const classes = require('component-classes')
 const crel = require('crel')
 const { on } = require('dom-event')
+const bus = require('../bus')
 
 module.exports = function backlinksToggle () {
   return new BacklinksToggle().el
