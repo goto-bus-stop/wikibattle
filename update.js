@@ -1,6 +1,6 @@
 const path = require('path')
 const updater = require('./lib/WikiUpdater')({
-  cssPath: path.join(__dirname, 'public/stylesheets/wiki.css'),
+  cssPath: path.join(__dirname, 'public/wiki.css'),
   pagesPath: path.join(__dirname, 'pages.json')
 })
 
