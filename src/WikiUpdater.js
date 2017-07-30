@@ -1,7 +1,8 @@
 const fs = require('fs')
+const qs = require('querystring')
 const after = require('after')
 const cheerio = require('cheerio')
-const request = require('request')
+const fetch = require('make-fetch-happen')
 const newless = require('newless')
 const debug = require('debug')('WikiBattle:updater')
 
@@ -33,7 +34,6 @@ const WikiUpdater = newless(class WikiUpdater {
   constructor (opts) {
     this.cssPath = opts.cssPath
     this.pagesPath = opts.pagesPath
-    this.request = request.defaults({ baseUrl: 'https://en.wikipedia.org/' })
   }
 
   /**
@@ -58,17 +58,20 @@ const WikiUpdater = newless(class WikiUpdater {
       'skins.minerva.tablet.styles',
       'wikibase.client.init'
     ].join('|')
-    const qs = {
+    const query = qs.stringify({
       debug: false,
       lang: 'en',
       modules,
       only: 'styles',
       skin: 'minerva'
-    }
-
-    this.request('/w/load.php', { qs }, (err, res, body) => {
-      cb(err, body)
     })
+
+    fetch(`https://en.wikipedia.org/w/load.php?${query}`)
+      .then((response) => response.text())
+      .then((body) => {
+        cb(null, body)
+      })
+      .catch(cb)
   }
 
   /**
@@ -78,18 +81,19 @@ const WikiUpdater = newless(class WikiUpdater {
   loadPages (cb) {
     debug('loading top wikipedia articles')
 
-    this.request('/wiki/Wikipedia:Top_5000_pages', (err, res, body) => {
-      if (err) return cb(err)
+    fetch('https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages')
+      .then((response) => response.text())
+      .then((body) => {
+        const $ = cheerio.load(body)
 
-      const $ = cheerio.load(body)
+        const pageNames = $('.wikitable td:nth-child(2) a')
+          .toArray()
+          .filter(isWikiPageLink)
+          .map((el) => getTextContent($(el)))
 
-      const pageNames = $('.wikitable td:nth-child(2) a')
-        .toArray()
-        .filter(isWikiPageLink)
-        .map((el) => getTextContent($(el)))
-
-      cb(null, pageNames)
-    })
+        cb(null, pageNames)
+      })
+      .catch(cb)
   }
 
   /**

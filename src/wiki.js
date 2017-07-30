@@ -1,4 +1,5 @@
-const request = require('request')
+const qs = require('querystring')
+const makeFetch = require('make-fetch-happen')
 const debug = require('debug')('WikiBattle:wiki-api')
 const cheerio = require('cheerio')
 const fs = require('fs')
@@ -7,13 +8,18 @@ const JSONStream = require('JSONStream')
 const map = require('map-async')
 const each = require('each-async')
 const inflight = require('inflight')
+const pkg = require('../package.json')
 
 const HINT_LENGTH = 200 // characters
 const BACKLINKS_LIMIT = 25 // amount of backlinks to retrieve
 const CACHE_LOCATION = '/tmp/WikiBattle/'
-const CACHE_MAX = 1000 // articles
 
-const wikiBattleHeaders = { 'user-agent': 'WikiBattle/1.0 (http://wikibattle.me/, rene@kooi.me)' }
+const fetch = makeFetch.defaults({
+  cacheManager: CACHE_LOCATION,
+  headers: {
+    'user-agent': `${pkg.name}/${pkg.version} (http://wikibattle.me/, renee@kooi.me)`
+  }
+})
 
 /**
  * Represents a wikipedia article page.
@@ -65,91 +71,39 @@ WikiPage.prototype.getHint = function () {
  */
 
 WikiPage.prototype.getBacklinks = function (cb) {
-  request({
-    uri: 'https://en.wikipedia.org/w/api.php',
-    qs: {
-      action: 'query',
-      format: 'json',
-      list: 'backlinks',
-      bltitle: this.title,
-      blfilterredir: 'all',
-      blnamespace: 0,
-      bllimit: BACKLINKS_LIMIT
-    },
-    headers: wikiBattleHeaders
-  }, (err, _, body) => {
-    if (err) return cb(err)
-    body = JSON.parse(body)
-    cb(null, body.query.backlinks.map((l) => l.title))
+  const query = qs.stringify({
+    action: 'query',
+    format: 'json',
+    list: 'backlinks',
+    bltitle: this.title,
+    blfilterredir: 'all',
+    blnamespace: 0,
+    bllimit: BACKLINKS_LIMIT
   })
+  fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    .then((response) => response.json())
+    .then((body) => {
+      cb(null, body.query.backlinks.map((l) => l.title))
+    })
+    .catch(cb)
 }
-
-fs.mkdir(CACHE_LOCATION, (e) => { /* ignore error, badass! */ })
 
 /**
  * Load a wikipedia page with metadata.
  */
 
-function getPage (title, realCb) {
+function getPage (title, cb) {
   // if we're already fetching this page, don't start a new request
-  var cb = inflight(title, realCb)
+  var cb = inflight(title, cb)
   if (!cb) return
 
-  // check if this page is in the cache
-  const basename = encodeURIComponent(title.toLowerCase().replace(/ /g, '_'))
-  const cacheFile = `${CACHE_LOCATION}${basename}.html`
-  fs.stat(cacheFile, (e, stat) => {
-    if (e) return fetch()
-    fs.readFile(cacheFile, { encoding: 'utf8' }, (e, content) => {
-      if (e) return fetch()
-      const eol = content.indexOf('\n')
-      const firstLine = content.substr(0, eol)
-      const body = content.substr(eol)
-      cb(null, WikiPage(title, body, JSON.parse(firstLine).links))
+  const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
+  fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    .then((response) => response.json())
+    .then((data) => {
+      cb(null, WikiPage(title, data.parse.text['*'], data.parse.links))
     })
-  })
-
-  // actually fetch the page, for real
-  function fetch () {
-    request({
-      uri: 'https://en.wikipedia.org/w/api.php',
-      qs: { action: 'parse', format: 'json', page: title.replace(/ /g, '_') },
-      headers: wikiBattleHeaders
-    })
-      .pipe(JSONStream.parse('parse'))
-      .on('data', (parse) => {
-        fs.writeFile(cacheFile,
-                     JSON.stringify({ links: parse.links }) + '\n' + parse.text['*'],
-                     () => { debug('cached', title) })
-        cb(null, WikiPage(title, parse.text['*'], parse.links))
-      })
-  }
-
-  cleanCache()
-}
-
-/**
- * Clean old cached articles.
- */
-
-function cleanCache () {
-  fs.readdir(CACHE_LOCATION, (e, files) => {
-    if (files.length < CACHE_MAX) {
-      return
-    }
-    map(files, (file, i, next) => {
-      file = path.join(CACHE_LOCATION, file)
-      fs.stat(file, (e, stat) => {
-        next(e, stat ? { file: file, atime: stat.atime } : null)
-      })
-    }, (e, stats) => {
-      stats.sort((a, b) => b.atime - a.atime)
-      const removals = stats.slice(Math.floor(CACHE_MAX * 0.75))
-      each(removals, (file, i, next) => {
-        fs.unlink(file.file, () => { next() })
-      })
-    })
-  })
+    .catch(cb)
 }
 
 exports.get = getPage
