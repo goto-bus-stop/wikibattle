@@ -1,4 +1,5 @@
 const fs = require('fs')
+const EventEmitter = require('events')
 const ms = require('ms')
 const newless = require('newless')
 const getRandom = require('random-item')
@@ -8,12 +9,17 @@ const debug = require('debug')('WikiBattle:pages')
  * Possible starting and goal wikipedia articles manager.
  */
 
-module.exports = newless(class WikiPages {
+module.exports = newless(class WikiPages extends EventEmitter {
   constructor (filename) {
+    super()
+
     this.pages = null
     this.filename = filename
 
-    this.load()
+    try { this.load() } catch (err) {
+      const fd = fs.openSync(this.filename, 'a')
+      fs.closeSync(fd)
+    }
     this.startWatching()
   }
 
@@ -23,8 +29,9 @@ module.exports = newless(class WikiPages {
 
   load () {
     debug('Loading pages')
-    delete require.cache[this.filename]
-    this.pages = require(this.filename)
+    const json = fs.readFileSync(this.filename, 'utf8')
+    this.pages = JSON.parse(json)
+    this.emit('loaded')
   }
 
   /**
@@ -61,5 +68,17 @@ module.exports = newless(class WikiPages {
     }
 
     return [one, two]
+  }
+
+  /**
+   * Execute `cb` when the pages list is available.
+   */
+
+  ready (cb) {
+    if (Array.isArray(this.pages)) {
+      cb()
+    } else {
+      this.once('loaded', cb)
+    }
   }
 })

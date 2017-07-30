@@ -103,6 +103,10 @@ if (app.get('env') === 'development') {
 
 app.set('port', process.env.PORT || 3000)
 
-server.listen(app.get('port'), () => {
-  debug(`Express server listening on port ${server.address().port}`)
+debug('Waiting for wiki pages')
+wikiPages.ready(() => {
+  debug('Ready')
+  server.listen(app.get('port'), () => {
+    debug(`Express server listening on port ${server.address().port}`)
+  })
 })
