@@ -39,12 +39,14 @@
     "babel-cli": "^6.8.0",
     "babel-preset-env": "^1.4.0",
     "babelify": "^7.2.0",
+    "browser-pack-flat": "^2.3.0",
     "browserify": "^14.0.0",
     "bundle-collapser": "^1.2.1",
     "cssnano-cli": "^1.0.5",
     "less": "^2.5.3",
     "standard": "^10.0.0",
-    "uglify-js": "^3.0.3"
+    "uglify-js": "^3.0.3",
+    "unassertify": "^2.0.4"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
@@ -54,7 +56,7 @@
     "less": "lessc ./public/stylesheets/style.less > ./public/stylesheets/style.css",
     "update": "node update.js",
     "compile:server": "babel --out-dir lib src",
-    "compile:client": "browserify --debug -t babelify -e public/javascripts/index.js -o public/app.js",
+    "compile:client": "browserify --debug -g unassertify -t babelify -p browser-pack-flat/plugin -e public/javascripts/index.js -o public/app.js",
     "compile": "npm run compile:server && npm run compile:client",
     "minify-css": "cssnano public/stylesheets/style.css public/stylesheets/style.css",
     "minify-js": "uglifyjs public/app.js -cmo public/app.js",
