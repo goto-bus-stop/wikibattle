@@ -13,7 +13,7 @@ const WikiPages = require('./WikiPages')
 const MatchMaker = require('./MatchMaker')
 const SocketHandler = require('./SocketHandler')
 
-const CSS_FILE = path.join(__dirname, '../public/stylesheets/wiki.css')
+const CSS_FILE = path.join(__dirname, '../public/wiki.css')
 const PAGES_FILE = path.join(__dirname, '../pages.json')
 
 const app = express()
