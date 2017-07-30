@@ -1,4 +1,4 @@
-/* global location, alert */
+/* global location, alert, WebSocket */
 
 const classes = require('component-classes')
 const empty = require('empty-element')
