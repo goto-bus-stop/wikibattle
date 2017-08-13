@@ -56,7 +56,7 @@
     "lint": "standard src/**/*.js",
     "test": "npm run lint",
     "less": "lessc ./src/client/style.less > ./public/style.css",
-    "update": "node update.js",
+    "update": "npm run compile:server && node update.js",
     "compile:server": "babel --out-dir lib src",
     "compile:client": "browserify --debug -g unassertify -t babelify -p browser-pack-flat/plugin -e src/client/index.js -o public/app.js",
     "compile": "npm run compile:server && npm run compile:client",
@@ -68,7 +68,7 @@
     "html-inline": "html-inline -i src/client/index.html -b public/ -o public/index.html && rimraf public/app.js public/style.css public/wiki.css",
     "dev": "npm run compile && npm run less && npm run html",
     "prod": "npm run less && npm run minify-css && npm run compile && npm run minify-js && npm run html-inline",
-    "build": "npm run prod && npm run update",
+    "build": "npm run update && npm run prod",
     "prepublish": "npm run build"
   }
 }
