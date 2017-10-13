@@ -6,6 +6,7 @@ const http = require('http')
 const debug = require('debug')('WikiBattle:app')
 const newless = require('newless')
 const schedule = require('node-schedule').scheduleJob
+const tmp = require('tmp')
 
 const wiki = require('./wiki')
 const WikiUpdater = require('./WikiUpdater')
@@ -14,7 +15,9 @@ const MatchMaker = require('./MatchMaker')
 const SocketHandler = require('./SocketHandler')
 
 const CSS_FILE = path.join(__dirname, '../public/wiki.css')
-const PAGES_FILE = path.join(__dirname, '../pages.json')
+const PAGES_FILE = tmp.fileSync({
+  discardDescriptor: true
+}).name
 
 const app = express()
 const server = http.createServer(app)
@@ -51,6 +54,14 @@ schedule('0 0 0 * * *', () => {
       console.error(err.stack)
     }
   })
+})
+
+/**
+ * Wait for pages list to be loaded before responding to requests.
+ */
+
+app.use((req, res, next) => {
+  wikiPages.ready(next)
 })
 
 /**
@@ -103,10 +114,11 @@ if (app.get('env') === 'development') {
 
 app.set('port', process.env.PORT || 3000)
 
+server.listen(app.get('port'), () => {
+  debug(`Express server listening on port ${server.address().port}`)
+})
+
 debug('Waiting for wiki pages')
 wikiPages.ready(() => {
   debug('Ready')
-  server.listen(app.get('port'), () => {
-    debug(`Express server listening on port ${server.address().port}`)
-  })
 })

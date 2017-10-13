@@ -1,10 +1,9 @@
 const path = require('path')
-const updater = require('./lib/WikiUpdater')({
-  cssPath: path.join(__dirname, 'public/wiki.css'),
-  pagesPath: path.join(__dirname, 'pages.json')
+const updater = require('./src/WikiUpdater')({
+  cssPath: path.join(__dirname, 'public/wiki.css')
 })
 
-console.log('updating wiki assets & pages list')
+console.log('updating wiki assets')
 
 updateCss()
 
@@ -13,14 +12,5 @@ function updateCss () {
   updater.updateCss((err) => {
     if (err) throw err
     console.log('downloaded css')
-    updatePages()
-  })
-}
-
-function updatePages () {
-  console.log('updating pages')
-  updater.updatePages((err) => {
-    if (err) throw err
-    console.log('done')
   })
 }
