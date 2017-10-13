@@ -44,6 +44,7 @@
     "cssnano-cli": "^1.0.5",
     "exorcist": "^1.0.0",
     "less": "^2.5.3",
+    "pkg": "^4.2.5",
     "rimraf": "^2.6.1",
     "standard": "^10.0.0",
     "tinyify": "^1.0.0"
@@ -64,6 +65,10 @@
     "dev": "npm run compile:dev && npm run less && npm run html",
     "prod": "npm run less && npm run minify-css && npm run compile",
     "build": "npm run update && npm run prod",
+    "pkg": "pkg . --out-path dist/",
     "prepublish": "npm run build"
+  },
+  "pkg": {
+    "assets": "public/*"
   }
 }
