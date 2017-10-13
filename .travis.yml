@@ -1,7 +1,5 @@
 language: node_js
 sudo: false
-before_install:
-  - npm install --global npm@3
 node_js:
-  - "4"
-  - "6"
+  - 8
+  - 6
