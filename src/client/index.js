@@ -71,10 +71,8 @@ function go (isPrivate) {
     backlinksToggle(),
     backlinks()
   ])
-  render(empty(me.el),
-         [ article(me, true), playerMask(me) ])
-  render(empty(opponent.el),
-         [ article(opponent, false), playerMask(opponent) ])
+  render(empty(me.el), [ article(me, true), playerMask(me) ])
+  render(empty(opponent.el), [ article(opponent, false), playerMask(opponent) ])
 
   const protocol = location.protocol.replace(/^http/, 'ws')
   const { hostname, port } = location
