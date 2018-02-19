@@ -46,7 +46,7 @@
     "less": "^2.7.3",
     "pkg": "^4.2.6",
     "rimraf": "^2.6.2",
-    "standard": "^10.0.0",
+    "standard": "^11.0.0",
     "tinyify": "^2.4.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
