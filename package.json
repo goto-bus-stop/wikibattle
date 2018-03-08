@@ -43,7 +43,7 @@
     "browserify": "^16.0.0",
     "cssnano-cli": "^1.0.5",
     "exorcist": "^1.0.0",
-    "less": "^2.7.3",
+    "less": "^3.0.0",
     "pkg": "^4.2.6",
     "rimraf": "^2.6.2",
     "standard": "^11.0.0",
