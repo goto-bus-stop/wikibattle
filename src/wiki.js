@@ -58,7 +58,7 @@ WikiPage.prototype.linksTo = function (target) {
 
 WikiPage.prototype.getHint = function () {
   try {
-    const hint = cheerio(this.content).filter('p').first().text()
+    const hint = cheerio('p', this.content).first().text()
     return hint.length > HINT_LENGTH ? `${hint.substr(0, HINT_LENGTH)}…`
                                      : hint
   } catch (e) {
