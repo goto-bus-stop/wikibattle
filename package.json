@@ -22,7 +22,7 @@
     "empty-element": "^1.0.0",
     "express": "^4.16.2",
     "inflight": "^1.0.4",
-    "make-fetch-happen": "^3.0.0",
+    "make-fetch-happen": "^4.0.0",
     "map-async": "^0.1.1",
     "ms": "^2.1.1",
     "nanobus": "^4.3.3",
