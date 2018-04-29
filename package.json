@@ -4,7 +4,7 @@
   "version": "1.2.1",
   "license": "MIT",
   "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues",
-  "author": "goto-bus-stop <rene@kooi.me>",
+  "author": "Renée Kooi <renee@kooi.me>",
   "bin": "bin/wikibattle",
   "engines": {
     "node": ">= 10"
