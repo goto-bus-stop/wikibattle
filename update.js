@@ -5,12 +5,12 @@ const updater = require('./src/WikiUpdater')({
 
 console.log('updating wiki assets')
 
-updateCss()
+updateCss().catch((err) => {
+  setImmediate(() => { throw err })
+})
 
-function updateCss () {
+async function updateCss () {
   console.log('downloading css')
-  updater.updateCss((err) => {
-    if (err) throw err
-    console.log('downloaded css')
-  })
+  await updater.updateCss()
+  console.log('downloaded css')
 }

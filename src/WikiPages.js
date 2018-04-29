@@ -1,5 +1,6 @@
 const fs = require('fs')
 const EventEmitter = require('events')
+const event = require('p-event')
 const ms = require('ms')
 const newless = require('newless')
 const getRandom = require('random-item')
@@ -71,14 +72,12 @@ module.exports = newless(class WikiPages extends EventEmitter {
   }
 
   /**
-   * Execute `cb` when the pages list is available.
+   * Wait for the pages list to be available.
    */
 
-  ready (cb) {
-    if (Array.isArray(this.pages)) {
-      cb()
-    } else {
-      this.once('loaded', cb)
+  async ready () {
+    if (!Array.isArray(this.pages)) {
+      await event(this, 'loaded')
     }
   }
 })

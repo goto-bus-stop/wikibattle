@@ -1,14 +1,10 @@
-const fs = require('fs')
+const fs = require('fs/promises')
 const qs = require('querystring')
 const after = require('after')
 const cheerio = require('cheerio')
 const fetch = require('make-fetch-happen')
 const newless = require('newless')
 const debug = require('debug')('WikiBattle:updater')
-
-module.exports = (opts) => new WikiUpdater(opts)
-
-const noop = () => {}
 
 /**
  * Check if a cheerio element is a link to a Wikipedia article.
@@ -30,7 +26,7 @@ const getTextContent = (el) =>
  * Synchronizes data from Wikipedia.
  */
 
-const WikiUpdater = newless(class WikiUpdater {
+module.exports = newless(class WikiUpdater {
   constructor (opts) {
     this.cssPath = opts.cssPath
     this.pagesPath = opts.pagesPath
@@ -40,7 +36,7 @@ const WikiUpdater = newless(class WikiUpdater {
    * Load CSS source from Wikipedia servers.
    */
 
-  loadCss (cb) {
+  async loadCss () {
     debug('loading wikipedia css')
 
     const modules = [
@@ -66,47 +62,38 @@ const WikiUpdater = newless(class WikiUpdater {
       skin: 'minerva'
     })
 
-    fetch(`https://en.wikipedia.org/w/load.php?${query}`)
-      .then((response) => response.text())
-      .then((body) => {
-        cb(null, body)
-      })
-      .catch(cb)
+    const response = await fetch(`https://en.wikipedia.org/w/load.php?${query}`)
+    return await response.text()
   }
 
   /**
    * Load names of the current top 5000 most popular pages on Wikipedia.
    */
 
-  loadPages (cb) {
+  async loadPages () {
     debug('loading top wikipedia articles')
 
-    fetch('https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages')
-      .then((response) => response.text())
-      .then((body) => {
-        const $ = cheerio.load(body)
+    const response = await fetch('https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages')
+    const body = await response.text()
+    const $ = cheerio.load(body)
 
-        const pageNames = $('.wikitable td:nth-child(2) a')
-          .toArray()
-          .filter(isWikiPageLink)
-          .map((el) => getTextContent($(el)))
+    const pageNames = $('.wikitable td:nth-child(2) a')
+      .toArray()
+      .filter(isWikiPageLink)
+      .map((el) => getTextContent($(el)))
 
-        cb(null, pageNames)
-      })
-      .catch(cb)
+    return pageNames
   }
 
   /**
    * Load and sync the WikiBattle CSS file with Wikipedia.
    */
 
-  updateCss (cb = noop) {
-    this.loadCss((err, contents) => {
-      if (err) return cb(err)
+  async updateCss () {
+    const contents = await this.loadCss()
 
-      debug('saving css')
-      fs.writeFile(this.cssPath, contents, 'utf8', cb)
-    })
+    debug('saving css')
+    await fs.writeFile(this.cssPath, contents, 'utf8')
   }
 
   /**
@@ -114,23 +101,21 @@ const WikiUpdater = newless(class WikiUpdater {
    * popular Wikipedia pages from the past week.
    */
 
-  updatePages (cb = noop) {
-    this.loadPages((err, pageNames) => {
-      if (err) return cb(err)
+  async updatePages () {
+    const pageNames = await this.loadPages()
 
-      debug('saving pages')
-      fs.writeFile(this.pagesPath, JSON.stringify(pageNames), 'utf8', cb)
-    })
+    debug('saving pages')
+    await fs.writeFile(this.pagesPath, JSON.stringify(pageNames), 'utf8')
   }
 
   /**
    * Sync CSS and articles from Wikipedia.
    */
 
-  update (cb = noop) {
-    cb = after(2, cb)
-
-    this.updateCss(cb)
-    this.updatePages(cb)
+  update () {
+    return Promise.all([
+      this.updateCss(),
+      this.updatePages()
+    ])
   }
 })

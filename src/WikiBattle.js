@@ -97,29 +97,25 @@ module.exports = newless(class WikiBattle extends EventEmitter {
    * Attempt to navigate to an article.
    */
 
-  navigate (player, to) {
+  async navigate (player, to) {
     debug('navigate (maybe)', player.id, `${player.current()} -> ${to}`)
     if (to === null || !player.current()) {
       return this.navigateInner(player, to)
     }
     // Check that the current article links to the next.
-    wiki.get(player.current(), (e, page) => {
-      if (!e && page.linksTo(to)) {
-        this.navigateInner(player, to)
-      } else {
-        // Maybe put some fancy "Do not cheat" page here?
-      }
-    })
+    const page = await wiki.get(player.current())
+    if (page.linksTo(to)) {
+      this.navigateInner(player, to)
+    }
   }
 
   /**
    * Send a hint for the target article to the players.
    */
 
-  sendHint () {
-    wiki.get(this.goal, (e, page) => {
-      this.emitSocket('hint', e || page.getHint())
-    })
+  async sendHint () {
+    const page = await wiki.get(this.goal)
+    this.emitSocket('hint', page.getHint())
   }
 
   /**

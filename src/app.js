@@ -48,7 +48,7 @@ handler.start()
 
 updater.update()
 schedule('0 0 0 * * *', () => {
-  updater.update((err) => {
+  updater.update().catch((err) => {
     if (err) {
       console.error('Update failed:')
       console.error(err.stack)
@@ -60,9 +60,10 @@ schedule('0 0 0 * * *', () => {
  * Wait for pages list to be loaded before responding to requests.
  */
 
-app.use((req, res, next) => {
-  wikiPages.ready(next)
-})
+app.use(t(async (req, res, next) => {
+  await wikiPages.ready()
+  next()
+}))
 
 /**
  * Serve the application.
@@ -74,12 +75,13 @@ app.use(serveStatic(path.join(__dirname, '../public')))
  * Serve proxied Wikipedia articles.
  */
 
-app.get('/wiki/:page', (req, res) => {
-  wiki.get(req.params.page, (err, body) => {
-    if (body) res.end(body.content)
-    else throw err
-  })
-})
+app.get('/wiki/:page', t(async (req, res) => {
+  const body = await wiki.get(req.params.page)
+  if (!body) {
+    throw err
+  }
+  res.end(body.content)
+}))
 
 /**
  * Handle errors.
@@ -119,6 +121,12 @@ server.listen(app.get('port'), () => {
 })
 
 debug('Waiting for wiki pages')
-wikiPages.ready(() => {
+wikiPages.ready().then(() => {
   debug('Ready')
 })
+
+function t (middleware) {
+  return (req, res, next) => {
+    middleware(req, res, next).catch(next)
+  }
+}

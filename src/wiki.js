@@ -8,7 +8,6 @@ const newless = require('newless')
 const JSONStream = require('JSONStream')
 const map = require('map-async')
 const each = require('each-async')
-const inflight = require('inflight')
 const pkg = require('../package.json')
 
 const HINT_LENGTH = 200 // characters
@@ -72,7 +71,7 @@ const WikiPage = newless(class WikiPage {
    * Load article titles that link to this article.
    */
 
-  getBacklinks (cb) {
+  async getBacklinks () {
     const query = qs.stringify({
       action: 'query',
       format: 'json',
@@ -82,31 +81,38 @@ const WikiPage = newless(class WikiPage {
       blnamespace: 0,
       bllimit: BACKLINKS_LIMIT
     })
-    fetch(`https://en.wikipedia.org/w/api.php?${query}`)
-      .then((response) => response.json())
-      .then((body) => {
-        cb(null, body.query.backlinks.map((l) => l.title))
-      })
-      .catch(cb)
+
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const body = await response.json()
+    return body.query.backlinks.map((l) => l.title)
   }
 })
+
+const pageRequests = new Map()
 
 /**
  * Load a wikipedia page with metadata.
  */
 
-function getPage (title, cb) {
+async function getPage (title, cb) {
   // if we're already fetching this page, don't start a new request
-  var cb = inflight(title, cb)
-  if (!cb) return
+  if (pageRequests.has(title)) return pageRequests.get(title)
 
-  const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
-  fetch(`https://en.wikipedia.org/w/api.php?${query}`)
-    .then((response) => response.json())
-    .then((data) => {
-      cb(null, WikiPage(title, data.parse.text['*'], data.parse.links))
-    })
-    .catch(cb)
+  const promise = load()
+  pageRequests.set(title, promise)
+
+  try {
+    return await promise
+  } finally {
+    pageRequests.delete(title)
+  }
+
+  async function load () {
+    const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const data = await response.json()
+    return WikiPage(title, data.parse.text['*'], data.parse.links)
+  }
 }
 
 exports.get = getPage
