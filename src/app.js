@@ -77,9 +77,6 @@ app.use(serveStatic(path.join(__dirname, '../public')))
 
 app.get('/wiki/:page', t(async (req, res) => {
   const body = await wiki.get(req.params.page)
-  if (!body) {
-    throw err
-  }
   res.end(body.content)
 }))
 

@@ -1,13 +1,7 @@
 const qs = require('querystring')
 const makeFetch = require('make-fetch-happen')
-const debug = require('debug')('WikiBattle:wiki-api')
 const cheerio = require('cheerio')
-const fs = require('fs')
-const path = require('path')
 const newless = require('newless')
-const JSONStream = require('JSONStream')
-const map = require('map-async')
-const each = require('each-async')
 const pkg = require('../package.json')
 
 const HINT_LENGTH = 200 // characters

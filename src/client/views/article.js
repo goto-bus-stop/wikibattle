@@ -27,7 +27,7 @@ function Article (player, isSelf) {
   this.isSelf = isSelf
 
   this.title = render('h2', { class: 'wb-article-title' },
-                      isSelf ? 'Your Article' : 'Opponent\'s Article')
+    isSelf ? 'Your Article' : 'Opponent\'s Article')
   this.content = render('div', { class: 'wb-article-content content' })
   this.el = render(
     'div', { class: 'wb-article' },

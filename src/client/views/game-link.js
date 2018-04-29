@@ -12,7 +12,7 @@ function GameLink () {
 
   this.input = render('input', { type: 'text' })
   this.el = render('div', { id: 'game-link', class: 'hide' },
-                   [ 'Link to this game:', this.input ])
+    [ 'Link to this game:', this.input ])
   this.classes = classes(this.el)
 
   bus.on('game-link', this.showLink)

@@ -1,6 +1,5 @@
 const fs = require('fs/promises')
 const qs = require('querystring')
-const after = require('after')
 const cheerio = require('cheerio')
 const fetch = require('make-fetch-happen')
 const newless = require('newless')
@@ -63,7 +62,7 @@ module.exports = newless(class WikiUpdater {
     })
 
     const response = await fetch(`https://en.wikipedia.org/w/load.php?${query}`)
-    return await response.text()
+    return response.text()
   }
 
   /**
