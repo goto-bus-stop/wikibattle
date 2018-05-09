@@ -1,4 +1,4 @@
-const fs = require('fs/promises')
+const fs = require('fs').promises
 const qs = require('querystring')
 const cheerio = require('cheerio')
 const fetch = require('make-fetch-happen')

@@ -7,7 +7,7 @@
   "author": "Renée Kooi <renee@kooi.me>",
   "bin": "bin/wikibattle",
   "engines": {
-    "node": ">= 10"
+    "node": ">= 10.1"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
