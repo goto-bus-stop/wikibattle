@@ -66,7 +66,7 @@
     "prod": "npm run less && npm run minify-css && npm run compile",
     "build": "npm run update && npm run prod",
     "pkg": "pkg . --out-path dist/",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "pkg": {
     "assets": "public/*"
