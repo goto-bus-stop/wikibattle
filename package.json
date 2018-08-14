@@ -14,7 +14,7 @@
     "closest": "0.0.1",
     "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
-    "compression": "^1.7.2",
+    "compression": "^1.7.3",
     "crel": "^3.0.0",
     "crypto-random-string": "^1.0.0",
     "debug": "^3.1.0",
@@ -33,21 +33,21 @@
     "tmp": "0.0.33",
     "ws": "^6.0.0",
     "ws-events": "^1.0.0",
-    "xhr": "^2.4.1"
+    "xhr": "^2.5.0"
   },
   "devDependencies": {
     "babel-cli": "^6.8.0",
     "babel-core": "^6.26.3",
     "babel-preset-env": "^1.7.0",
     "babelify": "^8.0.0",
-    "browserify": "^16.2.0",
+    "browserify": "^16.2.2",
     "cssnano-cli": "^1.0.5",
     "exorcist": "^1.0.1",
-    "less": "^3.0.4",
-    "pkg": "^4.3.1",
+    "less": "^3.8.1",
+    "pkg": "^4.3.4",
     "rimraf": "^2.6.2",
     "standard": "^11.0.1",
-    "tinyify": "^2.4.0"
+    "tinyify": "^2.4.3"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
