@@ -61,7 +61,7 @@ module.exports = newless(class WikiUpdater {
       skin: 'minerva'
     })
 
-    const response = await fetch(`https://en.wikipedia.org/w/load.php?${query}`)
+    const response = await fetch(`https://no.wikipedia.org/w/load.php?${query}`)
     return response.text()
   }
 
@@ -71,16 +71,71 @@ module.exports = newless(class WikiUpdater {
 
   async loadPages () {
     debug('loading top wikipedia articles')
-
+/*
     const response = await fetch('https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages')
     const body = await response.text()
     const $ = cheerio.load(body)
+
+
 
     const pageNames = $('.wikitable td:nth-child(2) a')
       .toArray()
       .filter(isWikiPageLink)
       .map((el) => getTextContent($(el)))
-
+*/
+    const pageNames = [
+      'Minecraft',
+      'League of Legends',
+      'PlayerUnknown\'s Battlegrounds',
+      'Overwatch (video game)',
+      'Super Mario',
+      'Pokémon',
+      'Fortnite',
+      'Tetris',
+      'SingStar',
+      'The Sims',
+      'World of Warcraft',
+      'Counter-Strike: Global Offensive',
+      'Grand Theft Auto',
+      'Mario Kart',
+      'The Elder Scrolls V: Skyrim',
+      'FIFA (video game series)',
+      'Nintendogs',
+      'Tamagotchi',
+      'Spider-Man (2018 video game)',
+      'Portal (video game)',
+      'Super Smash Bros.',
+      'Kirby (series)',
+      'Civilization (series)',
+      'Star Fox',
+      'Metal Gear Solid',
+      'Cuphead',
+      'Undertale',
+      'Horizon Zero Dawn',
+      'Sonic the Hedgehog',
+      'Assassin\'s Creed',
+      'Splatoon',
+      'Shovel Knight',
+      'No Man\'s Sky',
+      'Call of Duty',
+      'Candy Crush Saga',
+      'Stardew Valley',
+      'Paper Mario',
+      'Life Is Strange',
+      'Rocket League',
+      'Dance Dance Revolution',
+      'Animal Crossing',
+      'Hearthstone',
+      'Five Nights at Freddy\'s',
+      'Donkey Kong',
+      'Rayman',
+      'Pac-Man',
+      'The Legend of Zelda',
+      'Final Fantasy',
+      'Doom (franchise)',
+      'Duke Nukem'
+    ];
+//    console.log(pageNames)
     return pageNames
   }
 

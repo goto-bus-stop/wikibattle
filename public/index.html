@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>WikiBattle</title>
+    <!-- stealing wiki stylesheets :' -->
+    <link rel="stylesheet" href="./wiki.css">
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <header id="main-head">
+      <h1 id="target-title">WikiBattle</h1>
+    </header>
+    <main id="main">
+      <div id="left" class="wb-player wb-player--left">
+        <div class="wb-article mw-body">
+          <div class="heading-holder">
+            <h1 class="current-title">How It Works</h1>
+          </div>
+          <div class="content">
+          <ul class="wb-instructions">
+            <li>The goal of WikiBattle is to reach a randomly selected article.</li>
+            <li>When you press "Go!", you will be paired with another player.</li>
+            <li>You and your opponent will be dropped into a Wikipedia article which will show up in this area.
+                Articles are randomly selected from the top 5000 most popular articles of the previous week,
+                compiled by <a href="https://en.wikipedia.org/wiki/Wikipedia:Top_5000_pages">Andrew G. West</a>. <strong>Note that some of the articles might include NSFW content.</strong></li>
+            <li>Your Mission&trade;: to reach the target article (then shown in the top bar) <i>before</i> your opponent does.
+                You can only use the links in the articles, and you cannot use the Back button if you misclick.
+                Your opponent will see your progress, and you will see theirs.</li>
+            <li>Some articles are pretty hard to find. If you haven't reached the goal in 40 seconds,
+                a hint will show up in the top right. After another 50 seconds (90 total), you will also
+                get a list of 25 articles that link to the target article.</li>
+          </ul>
+          <div class="wb-game-start-options">
+            <div class="wb-game-start">
+              <h3>Ready?!</h3>
+              <p id="join"> You were invited to game <code id="game-id">{{game}}</code>. Press the button to join! </p>
+              <p id="pair"> This matches you with any other player who clicks this button! </p>
+              <p id="go">[Loading]</p>
+            </div>
+            <div id="friend" class="wb-game-start">
+              <h3>Want to battle a friend?</h3>
+              <p> This will give you a game link you can share with your friend. </p>
+              <p id="go-priv">[Loading]</p>
+            </div>
+          </div>
+
+          <h3>Like WikiBattle?</h3>
+          <p>
+            <a href="https://github.com/goto-bus-stop/WikiBattle">It's on Github!</a>
+            Also, consider <a href="https://donate.wikimedia.org/wiki/Special:FundraiserRedirector">donating to Wikipedia</a> :)
+          </p>
+        </div>
+        </div>
+      </div>
+
+      <div id="right" class="wb-player wb-player--right">
+        <div class="wb-article mw-body">
+          <div class="heading-holder">
+            <h1 class="current-title">Opponent's Article Title</h1>
+          </div>
+          <div class="content">
+            Your opponent's progress will show here, so you can steal their ideas if you so please.
+          </div>
+        </div>
+      </div>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
