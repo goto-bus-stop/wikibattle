@@ -2,11 +2,22 @@ const debug = require('debug')('WikiBattle:matchMaker')
 const newless = require('newless')
 const WikiBattle = require('./WikiBattle')
 
+function limitedArray (max) {
+  const array = []
+  array.push = (...args) => {
+    Array.prototype.push.apply(array, args)
+    while (array.length > max) array.shift()
+    return array.length
+  }
+  return array
+}
+
 module.exports = newless(class MatchMaker {
   constructor (opts) {
     this.waitingPair = null
     this.games = {}
     this.wikiPages = opts.pages
+    this.history = limitedArray(20)
   }
 
   /**
@@ -32,6 +43,8 @@ module.exports = newless(class MatchMaker {
       this.waitingPair = null
 
       game.connect(player)
+      this.history.push(game)
+
       player.notifyJoinedGame(game)
       game.start()
 
@@ -77,6 +90,7 @@ module.exports = newless(class MatchMaker {
 
     const game = this.games[id]
     game.connect(player)
+    this.history.push(game)
     delete this.games[id]
 
     player.notifyJoinedGame(game)
@@ -101,5 +115,9 @@ module.exports = newless(class MatchMaker {
     if (this.games[game.id]) {
       delete this.games[game.id]
     }
+  }
+
+  getRecentGames () {
+    return this.history
   }
 })

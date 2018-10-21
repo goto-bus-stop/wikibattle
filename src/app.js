@@ -69,6 +69,17 @@ app.use(t(async (req, res, next) => {
  * Serve the application.
  */
 
+function gameToJson ({ origin, goal, startedAt }) {
+  return { origin, goal, startedAt }
+}
+
+app.get('/current', (req, res) => {
+  res.json(matchMaker.getCurrentGames().map(gameToJson))
+})
+app.get('/recent', (req, res) => {
+  res.json(matchMaker.getRecentGames().map(gameToJson))
+})
+
 app.use(serveStatic(path.join(__dirname, '../public')))
 
 /**

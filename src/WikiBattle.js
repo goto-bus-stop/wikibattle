@@ -154,6 +154,7 @@ module.exports = newless(class WikiBattle extends EventEmitter {
       this.navigate(p, this.origin)
     })
 
+    this.startedAt = new Date()
     this.hintTimeout = setTimeout(this.sendHint.bind(this), HINT_TIMEOUT)
     this.backlinksTimeout = setTimeout(this.sendBacklinks.bind(this), BACKLINKS_TIMEOUT)
   }

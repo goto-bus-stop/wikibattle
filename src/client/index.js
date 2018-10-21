@@ -1,9 +1,11 @@
 /* global location, alert, WebSocket */
 
+const xhr = require('xhr')
 const classes = require('component-classes')
 const empty = require('empty-element')
 const render = require('crel')
 const throttle = require('throttleit')
+const formatTimeAgo = require('s-ago').default
 const wsEvents = require('ws-events')
 const bus = require('./bus')
 const loadPage = require('./load-page')
@@ -48,6 +50,8 @@ function init () {
     document.querySelector('#friend').style.display = 'none'
     classes(document.body).add('invited')
   }
+
+  loadRecentGames()
 
   let startGameWrapper = document.querySelector('#go')
   let startGamePrivateWrapper = document.querySelector('#go-priv')
@@ -171,4 +175,25 @@ function onLost () {
 function onReceivePaths (paths) {
   bus.emit('paths', paths)
   sock.close()
+}
+
+function GameRow ({ origin, goal, startedAt }) {
+  this.el = render('li', [
+    `${origin} → ${goal} `,
+    render('small', `(${formatTimeAgo(new Date(startedAt))})`)
+  ])
+}
+
+function gameRow (game) {
+  return new GameRow(game).el
+}
+
+function loadRecentGames () {
+  xhr('/recent', (err, response) => {
+    if (err) return null
+    const recent = JSON.parse(response.body)
+    render(empty(document.querySelector('#recent-games')),
+      recent.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt)).map(gameRow)
+    )
+  })
 }
