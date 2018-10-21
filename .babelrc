@@ -1,9 +1,8 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/preset-env", {
       "targets": {
-        "browsers": ["last 2 versions"],
-        "uglify": true
+        "browsers": ["last 2 versions"]
       }
     }]
   ]

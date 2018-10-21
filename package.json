@@ -37,9 +37,9 @@
     "xhr": "^2.5.0"
   },
   "devDependencies": {
-    "babel-cli": "^6.8.0",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
     "babelify": "^10.0.0",
     "browserify": "^16.2.2",
     "cssnano-cli": "^1.0.5",
