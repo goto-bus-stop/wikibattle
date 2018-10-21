@@ -1,4 +1,6 @@
 {
+  "name": "wikibattle",
+  "alias": "wikibattle.me",
   "env": {
     "DEBUG": "WikiBattle*"
   }
