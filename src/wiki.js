@@ -52,7 +52,10 @@ const WikiPage = newless(class WikiPage {
 
   getHint () {
     try {
-      const hint = cheerio('p', this.content).first().text()
+      const hint = cheerio('.mw-parser-output > p', this.content)
+        .filter((i, el) => cheerio(el).text().trim() !== '')
+        .first()
+        .text()
       return hint.length > HINT_LENGTH
         ? `${hint.substr(0, HINT_LENGTH)}…`
         : hint
