@@ -130,7 +130,7 @@ module.exports = newless(class WikiBattle extends EventEmitter {
       const back = await page.getBacklinks()
       this.emitSocket('backlinks', null, back)
     } catch (err) {
-      this.emitSocket('backlinks', e)
+      this.emitSocket('backlinks', err)
     }
   }
 
