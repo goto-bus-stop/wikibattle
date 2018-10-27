@@ -114,6 +114,7 @@ module.exports = newless(class WikiBattle extends EventEmitter {
    */
 
   async sendHint () {
+    debug('sending hint for', this.goal)
     const page = await wiki.get(this.goal)
     this.emitSocket('hint', page.getHint())
   }
@@ -122,13 +123,15 @@ module.exports = newless(class WikiBattle extends EventEmitter {
    * Send a list of articles that link to the target article to the players.
    */
 
-  sendBacklinks () {
-    wiki.get(this.goal, (e, page) => {
-      if (e) return this.emitSocket('backlinks', e)
-      page.getBacklinks((e, back) => {
-        this.emitSocket('backlinks', e, back)
-      })
-    })
+  async sendBacklinks () {
+    debug('sending backlinks for', this.goal)
+    try {
+      const page = await wiki.get(this.goal)
+      const back = await page.getBacklinks()
+      this.emitSocket('backlinks', null, back)
+    } catch (err) {
+      this.emitSocket('backlinks', e)
+    }
   }
 
   /**
