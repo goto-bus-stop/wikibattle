@@ -1,3 +1,4 @@
+const classes = require('component-classes')
 const closest = require('closest')
 const delegate = require('component-delegate')
 const empty = require('empty-element')
@@ -57,11 +58,35 @@ class Article {
     bus.on('game-over', this.onGameOver)
   }
 
-  render (title, body) {
+  renderPrev () {
+    if (this.prev && this.prev.parentNode) {
+      this.prev.parentNode.removeChild(this.prev)
+    }
+    this.prev = this.el.cloneNode(true)
+    this.el.parentNode.insertBefore(this.prev, this.el)
+
+    this.prev.addEventListener('transitionend', () => {
+      this.prev.parentNode.removeChild(this.prev)
+      this.prev = null
+    })
+  }
+
+  renderContent (title, body) {
     const steps = render('small', ` (${this.player.path.length} steps)`)
     render(empty(this.title), [ title, steps ])
     empty(this.content).innerHTML = body
     this.el.scrollTop = 0
+  }
+
+  animate (title, body) {
+    this.renderPrev()
+    classes(this.el).add('in')
+    this.renderContent(title, body)
+
+    requestAnimationFrame(() => {
+      classes(this.prev).add('out')
+      classes(this.el).remove('in')
+    })
   }
 
   onClick ({ delegateTarget: el }) {
@@ -88,7 +113,7 @@ class Article {
 
   onArticleLoaded ({ player, title, body }) {
     if (this.player.id === player.id) {
-      this.render(title, body)
+      this.animate(title, body)
     }
   }
 

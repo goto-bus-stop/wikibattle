@@ -98,6 +98,7 @@ button {
   bottom: 0;
   width: 50%;
   box-sizing: border-box;
+  overflow: hidden;
 
   &--left {
     left: 0;
@@ -123,7 +124,24 @@ button {
 .wb-article:extend(.wb-fill) {
   padding: 0 5px 0 10px;
   overflow-y: scroll;
+  transition: opacity, transform 200ms ease-out;
+  opacity: 1;
 }
+
+.wb-article.out {
+  transition: opacity, transform 200ms ease-in;
+  opacity: 0;
+}
+
+#left .wb-article.out { transform: translateX(-100%); }
+#right .wb-article.out { transform: translateX(100%); }
+
+.wb-article.in {
+  transition: none;
+  opacity: 0;
+}
+#left .wb-article.in { transform: translateX(100%); }
+#right .wb-article.in { transform: translateX(-100%); }
 
 .wb-mask:extend(.wb-fill) {
   overflow-y: auto;
