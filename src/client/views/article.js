@@ -1,3 +1,4 @@
+/* eslint-env browser */
 const classes = require('component-classes')
 const closest = require('closest')
 const delegate = require('component-delegate')
