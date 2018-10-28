@@ -6,15 +6,17 @@ module.exports = function hint () {
   return new Hint().el
 }
 
-function Hint () {
-  this.el = render('div', { id: 'target-hint', class: 'hide' })
-  this.classes = classes(this.el)
+class Hint {
+  constructor () {
+    this.el = render('div', { id: 'target-hint', class: 'hide' })
+    this.classes = classes(this.el)
 
-  this.show = this.show.bind(this)
-  bus.on('hint', this.show)
-}
+    this.show = this.show.bind(this)
+    bus.on('hint', this.show)
+  }
 
-Hint.prototype.show = function (hintText) {
-  this.classes.remove('hide')
-  render(this.el, [ render('strong', 'Hint: '), hintText ])
+  show (hintText) {
+    this.classes.remove('hide')
+    render(this.el, [ render('strong', 'Hint: '), hintText ])
+  }
 }

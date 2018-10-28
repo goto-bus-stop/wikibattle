@@ -7,26 +7,28 @@ module.exports = function backlinksToggle () {
   return new BacklinksToggle().el
 }
 
-function BacklinksToggle () {
-  this.onChange = this.onChange.bind(this)
-  this.show = this.show.bind(this)
+class BacklinksToggle {
+  constructor () {
+    this.onChange = this.onChange.bind(this)
+    this.show = this.show.bind(this)
 
-  this.input = crel('input', { id: 'sbin', type: 'checkbox' })
-  this.el = crel(
-    'label', { id: 'show-backlinks', for: 'sbin', class: 'hide' },
-    [ this.input, ' Show Backlinks' ]
-  )
-  this.classes = classes(this.el)
+    this.input = crel('input', { id: 'sbin', type: 'checkbox' })
+    this.el = crel(
+      'label', { id: 'show-backlinks', for: 'sbin', class: 'hide' },
+      [ this.input, ' Show Backlinks' ]
+    )
+    this.classes = classes(this.el)
 
-  on(this.input, 'change', this.onChange)
+    on(this.input, 'change', this.onChange)
 
-  bus.on('backlinks', this.show)
-}
+    bus.on('backlinks', this.show)
+  }
 
-BacklinksToggle.prototype.show = function () {
-  this.classes.remove('hide')
-}
+  show () {
+    this.classes.remove('hide')
+  }
 
-BacklinksToggle.prototype.onChange = function () {
-  bus.emit(this.input.checked ? 'backlinks:show' : 'backlinks:hide')
+  onChange () {
+    bus.emit(this.input.checked ? 'backlinks:show' : 'backlinks:hide')
+  }
 }

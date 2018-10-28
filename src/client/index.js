@@ -17,8 +17,25 @@ const backlinks = require('./views/backlinks')
 const backlinksToggle = require('./views/backlinks-toggle')
 const article = require('./views/article')
 const playerMask = require('./views/player-mask')
+const newless = (Class) => (...args) => new Class(...args)
 
 let sock
+
+const Player = newless(class Player {
+  constructor (el) {
+    this.el = el
+    this.path = []
+  }
+
+  navigateTo (page, cb) {
+    this.path.push(page)
+    bus.emit('article-loading', { player: this, title: page })
+    loadPage(page, (e, body) => {
+      bus.emit('article-loaded', { player: this, title: page, body: body })
+      if (cb) cb(e)
+    })
+  }
+})
 
 const header = document.querySelector('#main-head')
 const _players = {}
@@ -28,21 +45,6 @@ const game = {}
 let _private = false
 
 init()
-
-function Player (el) {
-  if (!(this instanceof Player)) return new Player(el)
-  this.el = el
-  this.path = []
-}
-
-Player.prototype.navigateTo = function (page, cb) {
-  this.path.push(page)
-  bus.emit('article-loading', { player: this, title: page })
-  loadPage(page, (e, body) => {
-    bus.emit('article-loaded', { player: this, title: page, body: body })
-    if (cb) cb(e)
-  })
-}
 
 function init () {
   if (location.hash.substr(0, 6) === '#game:') {
