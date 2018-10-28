@@ -59,17 +59,16 @@ class Article {
     bus.on('game-over', this.onGameOver)
   }
 
-  renderPrev () {
+  removePrev () {
     if (this.prev && this.prev.parentNode) {
       this.prev.parentNode.removeChild(this.prev)
     }
+  }
+
+  renderPrev () {
+    this.removePrev()
     this.prev = this.el.cloneNode(true)
     this.el.parentNode.insertBefore(this.prev, this.el)
-
-    this.prev.addEventListener('transitionend', () => {
-      this.prev.parentNode.removeChild(this.prev)
-      this.prev = null
-    })
   }
 
   renderContent (title, body) {
@@ -87,6 +86,9 @@ class Article {
     requestAnimationFrame(() => {
       classes(this.prev).add('out')
       classes(this.el).remove('in')
+      this.prev.addEventListener('transitionend', () => {
+        this.removePrev()
+      })
     })
   }
 
