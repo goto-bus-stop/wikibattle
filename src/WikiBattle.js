@@ -1,6 +1,5 @@
 const { EventEmitter } = require('events')
 const debug = require('debug')('WikiBattle:game')
-const newless = require('newless')
 const ms = require('ms')
 const generateId = require('crypto-random-string')
 const wiki = require('./wiki')
@@ -12,7 +11,7 @@ const BACKLINKS_TIMEOUT = ms('90 seconds')
  * Represents a 1v1 WikiBattle match.
  */
 
-module.exports = newless(class WikiBattle extends EventEmitter {
+module.exports = class WikiBattle extends EventEmitter {
   constructor (origin, goal) {
     super()
     this.id = generateId(7)
@@ -183,4 +182,4 @@ module.exports = newless(class WikiBattle extends EventEmitter {
       }
     })
   }
-})
+}

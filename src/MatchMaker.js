@@ -1,5 +1,4 @@
 const debug = require('debug')('WikiBattle:matchMaker')
-const newless = require('newless')
 const WikiBattle = require('./WikiBattle')
 
 function limitedArray (max) {
@@ -12,7 +11,7 @@ function limitedArray (max) {
   return array
 }
 
-module.exports = newless(class MatchMaker {
+module.exports = class MatchMaker {
   constructor (opts) {
     this.waitingPair = null
     this.games = {}
@@ -26,7 +25,7 @@ module.exports = newless(class MatchMaker {
 
   createGame (player) {
     const [origin, goal] = this.wikiPages.randomPair()
-    const game = WikiBattle(origin, goal)
+    const game = new WikiBattle(origin, goal)
     game.connect(player)
     return game
   }
@@ -120,4 +119,4 @@ module.exports = newless(class MatchMaker {
   getRecentGames () {
     return this.history
   }
-})
+}

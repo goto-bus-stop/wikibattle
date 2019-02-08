@@ -2,7 +2,6 @@ const fs = require('fs')
 const EventEmitter = require('events')
 const event = require('p-event')
 const ms = require('ms')
-const newless = require('newless')
 const getRandom = require('random-item')
 const debug = require('debug')('WikiBattle:pages')
 
@@ -10,7 +9,7 @@ const debug = require('debug')('WikiBattle:pages')
  * Possible starting and goal wikipedia articles manager.
  */
 
-module.exports = newless(class WikiPages extends EventEmitter {
+module.exports = class WikiPages extends EventEmitter {
   constructor (filename) {
     super()
 
@@ -80,4 +79,4 @@ module.exports = newless(class WikiPages extends EventEmitter {
       await event(this, 'loaded')
     }
   }
-})
+}

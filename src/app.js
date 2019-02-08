@@ -4,9 +4,9 @@ const serveStatic = require('serve-static')
 const path = require('path')
 const http = require('http')
 const debug = require('debug')('WikiBattle:app')
-const newless = require('newless')
 const schedule = require('node-schedule').scheduleJob
 const tmp = require('tmp')
+const WebSocketServer = require('ws').Server
 
 const wiki = require('./wiki')
 const WikiUpdater = require('./WikiUpdater')
@@ -21,17 +21,16 @@ const PAGES_FILE = tmp.fileSync({
 
 const app = express()
 const server = http.createServer(app)
-const WebSocketServer = newless(require('ws').Server)
-const ws = WebSocketServer({ server })
+const ws = new WebSocketServer({ server })
 
 app.use(compression())
 
-const updater = WikiUpdater({
+const updater = new WikiUpdater({
   cssPath: CSS_FILE,
   pagesPath: PAGES_FILE
 })
-const wikiPages = WikiPages(PAGES_FILE)
-const matchMaker = MatchMaker({
+const wikiPages = new WikiPages(PAGES_FILE)
+const matchMaker = new MatchMaker({
   pages: wikiPages
 })
 
@@ -39,7 +38,7 @@ const matchMaker = MatchMaker({
  * Set up the WebSocket communications handler.
  */
 
-const handler = SocketHandler(ws, matchMaker)
+const handler = new SocketHandler(ws, matchMaker)
 handler.start()
 
 /**

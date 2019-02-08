@@ -1,7 +1,6 @@
 const qs = require('querystring')
 const makeFetch = require('make-fetch-happen')
 const cheerio = require('cheerio')
-const newless = require('newless')
 const pkg = require('../package.json')
 
 const HINT_LENGTH = 200 // characters
@@ -19,7 +18,7 @@ const fetch = makeFetch.defaults({
  * Represents a wikipedia article page.
  */
 
-const WikiPage = newless(class WikiPage {
+const WikiPage = class WikiPage {
   constructor (title, content, links) {
     this.title = title
     this.content = content
@@ -83,7 +82,7 @@ const WikiPage = newless(class WikiPage {
     const body = await response.json()
     return body.query.backlinks.map((l) => l.title)
   }
-})
+}
 
 const pageRequests = new Map()
 
@@ -108,7 +107,7 @@ async function getPage (title, cb) {
     const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
     const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
     const data = await response.json()
-    return WikiPage(title, data.parse.text['*'], data.parse.links)
+    return new WikiPage(title, data.parse.text['*'], data.parse.links)
   }
 }
 

@@ -2,7 +2,6 @@ const fs = require('fs').promises
 const qs = require('querystring')
 const cheerio = require('cheerio')
 const fetch = require('make-fetch-happen')
-const newless = require('newless')
 const debug = require('debug')('WikiBattle:updater')
 
 /**
@@ -25,7 +24,7 @@ const getTextContent = (el) =>
  * Synchronizes data from Wikipedia.
  */
 
-module.exports = newless(class WikiUpdater {
+module.exports = class WikiUpdater {
   constructor (opts) {
     this.cssPath = opts.cssPath
     this.pagesPath = opts.pagesPath
@@ -117,4 +116,4 @@ module.exports = newless(class WikiUpdater {
       this.updatePages()
     ])
   }
-})
+}

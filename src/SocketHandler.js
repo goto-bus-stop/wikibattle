@@ -1,8 +1,7 @@
 const SocketEvents = require('ws-events')
-const newless = require('newless')
 const Player = require('./Player')
 
-module.exports = newless(class SocketHandler {
+module.exports = class SocketHandler {
   constructor (ws, matchMaker) {
     this.ws = ws
     this.matchMaker = matchMaker
@@ -12,8 +11,8 @@ module.exports = newless(class SocketHandler {
 
   onConnection (raw) {
     let game
-    const sock = SocketEvents(raw)
-    const player = Player(sock)
+    const sock = new SocketEvents(raw)
+    const player = new Player(sock)
 
     sock.on('gameType', (type, id) => {
       switch (type) {
@@ -64,4 +63,4 @@ module.exports = newless(class SocketHandler {
   close () {
     this.ws.removeListener('connection', this.handler)
   }
-})
+}

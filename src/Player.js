@@ -1,7 +1,6 @@
 const generateId = require('crypto-random-string')
-const newless = require('newless')
 
-module.exports = newless(class Player {
+module.exports = class Player {
   /**
    * Manages one Player's socket. (i.e. Sends events and stores state.)
    * @param {SocketEvents} sock A WebSocket events wrapper.
@@ -89,4 +88,4 @@ module.exports = newless(class Player {
   notifyDisconnect (player) {
     this.sock && this.sock.emit('disconnection', player.id)
   }
-})
+}
