@@ -26,6 +26,7 @@ class BacklinksToggle {
 
   show () {
     this.classes.remove('hide')
+    this.input.click()
   }
 
   onChange () {
