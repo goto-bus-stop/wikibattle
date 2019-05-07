@@ -75,9 +75,10 @@ function gameToJson ({ origin, goal, startedAt }) {
 app.get('/current', (req, res) => {
   res.json(matchMaker.getCurrentGames().map(gameToJson))
 })
-app.get('/recent', (req, res) => {
-  res.json(matchMaker.getRecentGames().map(gameToJson))
-})
+app.get('/recent', t(async (req, res) => {
+  const recentGames = await matchMaker.getRecentGames()
+  res.json(recentGames.map(gameToJson))
+}))
 
 app.use(serveStatic(path.join(__dirname, '../public')))
 
