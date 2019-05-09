@@ -14,7 +14,7 @@ const BACKLINKS_TIMEOUT = ms('90 seconds')
 module.exports = class WikiBattle extends EventEmitter {
   constructor (origin, goal) {
     super()
-    this.id = generateId(7)
+    this.id = generateId({ length: 7 })
     this.players = []
     this.origin = origin
     this.goal = goal

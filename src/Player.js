@@ -6,7 +6,7 @@ module.exports = class Player {
    * @param {SocketEvents} sock A WebSocket events wrapper.
    */
   constructor (sock) {
-    this.id = generateId(7)
+    this.id = generateId({ length: 7 })
     this.sock = sock
     this.path = []
     this.connected = true
