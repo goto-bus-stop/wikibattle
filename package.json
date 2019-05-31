@@ -10,7 +10,7 @@
     "node": ">= 10.1"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^2.0.0",
+    "@google-cloud/firestore": "^2.1.1",
     "cheerio": "^1.0.0-rc.3",
     "closest": "0.0.1",
     "component-classes": "^1.2.4",
@@ -21,7 +21,7 @@
     "debug": "^4.1.1",
     "dom-event": "^1.0.0",
     "empty-element": "^1.0.0",
-    "express": "^4.16.4",
+    "express": "^4.17.1",
     "make-fetch-happen": "^4.0.0",
     "ms": "^2.1.1",
     "nanobus": "^4.4.0",
@@ -29,7 +29,7 @@
     "p-event": "^4.1.0",
     "random-item": "^3.0.0",
     "s-ago": "^2.0.1",
-    "serve-static": "^1.13.2",
+    "serve-static": "^1.14.1",
     "throttleit": "^1.0.0",
     "tmp": "0.1.0",
     "ws": "^7.0.0",
@@ -38,17 +38,17 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "babelify": "^10.0.0",
     "browserify": "^16.2.3",
     "cssnano-cli": "^1.0.5",
     "exorcist": "^1.0.1",
     "less": "^3.9.0",
-    "pkg": "^4.3.8",
+    "pkg": "^4.4.0",
     "rimraf": "^2.6.3",
     "standard": "^12.0.0",
-    "tinyify": "^2.5.0"
+    "tinyify": "^2.5.1"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
