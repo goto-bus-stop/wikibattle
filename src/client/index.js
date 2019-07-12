@@ -55,8 +55,8 @@ function init () {
 
   loadRecentGames()
 
-  let startGameWrapper = document.querySelector('#go')
-  let startGamePrivateWrapper = document.querySelector('#go-priv')
+  const startGameWrapper = document.querySelector('#go')
+  const startGamePrivateWrapper = document.querySelector('#go-priv')
 
   render(empty(startGameWrapper), startGameButton(false))
   render(empty(startGamePrivateWrapper), startGameButton(true))
@@ -77,8 +77,8 @@ function go (isPrivate) {
     backlinksToggle(),
     backlinks()
   ])
-  render(empty(me.el), [ article(me, true), playerMask(me) ])
-  render(empty(opponent.el), [ article(opponent, false), playerMask(opponent) ])
+  render(empty(me.el), [article(me, true), playerMask(me)])
+  render(empty(opponent.el), [article(opponent, false), playerMask(opponent)])
 
   const protocol = location.protocol.replace(/^http/, 'ws')
   const { hostname, port } = location

@@ -19,7 +19,7 @@ class PlayerMask {
     this.player = player
 
     this.el = render('div', { class: 'wb-mask hide' },
-      [ path(player) ])
+      [path(player)])
     this.classes = classes(this.el)
 
     this.isLoading = false
