@@ -41,6 +41,6 @@ class PageTitle {
     const restart = render('button', 'Another Run?')
     on(restart, 'click', () => bus.emit('restart'))
 
-    render(empty(this.el), [ text, restart ])
+    render(empty(this.el), [text, restart])
   }
 }

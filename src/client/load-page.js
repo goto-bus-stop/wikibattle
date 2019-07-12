@@ -8,7 +8,7 @@ module.exports = function load (page, cb) {
     return
   }
 
-  callbacks[page] = [ cb ]
+  callbacks[page] = [cb]
 
   xhr(`./wiki/${page}`, (err, response) => {
     if (err) done(err)

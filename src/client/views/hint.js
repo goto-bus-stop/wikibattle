@@ -17,6 +17,6 @@ class Hint {
 
   show (hintText) {
     this.classes.remove('hide')
-    render(this.el, [ render('strong', 'Hint: '), hintText ])
+    render(this.el, [render('strong', 'Hint: '), hintText])
   }
 }

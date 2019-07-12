@@ -34,7 +34,7 @@ class Article {
     this.content = render('div', { class: 'wb-article-content content' })
     this.el = render(
       'div', { class: 'wb-article' },
-      [ render('div', { class: 'heading-holder' }, this.title), this.content ]
+      [render('div', { class: 'heading-holder' }, this.title), this.content]
     )
 
     on(this.el, 'click', (event) => {
@@ -73,7 +73,7 @@ class Article {
 
   renderContent (title, body) {
     const steps = render('small', ` (${this.player.path.length} steps)`)
-    render(empty(this.title), [ title, steps ])
+    render(empty(this.title), [title, steps])
     empty(this.content).innerHTML = body
     this.el.scrollTop = 0
   }

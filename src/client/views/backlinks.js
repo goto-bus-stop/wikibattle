@@ -16,7 +16,7 @@ class Backlinks {
     this.list = render('ul')
     this.el = render(
       'div', { id: 'backlinks', class: 'hide' },
-      [ render('h2', 'Backlinks'), this.list ]
+      [render('h2', 'Backlinks'), this.list]
     )
     this.classes = classes(this.el)
 

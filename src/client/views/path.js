@@ -12,7 +12,7 @@ class Path {
     this.onPaths = this.onPaths.bind(this)
 
     this.list = render('ol')
-    this.el = render('div', { class: 'path hide' }, [ render('h3', 'Path'), this.list ])
+    this.el = render('div', { class: 'path hide' }, [render('h3', 'Path'), this.list])
     this.classes = classes(this.el)
 
     this.player = player
