@@ -31,7 +31,7 @@ const WikiPage = class WikiPage {
 
   getLinks () {
     return this.links
-      .filter((link) => link['ns'] === 0 && 'exists' in link)
+      .filter((link) => link.ns === 0 && 'exists' in link)
       .map((link) => link['*'])
   }
 
