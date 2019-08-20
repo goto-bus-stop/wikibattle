@@ -48,7 +48,7 @@
     "pkg": "^4.4.0",
     "postcss-cli": "^6.1.2",
     "rimraf": "^3.0.0",
-    "standard": "^13.0.1",
+    "standard": "^14.0.0",
     "tinyify": "^2.5.1"
   },
   "repository": "goto-bus-stop/WikiBattle",
