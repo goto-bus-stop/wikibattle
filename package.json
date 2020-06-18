@@ -53,7 +53,7 @@
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
-    "start": "bin/wikibattle",
+    "start": "node bin/wikibattle",
     "lint": "standard",
     "test": "npm run lint",
     "less": "lessc ./src/client/style.less > ./public/style.css",
