@@ -55,6 +55,7 @@ const WikiPage = class WikiPage {
         .filter((i, el) => cheerio(el).text().trim() !== '')
         .first()
         .text()
+        .replace(/\[\d+]/gm, '')
       return hint.length > HINT_LENGTH
         ? `${hint.substr(0, HINT_LENGTH)}…`
         : hint
