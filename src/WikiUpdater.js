@@ -14,6 +14,17 @@ function isWikiPageLink (el) {
 }
 
 /**
+ * Check if a page name is "fun", and not likely to be offensive or triggering.
+ *
+ * This implementation just checks against a list of un-fun words so it's not very reliable, but hopefully picks out the most common cases.
+ */
+
+function isFunPageName (name) {
+  // grape is ok
+  return !/(?:\brape\b|ethnic slur)/i.test(name)
+}
+
+/**
  * Get the text content from a cheerio element.
  */
 
@@ -79,6 +90,7 @@ module.exports = class WikiUpdater {
       .toArray()
       .filter(isWikiPageLink)
       .map((el) => getTextContent($(el)))
+      .filter(isFunPageName)
 
     return pageNames
   }
