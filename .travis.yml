@@ -1,5 +1,8 @@
 language: node_js
-sudo: false
 install: npm install
-node_js:
-  - 10
+jobs:
+  include:
+    - os: linux
+      node_js: lts/*
+    - os: windows
+      node_js: 12
