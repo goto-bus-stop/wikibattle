@@ -16,6 +16,7 @@
     "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
     "compression": "^1.7.3",
+    "cpy-cli": "^3.1.1",
     "crel": "^3.0.0",
     "crypto-random-string": "^3.0.1",
     "debug": "^4.1.1",
@@ -53,7 +54,7 @@
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
-    "start": "bin/wikibattle",
+    "start": "node bin/wikibattle",
     "lint": "standard",
     "test": "npm run lint",
     "less": "lessc ./src/client/style.less > ./public/style.css",
@@ -63,9 +64,9 @@
     "minify-wiki-css": "postcss public/wiki.css -o public/wiki.css",
     "minify-app-css": "postcss public/style.css -o public/style.css",
     "minify-css": "npm run minify-wiki-css && npm run minify-app-css",
-    "html": "cp src/client/index.html public/",
+    "html": "cpy src/client/index.html public/",
     "dev": "npm run compile:dev && npm run less && npm run html",
-    "prod": "npm run less && npm run minify-css && npm run compile",
+    "prod": "npm run less && npm run minify-css && npm run compile && npm run html",
     "build": "npm run update && npm run prod",
     "pkg": "pkg . --out-path dist/",
     "prepare": "npm run build"
