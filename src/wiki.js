@@ -5,7 +5,7 @@ const pkg = require('../package.json')
 
 const HINT_LENGTH = 200 // characters
 const BACKLINKS_LIMIT = 25 // amount of backlinks to retrieve
-const CACHE_LOCATION = '/tmp/WikiBattle/'
+const CACHE_LOCATION = '/tmp/WikiBattle-2/'
 
 const fetch = makeFetch.defaults({
   cacheManager: CACHE_LOCATION,
