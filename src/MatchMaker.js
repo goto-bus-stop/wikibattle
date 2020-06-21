@@ -20,8 +20,8 @@ module.exports = class MatchMaker {
    * Create a new game hosted by the given player.
    */
 
-  createGame (player) {
-    const [origin, goal] = this.wikiPages.randomPair()
+  async createGame (player) {
+    const [origin, goal] = await this.wikiPages.randomPair()
     const game = new WikiBattle(origin, goal)
     game.connect(player)
     return game
@@ -32,7 +32,7 @@ module.exports = class MatchMaker {
    * either the previous, or the next player that is passed to this method.
    */
 
-  pair (player) {
+  async pair (player) {
     if (this.waitingPair) {
       debug('pairing with existing')
       const game = this.waitingPair
@@ -49,7 +49,7 @@ module.exports = class MatchMaker {
     }
 
     debug('waiting for pairing')
-    const game = this.createGame(player)
+    const game = await this.createGame(player)
     this.waitingPair = game
 
     player.notifyJoinedGame(game)
@@ -63,10 +63,10 @@ module.exports = class MatchMaker {
    * shareable URL.
    */
 
-  new (player) {
+  async new (player) {
     debug('forcing new game')
 
-    const game = this.createGame(player)
+    const game = await this.createGame(player)
     this.games[game.id] = game
 
     player.notifyJoinedGame(game)

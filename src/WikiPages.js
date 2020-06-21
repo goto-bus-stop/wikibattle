@@ -59,7 +59,7 @@ module.exports = class WikiPages extends EventEmitter {
    * Get a pair of random article names, guaranteed to be two different pages.
    */
 
-  randomPair () {
+  async randomPair () {
     const one = this.random()
 
     let two = this.random()
