@@ -29,14 +29,18 @@ function isFunPageName (name) {
     '\\brape\\b'
   ]
 
+  const notFunArticles = [
+    // The hyphen article's `-` alias always ends up in the top 5000 list because of faulty bots or something
+    '-'
+  ]
+
   let pattern = '(?:'
   for (const word in notFunWords) {
     pattern += word + '|'
   }
   pattern = pattern.substr(0, pattern.length - 1) + ')'
-  
-  // The hyphen article's `-` alias always ends up in the top 5000 list because of faulty bots or something
-  return !new RegExp(pattern, 'i').test(name) && name!== '-'
+
+  return !new RegExp(pattern, 'i').test(name) && !notFunArticles.includes(name)
 }
 
 /**
