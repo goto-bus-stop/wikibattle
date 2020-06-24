@@ -74,7 +74,7 @@ const WikiPage = class WikiPage {
       format: 'json',
       list: 'backlinks',
       bltitle: this.title,
-      blfilterredir: 'all',
+      blfilterredir: 'nonredirects',
       blnamespace: 0,
       bllimit: BACKLINKS_LIMIT
     })
