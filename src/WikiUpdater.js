@@ -9,8 +9,8 @@ const debug = require('debug')('WikiBattle:updater')
  */
 
 function isWikiPageLink (el) {
-  const href = el.attribs.href
-  return href !== '/wiki/Main_Page' && /^\/wiki\//.test(href)
+  const href = el.attribs.href.toLowerCase()
+  return href !== '/wiki/main_page' && /^\/wiki\//.test(href)
 }
 
 /**
