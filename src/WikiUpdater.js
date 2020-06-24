@@ -20,8 +20,22 @@ function isWikiPageLink (el) {
  */
 
 function isFunPageName (name) {
-  // grape is ok
-  return !/(?:\brape\b|ethnic slur)/i.test(name)
+  const notFunWords = [
+    'ethnic slur',
+    'death',
+    'murder',
+    'chronic',
+    // grape is ok
+    '\\brape\\b'
+  ]
+
+  let pattern = '(?:'
+  for (const word in notFunWords) {
+    pattern += word + '|'
+  }
+  pattern = pattern.substr(0, pattern.length - 1) + ')'
+
+  return !new RegExp(pattern, 'i').test(name)
 }
 
 /**
