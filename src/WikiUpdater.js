@@ -92,6 +92,9 @@ module.exports = class WikiUpdater {
       .map((el) => getTextContent($(el)))
       .filter(isFunPageName)
 
+    // always add "Wikiracing" to the list for fun
+    pageNames.push('Wikiracing')
+
     return pageNames
   }
 
