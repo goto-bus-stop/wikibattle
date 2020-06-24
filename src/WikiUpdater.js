@@ -20,8 +20,9 @@ function isWikiPageLink (el) {
  */
 
 function isFunPageName (name) {
-  // grape is ok
-  return !/(?:\brape\b|ethnic slur)/i.test(name)
+  // The hyphen article's `-` alias always ends up in the top 5000 list because of faulty bots or something
+  return name !== '-' &&
+    !/(?:\brape\b|ethnic slur)/i.test(name)
 }
 
 /**
