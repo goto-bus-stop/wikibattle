@@ -35,7 +35,7 @@ function isFunPageName (name) {
   ]
 
   let pattern = '(?:'
-  for (const word in notFunWords) {
+  for (const word of notFunWords) {
     pattern += word + '|'
   }
   pattern = pattern.substr(0, pattern.length - 1) + ')'
