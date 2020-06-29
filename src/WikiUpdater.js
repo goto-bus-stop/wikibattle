@@ -9,8 +9,8 @@ const debug = require('debug')('WikiBattle:updater')
  */
 
 function isWikiPageLink (el) {
-  const href = el.attribs.href
-  return href !== '/wiki/Main_Page' && /^\/wiki\//.test(href)
+  const href = el.attribs.href.toLowerCase()
+  return href !== '/wiki/main_page' && /^\/wiki\//.test(href)
 }
 
 /**
@@ -20,9 +20,27 @@ function isWikiPageLink (el) {
  */
 
 function isFunPageName (name) {
-  // The hyphen article's `-` alias always ends up in the top 5000 list because of faulty bots or something
-  return name !== '-' &&
-    !/(?:\brape\b|ethnic slur)/i.test(name)
+  const notFunWords = [
+    'ethnic slur',
+    'death',
+    'murder',
+    'chronic',
+    // grape is ok
+    '\\brape\\b'
+  ]
+
+  const notFunArticles = [
+    // The hyphen article's `-` alias always ends up in the top 5000 list because of faulty bots or something
+    '-'
+  ]
+
+  let pattern = '(?:'
+  for (const word of notFunWords) {
+    pattern += word + '|'
+  }
+  pattern = pattern.substr(0, pattern.length - 1) + ')'
+
+  return !new RegExp(pattern, 'i').test(name) && !notFunArticles.includes(name)
 }
 
 /**
