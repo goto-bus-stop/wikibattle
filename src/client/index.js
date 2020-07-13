@@ -180,8 +180,12 @@ function onReceivePaths (paths) {
 }
 
 function GameRow ({ origin, goal, startedAt }) {
+  function wikiLink (article) {
+    return render('a', { href: `https://en.wikipedia.org/wiki/${encodeURIComponent(article)}` }, [article])
+  }
+
   this.el = render('li', [
-    `${origin} → ${goal} `,
+    `${wikiLink(origin)} → ${wikiLink(goal)} `,
     render('small', `(${formatTimeAgo(new Date(startedAt))})`)
   ])
 }
