@@ -10,7 +10,7 @@
     "node": ">= 10.1"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^3.0.0",
+    "@google-cloud/firestore": "^4.1.2",
     "cheerio": "^1.0.0-rc.3",
     "closest": "0.0.1",
     "component-classes": "^1.2.4",
