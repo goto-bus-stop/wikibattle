@@ -50,7 +50,7 @@
     "postcss-cli": "^7.1.0",
     "rimraf": "^3.0.0",
     "standard": "^14.3.1",
-    "tinyify": "^2.5.1"
+    "tinyify": "^3.0.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
