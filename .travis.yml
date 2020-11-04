@@ -1,8 +1,0 @@
-language: node_js
-install: npm install
-jobs:
-  include:
-    - os: linux
-      node_js: lts/*
-    - os: windows
-      node_js: 12
