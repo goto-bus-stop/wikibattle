@@ -45,7 +45,7 @@
     "browserify": "^17.0.0",
     "cssnano": "^4.1.10",
     "exorcist": "^1.0.1",
-    "less": "^3.13.1",
+    "less": "^4.1.1",
     "pkg": "^4.4.9",
     "postcss-cli": "^7.1.0",
     "rimraf": "^3.0.0",
