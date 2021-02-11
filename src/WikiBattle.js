@@ -56,7 +56,7 @@ module.exports = class WikiBattle extends EventEmitter {
     disconnectingPlayer.disconnect()
     this.navigate(disconnectingPlayer, null)
 
-    var connected = this.players.filter((p) => p.connected)
+    const connected = this.players.filter((p) => p.connected)
     connected.forEach((p) => {
       p.notifyDisconnect(disconnectingPlayer)
     })
