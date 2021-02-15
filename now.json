@@ -1,8 +1,0 @@
-{
-  "name": "wikibattle",
-  "alias": "wikibattle.me",
-  "env": {
-    "DEBUG": "WikiBattle*",
-    "FIRESTORE_KEY": "@wikibattle-firestore"
-  }
-}
