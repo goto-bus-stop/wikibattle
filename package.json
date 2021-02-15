@@ -46,7 +46,6 @@
     "cssnano": "^4.1.10",
     "exorcist": "^1.0.1",
     "less": "^4.1.1",
-    "pkg": "^4.4.9",
     "postcss-cli": "^7.1.0",
     "rimraf": "^3.0.0",
     "standard": "^16.0.3",
@@ -68,10 +67,6 @@
     "dev": "npm run compile:dev && npm run less && npm run html",
     "prod": "npm run less && npm run minify-css && npm run compile && npm run html",
     "build": "npm run update && npm run prod",
-    "pkg": "pkg . --out-path dist/",
     "prepare": "npm run build"
-  },
-  "pkg": {
-    "assets": "public/*"
   }
 }
