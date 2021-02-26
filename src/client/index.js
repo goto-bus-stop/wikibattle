@@ -7,6 +7,7 @@ const render = require('crel')
 const throttle = require('throttleit')
 const formatTimeAgo = require('s-ago')
 const wsEvents = require('ws-events')
+const Plausible = require('plausible-tracker').default
 const bus = require('./bus')
 const loadPage = require('./load-page')
 const pageTitle = require('./views/page-title')
@@ -20,6 +21,20 @@ const playerMask = require('./views/player-mask')
 const newless = (Class) => (...args) => new Class(...args)
 
 let sock
+
+const { trackEvent } = Plausible({
+  domain: 'wikibattle.me',
+  trackLocalhost: true
+})
+
+bus.on('start', () => {
+  trackEvent('start')
+})
+bus.on('navigate', (target) => {
+  trackEvent('navigate', {
+    props: { article: target }
+  })
+})
 
 const Player = newless(class Player {
   constructor (el) {
