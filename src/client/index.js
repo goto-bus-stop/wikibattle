@@ -23,8 +23,7 @@ const newless = (Class) => (...args) => new Class(...args)
 let sock
 
 const { trackEvent } = Plausible({
-  domain: 'wikibattle.me',
-  trackLocalhost: true
+  domain: 'wikibattle.me'
 })
 
 bus.on('start', () => {
