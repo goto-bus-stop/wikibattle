@@ -22,9 +22,11 @@ const newless = (Class) => (...args) => new Class(...args)
 
 let sock
 
-const { trackEvent } = Plausible({
+const { trackPageview, trackEvent } = Plausible({
   domain: 'wikibattle.me'
 })
+
+trackPageview()
 
 bus.on('start', () => {
   trackEvent('start')
