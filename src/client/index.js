@@ -199,7 +199,9 @@ function GameRow ({ origin, goal, startedAt }) {
   }
 
   this.el = render('li', [
-    `${wikiLink(origin)} → ${wikiLink(goal)} `,
+    wikiLink(origin),
+    ' → ',
+    wikiLink(goal),
     render('small', `(${formatTimeAgo(new Date(startedAt))})`)
   ])
 }
