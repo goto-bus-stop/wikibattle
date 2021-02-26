@@ -1,7 +1,7 @@
 {
   "name": "wikibattle",
   "description": "1v1 races through Wikipedia article links.",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "license": "MIT",
   "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues",
   "author": "Renée Kooi <renee@kooi.me>",
