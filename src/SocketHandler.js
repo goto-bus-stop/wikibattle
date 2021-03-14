@@ -14,13 +14,13 @@ module.exports = class SocketHandler {
     const sock = new SocketEvents(raw)
     const player = new Player(sock)
 
-    sock.on('gameType', async (type, id) => {
+    sock.on('gameType', async (type, id, language) => {
       switch (type) {
         case 'pair':
-          game = await this.matchMaker.pair(player)
+          game = await this.matchMaker.pair(player, language)
           break
         case 'new':
-          game = await this.matchMaker.new(player)
+          game = await this.matchMaker.new(player, language)
           break
         case 'join':
           try {

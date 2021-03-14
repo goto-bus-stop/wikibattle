@@ -4,6 +4,8 @@ const event = require('p-event')
 const ms = require('ms')
 const getRandom = require('random-item')
 const debug = require('debug')('WikiBattle:pages')
+const qs = require('querystring')
+const fetch = require('make-fetch-happen')
 
 /**
  * Possible starting and goal wikipedia articles manager.
@@ -55,16 +57,39 @@ module.exports = class WikiPages extends EventEmitter {
     return getRandom(this.pages)
   }
 
+  async translate (article, language) {
+    if (language === 'en') return article
+
+    const query = qs.stringify({
+      action: 'query',
+      format: 'json',
+      prop: 'langlinks',
+      titles: this.title,
+      lllang: language
+    })
+
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const body = await response.json()
+    const langlink = Object.values(body.query.pages)[0].langlinks
+
+    return langlink ? langlink[0]['*'] : null
+  }
+
   /**
    * Get a pair of random article names, guaranteed to be two different pages.
    */
 
-  async randomPair () {
-    const one = this.random()
+  async randomPair (language) {
+    let one = null
+    let two = null
 
-    let two = this.random()
+    while (!(one && two)) {
+      one = one || await this.translate(this.random(), language)
+      two = two || await this.translate(this.random(), language)
+    }
+
     while (one === two) {
-      two = this.random()
+      two = await this.translate(this.random(), language)
     }
 
     return [one, two]

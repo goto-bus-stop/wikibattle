@@ -68,8 +68,8 @@ app.use(t(async (req, res, next) => {
  * Serve the application.
  */
 
-function gameToJson ({ origin, goal, startedAt }) {
-  return { origin, goal, startedAt }
+function gameToJson ({ origin, goal, startedAt, language }) {
+  return { origin, goal, startedAt, language }
 }
 
 app.get('/current', (req, res) => {
@@ -87,7 +87,16 @@ app.use(serveStatic(path.join(__dirname, '../public')))
  */
 
 app.get('/wiki/:page', t(async (req, res) => {
-  const body = await wiki.get(req.params.page)
+  const body = await wiki.get(req.params.page, null, 'en')
+  res.end(body.content)
+}))
+
+/**
+ * Serve proxied Wikipedia articles in other languages than English.
+ */
+
+app.get('/wiki/:lang(\\w+)/:page', t(async (req, res) => {
+  const body = await wiki.get(req.params.page, null, req.params.lang)
   res.end(body.content)
 }))
 

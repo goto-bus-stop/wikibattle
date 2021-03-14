@@ -12,12 +12,13 @@ const BACKLINKS_TIMEOUT = ms('90 seconds')
  */
 
 module.exports = class WikiBattle extends EventEmitter {
-  constructor (origin, goal) {
+  constructor (origin, goal, language) {
     super()
     this.id = generateId({ length: 7 })
     this.players = []
     this.origin = origin
     this.goal = goal
+    this.language = language || 'en'
   }
 
   /**
@@ -87,7 +88,7 @@ module.exports = class WikiBattle extends EventEmitter {
    */
 
   navigateInner (player, to) {
-    player.navigateTo(to)
+    player.navigateTo(to, null, this.language)
     this.emitSocket('navigated', player.id, to)
     this.checkWin()
   }
@@ -102,7 +103,7 @@ module.exports = class WikiBattle extends EventEmitter {
       return this.navigateInner(player, to)
     }
     // Check that the current article links to the next.
-    const page = await wiki.get(player.current())
+    const page = await wiki.get(player.current(), null, this.language)
     if (page.linksTo(to)) {
       this.navigateInner(player, to)
     }
@@ -114,7 +115,7 @@ module.exports = class WikiBattle extends EventEmitter {
 
   async sendHint () {
     debug('sending hint for', this.goal)
-    const page = await wiki.get(this.goal)
+    const page = await wiki.get(this.goal, null, this.language)
     this.emitSocket('hint', page.getHint())
   }
 
@@ -125,7 +126,7 @@ module.exports = class WikiBattle extends EventEmitter {
   async sendBacklinks () {
     debug('sending backlinks for', this.goal)
     try {
-      const page = await wiki.get(this.goal)
+      const page = await wiki.get(this.goal, null, this.language)
       const back = await page.getBacklinks()
       this.emitSocket('backlinks', null, back)
     } catch (err) {

@@ -27,13 +27,13 @@ const Player = newless(class Player {
     this.path = []
   }
 
-  navigateTo (page, cb) {
+  navigateTo (page, cb, language) {
     this.path.push(page)
     bus.emit('article-loading', { player: this, title: page })
     loadPage(page, (e, body) => {
       bus.emit('article-loaded', { player: this, title: page, body: body })
       if (cb) cb(e)
-    })
+    }, language)
   }
 })
 
@@ -58,12 +58,14 @@ function init () {
   const startGameWrapper = document.querySelector('#go')
   const startGamePrivateWrapper = document.querySelector('#go-priv')
 
-  render(empty(startGameWrapper), startGameButton(false))
-  render(empty(startGamePrivateWrapper), startGameButton(true))
+  const language = document.querySelector('#language').value
+
+  render(empty(startGameWrapper), startGameButton(false, language))
+  render(empty(startGamePrivateWrapper), startGameButton(true, language))
   bus.on('connect', go)
 }
 
-function go (isPrivate) {
+function go (isPrivate, language) {
   _private = isPrivate
 
   bus.on('navigate', onNavigate)
@@ -124,7 +126,7 @@ function go (isPrivate) {
     waiting()
   })
 
-  sock.emit('gameType', connectType, connectId)
+  sock.emit('gameType', connectType, connectId, language)
 }
 
 function onNavigate (next) {
@@ -158,9 +160,9 @@ function onBacklinks (e, backlinks) {
   bus.emit('backlinks', backlinks)
 }
 
-function onNavigated (playerId, page, cb) {
+function onNavigated (playerId, page, cb, language) {
   if (_players[playerId] && page !== null) {
-    _players[playerId].navigateTo(page, cb)
+    _players[playerId].navigateTo(page, cb, language)
   }
 }
 function onOpponentScrolled (id, top, width) {

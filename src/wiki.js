@@ -19,10 +19,11 @@ const fetch = makeFetch.defaults({
  */
 
 const WikiPage = class WikiPage {
-  constructor (title, content, links) {
+  constructor (title, content, links, language) {
     this.title = title
     this.content = content
     this.links = links
+    this.language = language
   }
 
   /**
@@ -79,7 +80,7 @@ const WikiPage = class WikiPage {
       bllimit: BACKLINKS_LIMIT
     })
 
-    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const response = await fetch(`https://${this.language}.wikipedia.org/w/api.php?${query}`)
     const body = await response.json()
     return body.query.backlinks.map((l) => l.title)
   }
@@ -91,7 +92,7 @@ const pageRequests = new Map()
  * Load a wikipedia page with metadata.
  */
 
-async function getPage (title, cb) {
+async function getPage (title, cb, language) {
   // if we're already fetching this page, don't start a new request
   if (pageRequests.has(title)) return pageRequests.get(title)
 
@@ -106,9 +107,10 @@ async function getPage (title, cb) {
 
   async function load () {
     const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
-    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    // const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const response = await fetch(`https://${language}.wikipedia.org/w/api.php?${query}`)
     const data = await response.json()
-    return new WikiPage(title, data.parse.text['*'], data.parse.links)
+    return new WikiPage(title, data.parse.text['*'], data.parse.links, language)
   }
 }
 
