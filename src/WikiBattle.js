@@ -117,7 +117,8 @@ export default class WikiBattle extends EventEmitter {
   async sendHint () {
     debug('sending hint for', this.goal)
     const page = await wiki.get(this.goal)
-    this.emitSocket('hint', page.getHint())
+    const hint = await page.getHint()
+    this.emitSocket('hint', hint)
   }
 
   /**
