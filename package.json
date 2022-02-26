@@ -39,18 +39,9 @@
     "xhr": "^2.6.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.16",
-    "@babel/core": "^7.12.16",
-    "@babel/preset-env": "^7.12.16",
-    "babelify": "^10.0.0",
-    "browserify": "^17.0.0",
-    "cssnano": "^4.1.10",
-    "exorcist": "^2.0.0",
+    "esbuild": "^0.14.23",
     "less": "^4.1.1",
-    "postcss-cli": "^7.1.0",
-    "rimraf": "^3.0.0",
-    "standard": "^16.0.3",
-    "tinyify": "^3.0.0"
+    "standard": "^16.0.3"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
@@ -59,11 +50,9 @@
     "test": "npm run lint",
     "less": "lessc ./src/client/style.less > ./public/style.css",
     "update": "node update.js",
-    "compile": "browserify --debug -t babelify -p tinyify -e src/client/index.js | exorcist public/app.js.map > public/app.js",
-    "compile:dev": "browserify --debug -t babelify -e src/client/index.js -o public/app.js",
-    "minify-wiki-css": "postcss public/wiki.css -o public/wiki.css",
-    "minify-app-css": "postcss public/style.css -o public/style.css",
-    "minify-css": "npm run minify-wiki-css && npm run minify-app-css",
+    "compile": "esbuild src/client/index.js --bundle --minify --outfile=public/app.js",
+    "compile:dev": "esbuild src/client/index.js --bundle --outfile=public/app.js",
+    "minify-css": "esbuild public/{wiki,style}.css --minify --outdir=public --allow-overwrite",
     "html": "cpy src/client/index.html public/",
     "dev": "npm run compile:dev && npm run less && npm run html",
     "prod": "npm run less && npm run minify-css && npm run compile && npm run html",
