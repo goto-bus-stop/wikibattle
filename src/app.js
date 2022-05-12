@@ -6,7 +6,7 @@ import http from 'http'
 import createDebug from 'debug'
 import schedule from 'node-schedule'
 import tmp from 'tmp'
-import WebSocket from 'ws'
+import { WebSocketServer } from 'ws'
 import * as wiki from './wiki.js'
 import WikiUpdater from './WikiUpdater.js'
 import WikiPages from './WikiPages.js'
@@ -22,7 +22,7 @@ const PAGES_FILE = tmp.fileSync({
 
 const app = express()
 const server = http.createServer(app)
-const ws = new WebSocket.Server({ server })
+const ws = new WebSocketServer({ server })
 
 app.use(compression())
 
