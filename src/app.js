@@ -1,5 +1,4 @@
 import express from 'express'
-import compression from 'compression'
 import serveStatic from 'serve-static'
 import { fileURLToPath } from 'url'
 import http from 'http'
@@ -23,8 +22,6 @@ const PAGES_FILE = tmp.fileSync({
 const app = express()
 const server = http.createServer(app)
 const ws = new WebSocketServer({ server })
-
-app.use(compression())
 
 const updater = new WikiUpdater({
   cssPath: CSS_FILE,
