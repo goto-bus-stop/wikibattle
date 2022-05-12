@@ -1,6 +1,5 @@
 import fs from 'fs'
-import { EventEmitter } from 'events'
-import event from 'p-event'
+import { EventEmitter, once } from 'events'
 import ms from 'ms'
 import getRandom from 'random-item'
 import createDebug from 'debug'
@@ -78,7 +77,7 @@ export default class WikiPages extends EventEmitter {
 
   async ready () {
     if (!Array.isArray(this.pages)) {
-      await event(this, 'loaded')
+      await once(this, 'loaded')
     }
   }
 }
