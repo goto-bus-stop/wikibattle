@@ -1,4 +1,3 @@
-import classes from 'component-classes'
 import render from 'crel'
 import bus from '../bus.js'
 
@@ -14,7 +13,6 @@ class GameLink {
     this.input = render('input', { type: 'text' })
     this.el = render('div', { id: 'game-link', class: 'hide' },
       ['Link to this game:', this.input])
-    this.classes = classes(this.el)
 
     bus.on('game-link', this.showLink)
     bus.on('start', this.hide)
@@ -22,11 +20,11 @@ class GameLink {
 
   showLink (link) {
     this.input.value = link
-    this.classes.remove('hide')
+    this.el.classList.remove('hide')
     this.input.select()
   }
 
   hide () {
-    this.classes.add('hide')
+    this.el.classList.add('hide')
   }
 }

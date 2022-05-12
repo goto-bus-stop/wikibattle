@@ -1,4 +1,3 @@
-import classes from 'component-classes'
 import render from 'crel'
 import bus from '../bus.js'
 import path from './path.js'
@@ -19,7 +18,6 @@ class PlayerMask {
 
     this.el = render('div', { class: 'wb-mask hide' },
       [path(player)])
-    this.classes = classes(this.el)
 
     this.isLoading = false
     this.isGameOver = false
@@ -32,11 +30,11 @@ class PlayerMask {
   }
 
   show (link) {
-    this.classes.remove('hide')
+    this.el.classList.remove('hide')
   }
 
   hide () {
-    this.classes.add('hide')
+    this.el.classList.add('hide')
   }
 
   maybeHide () {
@@ -47,13 +45,13 @@ class PlayerMask {
 
   setLoading () {
     this.show()
-    this.classes.add('loading')
+    this.el.classList.add('loading')
     this.isLoading = true
   }
 
   setNotLoading () {
     this.isLoading = false
-    this.classes.remove('loading')
+    this.el.classList.remove('loading')
     this.maybeHide()
   }
 
@@ -76,9 +74,9 @@ class PlayerMask {
   onGameOver (winner) {
     this.isGameOver = true
     if (winner.id === this.player.id) {
-      this.classes.add('won')
+      this.el.classList.add('won')
     } else {
-      this.classes.add('lost')
+      this.el.classList.add('lost')
     }
     this.show()
   }

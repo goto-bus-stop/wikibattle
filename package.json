@@ -14,7 +14,6 @@
     "@google-cloud/firestore": "^4.9.2",
     "cheerio": "^1.0.0-rc.5",
     "closest": "0.0.1",
-    "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
     "compression": "^1.7.3",
     "crel": "^3.0.0",

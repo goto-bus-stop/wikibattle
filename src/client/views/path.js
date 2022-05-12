@@ -1,4 +1,3 @@
-import classes from 'component-classes'
 import empty from 'empty-element'
 import render from 'crel'
 import bus from '../bus.js'
@@ -13,7 +12,6 @@ class Path {
 
     this.list = render('ol')
     this.el = render('div', { class: 'path hide' }, [render('h3', 'Path'), this.list])
-    this.classes = classes(this.el)
 
     this.player = player
     bus.on('paths', this.onPaths)
@@ -21,7 +19,7 @@ class Path {
 
   onPaths (paths) {
     if (paths[this.player.id]) {
-      this.classes.remove('hide')
+      this.el.classList.remove('hide')
       this.setPathList(paths[this.player.id])
     }
   }

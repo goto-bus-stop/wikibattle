@@ -1,7 +1,6 @@
 /* global location, alert, WebSocket */
 
 import xhr from 'xhr'
-import classes from 'component-classes'
 import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
@@ -67,7 +66,7 @@ function init () {
   if (location.hash.substr(0, 6) === '#game:') {
     document.querySelector('#game-id').innerHTML = location.hash.substr(1)
     document.querySelector('#friend').style.display = 'none'
-    classes(document.body).add('invited')
+    document.body.classList.add('invited')
   }
 
   loadRecentGames()

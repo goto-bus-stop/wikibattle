@@ -1,4 +1,3 @@
-import classes from 'component-classes'
 import render from 'crel'
 import empty from 'empty-element'
 import bus from '../bus.js'
@@ -18,7 +17,6 @@ class Backlinks {
       'div', { id: 'backlinks', class: 'hide' },
       [render('h2', 'Backlinks'), this.list]
     )
-    this.classes = classes(this.el)
 
     bus.on('backlinks', this.setBacklinks)
     bus.on('backlinks:show', this.show)
@@ -31,10 +29,10 @@ class Backlinks {
   }
 
   show () {
-    this.classes.remove('hide')
+    this.el.classList.remove('hide')
   }
 
   hide () {
-    this.classes.add('hide')
+    this.el.classList.add('hide')
   }
 }

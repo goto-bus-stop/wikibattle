@@ -1,5 +1,4 @@
 /* eslint-env browser */
-import classes from 'component-classes'
 import closest from 'closest'
 import delegate from 'component-delegate'
 import empty from 'empty-element'
@@ -81,12 +80,12 @@ class Article {
 
   animate (title, body) {
     this.renderPrev()
-    classes(this.el).add('in')
+    this.el.classList.add('in')
     this.renderContent(title, body)
 
     requestAnimationFrame(() => {
-      classes(this.prev).add('out')
-      classes(this.el).remove('in')
+      this.prev.classList.add('out')
+      this.el.classList.remove('in')
       this.prev.addEventListener('transitionend', () => {
         this.removePrev()
       })

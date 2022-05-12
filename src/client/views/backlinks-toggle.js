@@ -1,4 +1,3 @@
-import classes from 'component-classes'
 import crel from 'crel'
 import domEvent from 'dom-event'
 import bus from '../bus.js'
@@ -19,7 +18,6 @@ class BacklinksToggle {
       'label', { id: 'show-backlinks', for: 'sbin', class: 'hide' },
       [this.input, ' Show Backlinks']
     )
-    this.classes = classes(this.el)
 
     on(this.input, 'change', this.onChange)
 
@@ -27,7 +25,7 @@ class BacklinksToggle {
   }
 
   show () {
-    this.classes.remove('hide')
+    this.el.classList.remove('hide')
     this.input.click()
   }
 
