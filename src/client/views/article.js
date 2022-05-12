@@ -1,5 +1,4 @@
 /* eslint-env browser */
-import closest from 'closest'
 import delegate from 'component-delegate'
 import empty from 'empty-element'
 import render from 'crel'
@@ -38,7 +37,7 @@ class Article {
     )
 
     on(this.el, 'click', (event) => {
-      const target = closest(event.target, 'a')
+      const target = event.target.closest('a')
       if (target) {
         const href = target.getAttribute('href')
         if (href[0] === '#') {
