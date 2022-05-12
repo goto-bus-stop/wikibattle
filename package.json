@@ -5,7 +5,8 @@
   "license": "MIT",
   "bugs": "https://github.com/goto-bus-stop/WikiBattle/issues",
   "author": "Renée Kooi <renee@kooi.me>",
-  "bin": "bin/wikibattle",
+  "bin": "bin/wikibattle.js",
+  "type": "module",
   "engines": {
     "node": ">= 10.1"
   },

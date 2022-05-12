@@ -1,9 +1,11 @@
-const empty = require('empty-element')
-const render = require('crel')
-const { on } = require('dom-event')
-const bus = require('../bus')
+import empty from 'empty-element'
+import render from 'crel'
+import domEvent from 'dom-event'
+import bus from '../bus.js'
 
-module.exports = function pageTitle (pov) {
+const { on } = domEvent
+
+export default function pageTitle (pov) {
   return new PageTitle(pov).el
 }
 

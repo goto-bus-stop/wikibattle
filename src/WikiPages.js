@@ -1,15 +1,17 @@
-const fs = require('fs')
-const EventEmitter = require('events')
-const event = require('p-event')
-const ms = require('ms')
-const getRandom = require('random-item')
-const debug = require('debug')('WikiBattle:pages')
+import fs from 'fs'
+import { EventEmitter } from 'events'
+import event from 'p-event'
+import ms from 'ms'
+import getRandom from 'random-item'
+import createDebug from 'debug'
+
+const debug = createDebug('WikiBattle:pages')
 
 /**
  * Possible starting and goal wikipedia articles manager.
  */
 
-module.exports = class WikiPages extends EventEmitter {
+export default class WikiPages extends EventEmitter {
   constructor (filename) {
     super()
 

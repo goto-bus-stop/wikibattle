@@ -1,4 +1,4 @@
-const Firestore = require('@google-cloud/firestore')
+import Firestore from '@google-cloud/firestore'
 const { Timestamp } = Firestore
 
 class RecentGames {
@@ -37,4 +37,4 @@ class RecentGames {
   }
 }
 
-module.exports = RecentGames
+export default RecentGames

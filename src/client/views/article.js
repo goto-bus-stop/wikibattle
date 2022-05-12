@@ -1,13 +1,14 @@
 /* eslint-env browser */
-const classes = require('component-classes')
-const closest = require('closest')
-const delegate = require('component-delegate')
-const empty = require('empty-element')
-const render = require('crel')
-const { on, off } = require('dom-event')
-const bus = require('../bus')
+import classes from 'component-classes'
+import closest from 'closest'
+import delegate from 'component-delegate'
+import empty from 'empty-element'
+import render from 'crel'
+import domEvent from 'dom-event'
+import bus from '../bus.js'
+const { on, off } = domEvent
 
-module.exports = function article (player, isSelf) {
+export default function article (player, isSelf) {
   return new Article(player, isSelf).el
 }
 

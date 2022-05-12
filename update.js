@@ -1,17 +1,11 @@
-const path = require('path')
-const WikiUpdater = require('./src/WikiUpdater')
+import WikiUpdater from './src/WikiUpdater.js'
+
 const updater = new WikiUpdater({
-  cssPath: path.join(__dirname, 'public/wiki.css')
+  cssPath: new URL('public/wiki.css', import.meta.url)
 })
 
 console.log('updating wiki assets')
 
-updateCss().catch((err) => {
-  setImmediate(() => { throw err })
-})
-
-async function updateCss () {
-  console.log('downloading css')
-  await updater.updateCss()
-  console.log('downloaded css')
-}
+console.log('downloading css')
+await updater.updateCss()
+console.log('downloaded css')

@@ -1,23 +1,24 @@
 /* global location, alert, WebSocket */
 
-const xhr = require('xhr')
-const classes = require('component-classes')
-const empty = require('empty-element')
-const render = require('crel')
-const throttle = require('throttleit')
-const formatTimeAgo = require('s-ago')
-const wsEvents = require('ws-events')
-const Plausible = require('plausible-tracker').default
-const bus = require('./bus')
-const loadPage = require('./load-page')
-const pageTitle = require('./views/page-title')
-const startGameButton = require('./views/start-game-button')
-const gameLink = require('./views/game-link')
-const hint = require('./views/hint')
-const backlinks = require('./views/backlinks')
-const backlinksToggle = require('./views/backlinks-toggle')
-const article = require('./views/article')
-const playerMask = require('./views/player-mask')
+import xhr from 'xhr'
+import classes from 'component-classes'
+import empty from 'empty-element'
+import render from 'crel'
+import throttle from 'throttleit'
+import formatTimeAgo from 's-ago'
+import wsEvents from 'ws-events'
+import Plausible from 'plausible-tracker'
+import bus from './bus.js'
+import loadPage from './load-page.js'
+import pageTitle from './views/page-title.js'
+import startGameButton from './views/start-game-button.js'
+import gameLink from './views/game-link.js'
+import hint from './views/hint.js'
+import backlinks from './views/backlinks.js'
+import backlinksToggle from './views/backlinks-toggle.js'
+import article from './views/article.js'
+import playerMask from './views/player-mask.js'
+
 const newless = (Class) => (...args) => new Class(...args)
 
 let sock

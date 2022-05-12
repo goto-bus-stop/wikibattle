@@ -1,7 +1,7 @@
-const SocketEvents = require('ws-events')
-const Player = require('./Player')
+import SocketEvents from 'ws-events'
+import Player from './Player.js'
 
-module.exports = class SocketHandler {
+export default class SocketHandler {
   constructor (ws, matchMaker) {
     this.ws = ws
     this.matchMaker = matchMaker

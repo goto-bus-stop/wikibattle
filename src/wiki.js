@@ -1,7 +1,9 @@
-const qs = require('querystring')
-const makeFetch = require('make-fetch-happen')
-const cheerio = require('cheerio')
-const pkg = require('../package.json')
+import qs from 'querystring'
+import fs from 'fs'
+import makeFetch from 'make-fetch-happen'
+import cheerio from 'cheerio'
+
+const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
 
 const HINT_LENGTH = 200 // characters
 const BACKLINKS_LIMIT = 25 // amount of backlinks to retrieve
@@ -18,7 +20,7 @@ const fetch = makeFetch.defaults({
  * Represents a wikipedia article page.
  */
 
-const WikiPage = class WikiPage {
+class WikiPage {
   constructor (title, content, links) {
     this.title = title
     this.content = content
@@ -112,5 +114,4 @@ async function getPage (title, cb) {
   }
 }
 
-exports.get = getPage
-exports.WikiPage = WikiPage
+export { getPage as get, WikiPage }

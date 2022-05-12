@@ -1,8 +1,10 @@
-const debug = require('debug')('WikiBattle:matchMaker')
-const WikiBattle = require('./WikiBattle')
-const RecentGames = require('./RecentGames')
+import createDebug from 'debug'
+import WikiBattle from './WikiBattle.js'
+import RecentGames from './RecentGames.js'
 
-module.exports = class MatchMaker {
+const debug = createDebug('WikiBattle:matchMaker')
+
+export default class MatchMaker {
   constructor (opts) {
     this.waitingPair = null
     this.games = {}

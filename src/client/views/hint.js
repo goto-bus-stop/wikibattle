@@ -1,8 +1,8 @@
-const classes = require('component-classes')
-const render = require('crel')
-const bus = require('../bus')
+import classes from 'component-classes'
+import render from 'crel'
+import bus from '../bus.js'
 
-module.exports = function hint () {
+export default function hint () {
   return new Hint().el
 }
 

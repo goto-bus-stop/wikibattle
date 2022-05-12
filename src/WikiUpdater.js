@@ -1,8 +1,9 @@
-const fs = require('fs').promises
-const qs = require('querystring')
-const cheerio = require('cheerio')
-const fetch = require('make-fetch-happen')
-const debug = require('debug')('WikiBattle:updater')
+import fs from 'fs/promises'
+import * as cheerio from 'cheerio'
+import fetch from 'make-fetch-happen'
+import createDebug from 'debug'
+
+const debug = createDebug('WikiBattle:updater')
 
 /**
  * Check if a cheerio element is a link to a Wikipedia article.
@@ -54,7 +55,7 @@ const getTextContent = (el) =>
  * Synchronizes data from Wikipedia.
  */
 
-module.exports = class WikiUpdater {
+export default class WikiUpdater {
   constructor (opts) {
     this.cssPath = opts.cssPath
     this.pagesPath = opts.pagesPath
@@ -82,7 +83,7 @@ module.exports = class WikiUpdater {
       'skins.minerva.tablet.styles',
       'wikibase.client.init'
     ].join('|')
-    const query = qs.stringify({
+    const query = new URLSearchParams({
       debug: false,
       lang: 'en',
       modules,

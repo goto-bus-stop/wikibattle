@@ -1,6 +1,6 @@
-const generateId = require('crypto-random-string')
+import generateId from 'crypto-random-string'
 
-module.exports = class Player {
+export default class Player {
   /**
    * Manages one Player's socket. (i.e. Sends events and stores state.)
    * @param {SocketEvents} sock A WebSocket events wrapper.

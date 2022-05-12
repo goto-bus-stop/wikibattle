@@ -1,8 +1,10 @@
-const { EventEmitter } = require('events')
-const debug = require('debug')('WikiBattle:game')
-const ms = require('ms')
-const generateId = require('crypto-random-string')
-const wiki = require('./wiki')
+import { EventEmitter } from 'events'
+import createDebug from 'debug'
+import ms from 'ms'
+import generateId from 'crypto-random-string'
+import * as wiki from './wiki.js'
+
+const debug = createDebug('WikiBattle:game')
 
 const HINT_TIMEOUT = ms('40 seconds')
 const BACKLINKS_TIMEOUT = ms('90 seconds')
@@ -11,7 +13,7 @@ const BACKLINKS_TIMEOUT = ms('90 seconds')
  * Represents a 1v1 WikiBattle match.
  */
 
-module.exports = class WikiBattle extends EventEmitter {
+export default class WikiBattle extends EventEmitter {
   constructor (origin, goal) {
     super()
     this.id = generateId({ length: 7 })

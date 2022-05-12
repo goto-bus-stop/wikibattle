@@ -1,8 +1,8 @@
-const xhr = require('xhr')
+import xhr from 'xhr'
 
 const callbacks = {}
 
-module.exports = function load (page, cb) {
+export default function load (page, cb) {
   if (callbacks[page]) {
     callbacks[page].push(cb)
     return

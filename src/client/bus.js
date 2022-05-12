@@ -1,3 +1,3 @@
-const nanobus = require('nanobus')
+import nanobus from 'nanobus'
 
-module.exports = nanobus()
+export default nanobus()

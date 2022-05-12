@@ -1,9 +1,9 @@
-const classes = require('component-classes')
-const empty = require('empty-element')
-const render = require('crel')
-const bus = require('../bus')
+import classes from 'component-classes'
+import empty from 'empty-element'
+import render from 'crel'
+import bus from '../bus.js'
 
-module.exports = function path (player) {
+export default function path (player) {
   return new Path(player).el
 }
 

@@ -1,27 +1,28 @@
-const express = require('express')
-const compression = require('compression')
-const serveStatic = require('serve-static')
-const path = require('path')
-const http = require('http')
-const debug = require('debug')('WikiBattle:app')
-const schedule = require('node-schedule').scheduleJob
-const tmp = require('tmp')
-const WebSocketServer = require('ws').Server
+import express from 'express'
+import compression from 'compression'
+import serveStatic from 'serve-static'
+import { fileURLToPath } from 'url'
+import http from 'http'
+import createDebug from 'debug'
+import schedule from 'node-schedule'
+import tmp from 'tmp'
+import WebSocket from 'ws'
+import * as wiki from './wiki.js'
+import WikiUpdater from './WikiUpdater.js'
+import WikiPages from './WikiPages.js'
+import MatchMaker from './MatchMaker.js'
+import SocketHandler from './SocketHandler.js'
 
-const wiki = require('./wiki')
-const WikiUpdater = require('./WikiUpdater')
-const WikiPages = require('./WikiPages')
-const MatchMaker = require('./MatchMaker')
-const SocketHandler = require('./SocketHandler')
+const debug = createDebug('WikiBattle:app')
 
-const CSS_FILE = path.join(__dirname, '../public/wiki.css')
+const CSS_FILE = new URL('../public/wiki.css', import.meta.url)
 const PAGES_FILE = tmp.fileSync({
   discardDescriptor: true
 }).name
 
 const app = express()
 const server = http.createServer(app)
-const ws = new WebSocketServer({ server })
+const ws = new WebSocket.Server({ server })
 
 app.use(compression())
 
@@ -46,7 +47,7 @@ handler.start()
  */
 
 updater.update()
-schedule('0 0 0 * * *', () => {
+schedule.scheduleJob('0 0 0 * * *', () => {
   updater.update().catch((err) => {
     if (err) {
       console.error('Update failed:')
@@ -80,7 +81,7 @@ app.get('/recent', t(async (req, res) => {
   res.json(recentGames.map(gameToJson))
 }))
 
-app.use(serveStatic(path.join(__dirname, '../public')))
+app.use(serveStatic(fileURLToPath(new URL('../public', import.meta.url))))
 
 /**
  * Serve proxied Wikipedia articles.
