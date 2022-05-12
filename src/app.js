@@ -130,9 +130,8 @@ server.listen(app.get('port'), () => {
 })
 
 debug('Waiting for wiki pages')
-wikiPages.ready().then(() => {
-  debug('Ready')
-})
+await wikiPages.ready()
+debug('Ready')
 
 function t (middleware) {
   return (req, res, next) => {
