@@ -1,6 +1,5 @@
 /* global location, alert, WebSocket */
 
-import xhr from 'xhr'
 import empty from 'empty-element'
 import render from 'crel'
 import throttle from 'throttleit'
@@ -217,11 +216,11 @@ function gameRow (game) {
 }
 
 function loadRecentGames () {
-  xhr('/recent', (err, response) => {
-    if (err) return null
-    const recent = JSON.parse(response.body)
-    render(empty(document.querySelector('#recent-games')),
-      recent.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt)).map(gameRow)
-    )
-  })
+  fetch('/recent')
+    .then((response) => response.json())
+    .then((recent) => {
+      render(empty(document.querySelector('#recent-games')),
+        recent.sort((a, b) => new Date(b.startedAt) - new Date(a.startedAt)).map(gameRow)
+      )
+    })
 }
