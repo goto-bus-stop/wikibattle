@@ -1,20 +1,12 @@
 import qs from 'querystring'
 import fs from 'fs'
-import makeFetch from 'make-fetch-happen'
+import fetch from 'node-fetch'
 import cheerio from 'cheerio'
 
 const pkg = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'))
 
 const HINT_LENGTH = 200 // characters
 const BACKLINKS_LIMIT = 25 // amount of backlinks to retrieve
-const CACHE_LOCATION = '/tmp/WikiBattle/'
-
-const fetch = makeFetch.defaults({
-  cacheManager: CACHE_LOCATION,
-  headers: {
-    'user-agent': `${pkg.name}/${pkg.version} (http://wikibattle.me/, renee@kooi.me)`
-  }
-})
 
 /**
  * Represents a wikipedia article page.
@@ -81,7 +73,11 @@ class WikiPage {
       bllimit: BACKLINKS_LIMIT
     })
 
-    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`, {
+      headers: {
+        'user-agent': `${pkg.name}/${pkg.version} (http://wikibattle.me/, renee@kooi.me)`
+      }
+    })
     const body = await response.json()
     return body.query.backlinks.map((l) => l.title)
   }
@@ -93,7 +89,7 @@ const pageRequests = new Map()
  * Load a wikipedia page with metadata.
  */
 
-async function getPage (title, cb) {
+async function getPage (title) {
   // if we're already fetching this page, don't start a new request
   if (pageRequests.has(title)) return pageRequests.get(title)
 
@@ -108,7 +104,11 @@ async function getPage (title, cb) {
 
   async function load () {
     const query = qs.stringify({ action: 'parse', format: 'json', page: title.replace(/ /g, '_') })
-    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`)
+    const response = await fetch(`https://en.wikipedia.org/w/api.php?${query}`, {
+      headers: {
+        'user-agent': `${pkg.name}/${pkg.version} (http://wikibattle.me/, renee@kooi.me)`
+      }
+    })
     const data = await response.json()
     return new WikiPage(title, data.parse.text['*'], data.parse.links)
   }

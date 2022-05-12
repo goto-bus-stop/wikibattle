@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import * as cheerio from 'cheerio'
-import fetch from 'make-fetch-happen'
+import fetch from 'node-fetch'
 import createDebug from 'debug'
 
 const debug = createDebug('WikiBattle:updater')
