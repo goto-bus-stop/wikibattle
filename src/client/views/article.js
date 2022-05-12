@@ -2,9 +2,7 @@
 import delegate from 'component-delegate'
 import empty from 'empty-element'
 import render from 'crel'
-import domEvent from 'dom-event'
 import bus from '../bus.js'
-const { on, off } = domEvent
 
 export default function article (player, isSelf) {
   return new Article(player, isSelf).el
@@ -36,7 +34,7 @@ class Article {
       [render('div', { class: 'heading-holder' }, this.title), this.content]
     )
 
-    on(this.el, 'click', (event) => {
+    this.el.addEventListener('click', (event) => {
       const target = event.target.closest('a')
       if (target) {
         const href = target.getAttribute('href')
@@ -48,9 +46,9 @@ class Article {
     })
     if (isSelf) {
       this.delegatedOnClick = delegate.bind(this.el, 'a, area', 'click', this.onClick)
-      on(this.el, 'scroll', this.onScroll)
+      this.el.addEventListener('scroll', this.onScroll)
     } else {
-      on(this.el, 'mousewheel', preventDefault)
+      this.el.addEventListener('mousewheel', preventDefault)
     }
 
     bus.on('article-loaded', this.onArticleLoaded)
@@ -130,7 +128,7 @@ class Article {
   onGameOver (winner) {
     if (this.isSelf) {
       delegate.unbind(this.el, 'click', this.delegatedOnClick)
-      off(this.el, 'scroll', this.onScroll)
+      this.el.addEventListener('scroll', this.onScroll)
     }
   }
 }

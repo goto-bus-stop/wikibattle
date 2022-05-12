@@ -1,8 +1,5 @@
 import crel from 'crel'
-import domEvent from 'dom-event'
 import bus from '../bus.js'
-
-const { on } = domEvent
 
 export default function backlinksToggle () {
   return new BacklinksToggle().el
@@ -19,7 +16,7 @@ class BacklinksToggle {
       [this.input, ' Show Backlinks']
     )
 
-    on(this.input, 'change', this.onChange)
+    this.input.addEventListener('change', this.onChange)
 
     bus.on('backlinks', this.show)
   }
