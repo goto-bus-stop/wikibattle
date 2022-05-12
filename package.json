@@ -17,7 +17,6 @@
     "component-classes": "^1.2.4",
     "component-delegate": "^0.2.3",
     "compression": "^1.7.3",
-    "cpy-cli": "^3.1.1",
     "crel": "^3.0.0",
     "crypto-random-string": "^3.3.1",
     "debug": "^4.3.1",
@@ -39,6 +38,7 @@
     "xhr": "^2.6.0"
   },
   "devDependencies": {
+    "cpy-cli": "^4.1.0",
     "esbuild": "^0.14.23",
     "less": "^4.1.1",
     "standard": "^17.0.0"
