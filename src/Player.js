@@ -34,7 +34,7 @@ export default class Player {
    */
 
   win () {
-    this.sock && this.sock.emit('won')
+    this.sock?.emit('won')
   }
 
   /**
@@ -42,7 +42,7 @@ export default class Player {
    */
 
   lose () {
-    this.sock && this.sock.emit('lost')
+    this.sock?.emit('lost')
   }
 
   /**
@@ -50,11 +50,9 @@ export default class Player {
    */
 
   disconnect () {
-    if (this.sock) {
-      this.connected = false
-      this.sock.close()
-      this.sock = null
-    }
+    this.connected = false
+    this.sock?.close()
+    this.sock = null
   }
 
   /**
@@ -62,7 +60,7 @@ export default class Player {
    */
 
   notifyJoinedGame (game) {
-    this.sock && this.sock.emit('game', game.id, this.id)
+    this.sock?.emit('game', game.id, this.id)
   }
 
   /**
@@ -70,7 +68,7 @@ export default class Player {
    */
 
   notifyConnect (player) {
-    this.sock && this.sock.emit('connection', player.id)
+    this.sock?.emit('connection', player.id)
   }
 
   /**
@@ -78,7 +76,7 @@ export default class Player {
    */
 
   notifyScroll (player, top, width) {
-    this.sock && this.sock.emit('scrolled', player.id, top, width)
+    this.sock?.emit('scrolled', player.id, top, width)
   }
 
   /**
@@ -86,6 +84,6 @@ export default class Player {
    */
 
   notifyDisconnect (player) {
-    this.sock && this.sock.emit('disconnection', player.id)
+    this.sock?.emit('disconnection', player.id)
   }
 }
