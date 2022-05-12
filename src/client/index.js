@@ -48,7 +48,7 @@ const Player = newless(class Player {
     this.path.push(page)
     bus.emit('article-loading', { player: this, title: page })
     loadPage(page, (e, body) => {
-      bus.emit('article-loaded', { player: this, title: page, body: body })
+      bus.emit('article-loaded', { player: this, title: page, body })
       if (cb) cb(e)
     })
   }

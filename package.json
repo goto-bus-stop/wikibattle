@@ -42,7 +42,7 @@
   "devDependencies": {
     "esbuild": "^0.14.23",
     "less": "^4.1.1",
-    "standard": "^16.0.3"
+    "standard": "^17.0.0"
   },
   "repository": "goto-bus-stop/WikiBattle",
   "scripts": {
