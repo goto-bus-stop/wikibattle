@@ -48,7 +48,7 @@ class Article {
       this.delegatedOnClick = delegate.bind(this.el, 'a, area', 'click', this.onClick)
       this.el.addEventListener('scroll', this.onScroll)
     } else {
-      this.el.addEventListener('mousewheel', preventDefault)
+      this.el.addEventListener('wheel', preventDefault, { passive: false })
     }
 
     bus.on('article-loaded', this.onArticleLoaded)
