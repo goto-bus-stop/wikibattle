@@ -33,7 +33,7 @@
     "ws-events": "^1.0.0"
   },
   "devDependencies": {
-    "cpy-cli": "^4.1.0",
+    "cpy-cli": "^5.0.0",
     "esbuild": "^0.24.0",
     "less": "^4.1.1",
     "standard": "^17.0.0"
@@ -47,8 +47,8 @@
     "update": "node update.js",
     "compile": "esbuild src/client/index.js --bundle --minify --outfile=public/app.js",
     "compile:dev": "esbuild src/client/index.js --bundle --outfile=public/app.js",
-    "minify-css": "esbuild public/{wiki,style}.css --minify --outdir=public --allow-overwrite",
-    "html": "cpy src/client/index.html public/",
+    "minify-css": "esbuild public/wiki.css public/style.css --minify --outdir=public --allow-overwrite",
+    "html": "cpy --flat src/client/index.html public",
     "dev": "npm run compile:dev && npm run less && npm run html",
     "prod": "npm run less && npm run minify-css && npm run compile && npm run html",
     "build": "npm run update && npm run prod",
