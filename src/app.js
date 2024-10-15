@@ -78,6 +78,13 @@ app.get('/recent', t(async (req, res) => {
   res.json(recentGames.map(gameToJson))
 }))
 
+app.get('/robots.txt', (req, res) => {
+  // Search engines should not serve the proxied pages as if they are wikipedia
+  res.send(`User-agent: *
+Disallow: /wiki/*
+`)
+})
+
 app.use(serveStatic(fileURLToPath(new URL('../public', import.meta.url))))
 
 /**
