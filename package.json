@@ -11,7 +11,7 @@
     "node": ">= 10.1"
   },
   "dependencies": {
-    "@google-cloud/firestore": "^4.9.2",
+    "@google-cloud/firestore": "^7.11.0",
     "cheerio": "^1.0.0-rc.5",
     "component-delegate": "^0.2.3",
     "crel": "^3.0.0",
