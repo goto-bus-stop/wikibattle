@@ -69,18 +69,18 @@ export default class WikiUpdater {
     debug('loading wikipedia css')
 
     const modules = [
-      'site',
+      'site.styles',
       'ext.cite.styles',
-      'ext.gadget.DRN-wizard,ReferenceTooltips,charinsert,featured-articles-links,refToolbar,switcher,teahouse',
-      'ext.tmh.thumbnail.styles',
+      'ext.kartographer.style',
+      'ext.phonos.icons,styles',
+      'ext.tmh.player.styles',
+      'ext.uls.interlanguage',
       'ext.visualEditor.desktopArticleTarget.noscript',
       'ext.wikimediaBadges',
+      'ext.wikimediamessages.styles',
       'mediawiki.page.gallery.styles',
-      'mediawiki.ui.button,icon',
-      'skins.minerva.base.reset,styles',
-      'skins.minerva.content.styles',
-      'skins.minerva.icons.images',
-      'skins.minerva.tablet.styles',
+      'skins.vector.icons,styles',
+      'skins.vector.search.codex.styles',
       'wikibase.client.init'
     ].join('|')
     const query = new URLSearchParams({
@@ -88,7 +88,7 @@ export default class WikiUpdater {
       lang: 'en',
       modules,
       only: 'styles',
-      skin: 'minerva'
+      skin: 'vector-2022'
     })
 
     const response = await fetch(`https://en.wikipedia.org/w/load.php?${query}`)

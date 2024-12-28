@@ -48,7 +48,7 @@ button {
   background: #eee;
 
   h1 { // target title usually
-    padding-left: .5em;
+    padding: 0 0 0 .5em;
     button {
       margin-left: .5em;
       line-height: 1;
@@ -130,6 +130,7 @@ button {
 
 .wb-article .content {
   width: auto;
+  grid-area: content; // From wikipedia's .mw-body
 }
 
 #main .wb-article .mw-editsection {
@@ -175,4 +176,6 @@ button {
 // Override Wikipedia's very large header margin
 .wb-article .heading-holder {
   padding: 1em 0 1em;
+  grid-area: titlebar; // From wikipedia's .mw-body
+  h1 { margin: 0; }
 }
