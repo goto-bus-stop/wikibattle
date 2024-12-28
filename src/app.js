@@ -81,7 +81,7 @@ app.get('/recent', t(async (req, res) => {
 app.get('/robots.txt', (req, res) => {
   // Search engines should not serve the proxied pages as if they are wikipedia
   res.send(`User-agent: *
-Disallow: /wiki/*
+Disallow: /wiki/
 `)
 })
 
@@ -92,6 +92,12 @@ app.use(serveStatic(fileURLToPath(new URL('../public', import.meta.url))))
  */
 
 app.get('/wiki/:page', t(async (req, res) => {
+  res.header('X-Robots-Tag', 'noindex,nofollow')
+  if (req.headers.authorization !== 'wikibattle.me client') {
+    res.status(404).end()
+    return
+  }
+
   const body = await wiki.get(req.params.page)
   res.end(body.content)
 }))
