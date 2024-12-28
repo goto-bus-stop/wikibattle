@@ -2,8 +2,8 @@ const cache = {}
 
 const fetchOpts = {
   headers: {
-    authorization: 'wikibattle.me client',
-  },
+    authorization: 'wikibattle.me client'
+  }
 }
 
 export default function load (page, cb) {
